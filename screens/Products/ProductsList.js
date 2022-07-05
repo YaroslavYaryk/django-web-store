@@ -14,8 +14,15 @@ import ProductItem from "../../components/ProductItem";
 import Colors from "../../constants/Colors";
 import { FlatGrid } from "react-native-super-grid";
 
-const ProductsList = () => {
+const ProductsList = (props) => {
     const products = useSelector((state) => state.products.products);
+
+    const getProductDetails = (id, title) => {
+        props.navigation.navigate("ProductDetails", {
+            productId: id,
+            productTitle: title,
+        });
+    };
 
     return (
         <View style={styles.wrapper}>
@@ -27,9 +34,9 @@ const ProductsList = () => {
                     <ProductItem
                         item={itemData.item}
                         onSelect={() => {
-                            selectItemHandler(
+                            getProductDetails(
                                 itemData.item.id,
-                                itemData.item.title
+                                itemData.item.onlyName
                             );
                         }}
                     ></ProductItem>

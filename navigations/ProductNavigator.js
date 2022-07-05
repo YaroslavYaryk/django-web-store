@@ -15,7 +15,7 @@ import ProductReview from "../screens/Products/ProductReviews";
 import ProductList from "../screens/Products/ProductsList";
 import ProductSearch from "../screens/Products/ProductsSearch";
 import ProductVideos from "../screens/Products/ProductVideos";
-
+import { screenOptions as prDetalsScreenOptions } from "../screens/Products/ProductDetails";
 import Colors from "../constants/Colors";
 
 const defaultNavOptions = {
@@ -32,42 +32,6 @@ const defaultNavOptions = {
     headerTintColor: Platform.OS === "android" ? "white" : Colors.primaryColor,
 };
 
-const ProductDetailsStackNavigator = createStackNavigator();
-
-export const ProductDetailsNavigator = () => {
-    return (
-        <ProductDetailsStackNavigator.Navigator
-            screenOptions={defaultNavOptions}
-        >
-            <ProductsStackNavigator.Screen
-                name="ProductDetails"
-                component={ProductDetails}
-                // options={productsOverviewScreenOptions}
-            />
-            <ProductDetailsStackNavigator.Screen
-                name="ProductFeatures"
-                component={ProductFeatures}
-                // options={productDetailScreenOptions}
-            />
-            <ProductDetailsStackNavigator.Screen
-                name="ProductReview"
-                component={ProductReview}
-                // options={cartScreenOptions}
-            />
-            <ProductDetailsStackNavigator.Screen
-                name="ProductImages"
-                component={ProductImages}
-                // options={cartScreenOptions}
-            />
-            <ProductDetailsStackNavigator.Screen
-                name="ProductVideos"
-                component={ProductVideos}
-                // options={cartScreenOptions}
-            />
-        </ProductDetailsStackNavigator.Navigator>
-    );
-};
-
 const ProductsStackNavigator = createStackNavigator();
 
 export const ProductsNavigator = () => {
@@ -81,12 +45,32 @@ export const ProductsNavigator = () => {
                 />
                 <ProductsStackNavigator.Screen
                     name="ProductDetails"
-                    component={ProductDetailsNavigator}
-                    // options={productDetailScreenOptions}
+                    component={ProductDetails}
+                    options={prDetalsScreenOptions}
                 />
                 <ProductsStackNavigator.Screen
                     name="ProductSearch"
                     component={ProductSearch}
+                    // options={cartScreenOptions}
+                />
+                <ProductsStackNavigator.Screen
+                    name="ProductFeatures"
+                    component={ProductFeatures}
+                    // options={productDetailScreenOptions}
+                />
+                <ProductsStackNavigator.Screen
+                    name="ProductReview"
+                    component={ProductReview}
+                    // options={cartScreenOptions}
+                />
+                <ProductsStackNavigator.Screen
+                    name="ProductImages"
+                    component={ProductImages}
+                    // options={cartScreenOptions}
+                />
+                <ProductsStackNavigator.Screen
+                    name="ProductVideos"
+                    component={ProductVideos}
                     // options={cartScreenOptions}
                 />
             </ProductsStackNavigator.Navigator>
