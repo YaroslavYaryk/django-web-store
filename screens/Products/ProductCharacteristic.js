@@ -10,17 +10,18 @@ import {
 } from "react-native";
 import TitleSlider from "../../components/TitleSlider";
 
-const ProductReviews = (props) => {
+const ProductCharacteristic = (props) => {
     const productId = props.route.params.productId;
+    console.log(productId);
     return (
         <View style={styles.container}>
             <TitleSlider
-                active={"reviews"}
+                active={"characteristic"}
                 productId={productId}
                 navigation={props.navigation}
-                scrollTo={140}
+                // scrollTo={140}
             />
-            <Text>Product Reviews</Text>
+            <Text>Product Characteristic</Text>
         </View>
     );
 };
@@ -32,4 +33,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default ProductReviews;
+export default ProductCharacteristic;

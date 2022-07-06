@@ -4,7 +4,7 @@ const PRODUCTS = [
     new Product(
         1,
         "google-pixel-5",
-        "Google pixel 5",
+        "Мобільний телефое Google pixel 5 5G 8/128 green",
         "Google pixel 5",
         "Google",
         "Phone",

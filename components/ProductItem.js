@@ -11,7 +11,7 @@ import {
 // import { HOST, PORT } from "../constants/server";
 import { AntDesign } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
-import { EvilIcons } from "@expo/vector-icons";
+import RatingItem from "./RatingItem";
 
 const ProductItem = (props) => {
     let TouchableCmp = TouchableOpacity;
@@ -82,32 +82,11 @@ const ProductItem = (props) => {
                                     flexDirection: "row",
                                 }}
                             >
-                                <EvilIcons
-                                    name="star"
-                                    size={18}
-                                    color="black"
-                                />
-                                <EvilIcons
-                                    name="star"
-                                    size={18}
-                                    color="black"
-                                />
-                                <EvilIcons
-                                    name="star"
-                                    size={18}
-                                    color="black"
-                                />
-                                <EvilIcons
-                                    name="star"
-                                    size={18}
-                                    color="black"
-                                />
-                                <EvilIcons
-                                    name="star"
-                                    size={18}
-                                    color="black"
-                                />
-                                <Text style={{ fontSize: 10 }}>3 Відгуки</Text>
+                                <RatingItem stars={4} reviews={15} />
+                                <Text style={{ fontSize: 11, paddingTop: 3 }}>
+                                    {" "}
+                                    Відгуки
+                                </Text>
                             </View>
                         </View>
                         <View style={styles.details}>

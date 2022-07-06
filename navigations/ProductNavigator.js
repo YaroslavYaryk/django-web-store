@@ -15,6 +15,7 @@ import ProductReview from "../screens/Products/ProductReviews";
 import ProductList from "../screens/Products/ProductsList";
 import ProductSearch from "../screens/Products/ProductsSearch";
 import ProductVideos from "../screens/Products/ProductVideos";
+import ProductCharacteristic from "../screens/Products/ProductCharacteristic";
 import { screenOptions as prDetalsScreenOptions } from "../screens/Products/ProductDetails";
 import Colors from "../constants/Colors";
 
@@ -47,6 +48,11 @@ export const ProductsNavigator = () => {
                     name="ProductDetails"
                     component={ProductDetails}
                     options={prDetalsScreenOptions}
+                />
+                <ProductsStackNavigator.Screen
+                    name="ProductCharacteristic"
+                    component={ProductCharacteristic}
+                    // options={prDetalsScreenOptions}
                 />
                 <ProductsStackNavigator.Screen
                     name="ProductSearch"
