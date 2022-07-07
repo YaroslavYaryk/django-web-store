@@ -30,7 +30,7 @@ const RatingItem = (props) => {
         <View style={styles.product}>
             {stars.map((elem) => (
                 <AntDesign
-                    key={stars.indexOf(elem)}
+                    key={Math.random()}
                     name={elem ? "star" : "staro"}
                     size={18}
                     color="orange"
