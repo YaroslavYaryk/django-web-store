@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
 import {
    createDrawerNavigator,
@@ -20,13 +21,15 @@ import ProductFullDescription from "../screens/Product/ProductFullDescription";
 import { screenOptions as prDetalsScreenOptions } from "../screens/Product/ProductDetails";
 import { screenOptions as cartScreenOptions } from "../screens/Product/Cart";
 import { screenOptions as categoriesScreenOptions } from "../screens/Product/Categories";
+import { screenOptions as authScreenOptions } from "../screens/Auth/AuthScreen";
+import { screenOptions as loginScreenOptions } from "../screens/Auth/Login";
 import Colors from "../constants/Colors";
 import Categories from "../screens/Product/Categories";
 import Cart from "../screens/Product/Cart";
 import Icon, { Icons } from "../components/Icon";
 import Login from "../screens/Auth/Login";
 import Registration from "../screens/Auth/Registration";
-
+import AuthScreen from "../screens/Auth/AuthScreen";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 
 const defaultNavOptions = {
@@ -96,21 +99,55 @@ export const ProductsNavigator = () => {
    );
 };
 
+
+const topTabNavigatorContainer = createMaterialTopTabNavigator();
+
+function TopTabNavigator() {
+  return (
+    <topTabNavigatorContainer.Navigator  screenOptions={{
+      tabBarActiveTintColor: Colors.primaryColor,
+      tabBarLabelStyle: { fontSize: 15, fontWeight:"700" },
+      tabBarIndicatorStyle:{backgroundColor:Colors.primaryColor}
+    }}>
+      <topTabNavigatorContainer.Screen title="авт" name="Login" component={Login} options={{ tabBarLabel: 'Вхід' }} />
+      <topTabNavigatorContainer.Screen name="Registration" component={Registration} options={{ tabBarLabel: 'Реєстрація' }} />
+    </topTabNavigatorContainer.Navigator>
+  );
+}
+
 const AuthStackNavigator = createStackNavigator();
 
 export const AuthNavigator = () => {
    return (
-      <AuthStackNavigator.Navigator screenOptions={defaultNavOptions}>
+      <AuthStackNavigator.Navigator
+         screenOptions={{
+            headerStyle: {
+               backgroundColor:
+                  Platform.OS === "android" ? Colors.primaryColor : "",
+            },
+            headerTitleStyle: {
+               fontFamily: "Roboto",
+               fontWeight: "700",
+               marginLeft: -20,
+            },
+            headerBackTitleStyle: {
+               fontFamily: "Roboto",
+            },
+            headerTintColor:
+               Platform.OS === "android" ? "white" : Colors.primaryColor,
+         }}
+      >
          <AuthStackNavigator.Screen
-            name="Login"
-            component={Login}
-            // options={productsOverviewScreenOptions}
+            name="Account"
+            component={AuthScreen}
+            options={authScreenOptions}
          />
          <AuthStackNavigator.Screen
-            name="Registration"
-            component={Registration}
-            // options={prDetalsScreenOptions}
+            name="TopTabNavigator"
+            component={TopTabNavigator}
+            options={{headerTitle: "Авторизація"}}
          />
+         
       </AuthStackNavigator.Navigator>
    );
 };
@@ -237,8 +274,8 @@ export default BaseFullNavigator = () => {
                   tabBarStyle: { display: "none" },
                   tabBarIcon: () => (
                      <Icon
-                        name="swatchbook"
-                        type={Icons.FontAwesome5}
+                        name="appstore1"
+                        type={Icons.AntDesign}
                         size={20}
                         color={iconsColor[1]}
                      />
@@ -256,7 +293,7 @@ export default BaseFullNavigator = () => {
                }}
                options={{
                   headerShown: true,
-                  tabBarLabel: "Categories",
+                  tabBarLabel: "Cart",
                   tabBarIcon: () => (
                      <Icon
                         name="shopping-cart"
