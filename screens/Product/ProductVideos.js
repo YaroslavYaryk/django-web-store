@@ -15,12 +15,6 @@ const ProductVideos = (props) => {
 
    return (
       <View style={styles.container}>
-         <TitleSlider
-            active={"video"}
-            productId={productId}
-            navigation={props.navigation}
-            scrollTo={140}
-         />
          <Text>Product Videos</Text>
       </View>
    );

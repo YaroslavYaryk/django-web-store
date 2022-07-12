@@ -11,15 +11,9 @@ import {
 import TitleSlider from "../../components/TitleSlider";
 
 const ProductReviews = (props) => {
-   const productId = props.route.params.productId;
+   const productId = props.route.params;
    return (
       <View style={styles.container}>
-         <TitleSlider
-            active={"reviews"}
-            productId={productId}
-            navigation={props.navigation}
-            scrollTo={140}
-         />
          <Text>Product Reviews</Text>
       </View>
    );

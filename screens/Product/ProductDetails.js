@@ -74,11 +74,6 @@ const ProductDetails = (props) => {
          >
             <ScrollView>
                <View style={{ height, backgroundColor: "white" }}>
-                  <TitleSlider
-                     active={"details"}
-                     productId={productId}
-                     navigation={props.navigation}
-                  />
                   <Slider images={images} />
                   <View style={styles.nameBlockWrapper}>
                      <View style={styles.nameTextBlock}>

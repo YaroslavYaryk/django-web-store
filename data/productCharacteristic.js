@@ -1,0 +1,41 @@
+import ProductCharacteristic from "../models/ProductCharacteristic";
+
+const PRODUCT_CHARACTERISTIC = new ProductCharacteristic(
+   1,
+   1,
+   3,
+   "6",
+   2,
+   "oled",
+   3,
+   "60",
+   6,
+   "snapdragon 765g",
+   4,
+   "android",
+   8,
+   2,
+   0,
+   1,
+   "hdd",
+   3,
+   128,
+   null,
+   3,
+   0,
+   3,
+   null,
+   "green",
+   128.0,
+   "4400mah",
+   null,
+   128.0,
+   50.0,
+   2.0,
+   "metal",
+   "wifi",
+   "no",
+   "no"
+);
+
+export default PRODUCT_CHARACTERISTIC;

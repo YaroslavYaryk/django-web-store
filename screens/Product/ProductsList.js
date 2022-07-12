@@ -18,9 +18,12 @@ const ProductsList = (props) => {
    const products = useSelector((state) => state.products.products);
 
    const getProductDetails = (id, title) => {
-      props.navigation.navigate("ProductDetails", {
-         productId: id,
-         productTitle: title,
+      props.navigation.navigate("ProductDetailsNavigator", {
+         screen: "ProductDetails",
+         params: {
+            productId: id,
+            productTitle: title,
+         },
       });
    };
 

@@ -7,10 +7,11 @@ import { combineReducers, applyMiddleware } from "redux";
 import BaseFullNavigator from "./navigations/ProductNavigator";
 import { Provider } from "react-redux";
 import productReducer from "./redux-folder/reducers/productReducer";
-import ProductsNavigator from "./navigations/ProductNavigator";
+import productCharacteristicReducer from "./redux-folder/reducers/productCharacteristicReducer";
 
 const rootReducer = combineReducers({
    products: productReducer,
+   prodCharacteristic: productCharacteristicReducer,
 });
 
 const store = configureStore(

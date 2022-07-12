@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 
 import {
    createDrawerNavigator,
@@ -46,6 +46,56 @@ const defaultNavOptions = {
    headerTintColor: Platform.OS === "android" ? "white" : Colors.primaryColor,
 };
 
+const productTopTabNavigatorContainer = createMaterialTopTabNavigator();
+
+function ProductTopTabNavigator(props) {
+   const productId = props.route.params.params.productId;
+
+   return (
+      <productTopTabNavigatorContainer.Navigator
+         screenOptions={{
+            tabBarActiveTintColor: Colors.primaryColor,
+            tabBarLabelStyle: { fontSize: 14, fontWeight: "700" },
+            tabBarIndicatorStyle: {
+               backgroundColor: Colors.primaryColor,
+            },
+            tabBarScrollEnabled: true,
+         }}
+      >
+         <productTopTabNavigatorContainer.Screen
+            name="ProductDetails"
+            component={ProductDetails}
+            options={{ tabBarLabel: "Все про товар" }}
+            initialParams={{ productId: productId }}
+         />
+         <productTopTabNavigatorContainer.Screen
+            name="ProductCharacteristic"
+            component={ProductCharacteristic}
+            options={{ tabBarLabel: "Характеристики" }}
+            initialParams={{ productId: productId }}
+         />
+         <productTopTabNavigatorContainer.Screen
+            name="ProductReview"
+            component={ProductReview}
+            options={{ tabBarLabel: "Відгуки" }}
+            initialParams={{ productId: productId }}
+         />
+         <productTopTabNavigatorContainer.Screen
+            name="ProductImages"
+            component={ProductImages}
+            options={{ tabBarLabel: "Фото" }}
+            initialParams={{ productId: productId }}
+         />
+         <productTopTabNavigatorContainer.Screen
+            name="ProductVideos"
+            component={ProductVideos}
+            options={{ tabBarLabel: "Відео" }}
+            initialParams={{ productId: productId }}
+         />
+      </productTopTabNavigatorContainer.Navigator>
+   );
+}
+
 const ProductsStackNavigator = createStackNavigator();
 
 export const ProductsNavigator = () => {
@@ -56,18 +106,13 @@ export const ProductsNavigator = () => {
             component={ProductList}
          />
          <ProductsStackNavigator.Screen
-            name="ProductDetails"
-            component={ProductDetails}
-            options={prDetalsScreenOptions}
+            name="ProductDetailsNavigator"
+            component={ProductTopTabNavigator}
+            // options={prDetalsScreenOptions}
          />
          <ProductsStackNavigator.Screen
             name="ProductDescription"
             component={ProductFullDescription}
-            // options={prDetalsScreenOptions}
-         />
-         <ProductsStackNavigator.Screen
-            name="ProductCharacteristic"
-            component={ProductCharacteristic}
             // options={prDetalsScreenOptions}
          />
          <ProductsStackNavigator.Screen
@@ -80,16 +125,7 @@ export const ProductsNavigator = () => {
             component={ProductFeatures}
             // options={productDetailScreenOptions}
          />
-         <ProductsStackNavigator.Screen
-            name="ProductReview"
-            component={ProductReview}
-            // options={cartScreenOptions}
-         />
-         <ProductsStackNavigator.Screen
-            name="ProductImages"
-            component={ProductImages}
-            // options={cartScreenOptions}
-         />
+
          <ProductsStackNavigator.Screen
             name="ProductVideos"
             component={ProductVideos}
@@ -99,20 +135,30 @@ export const ProductsNavigator = () => {
    );
 };
 
-
 const topTabNavigatorContainer = createMaterialTopTabNavigator();
 
 function TopTabNavigator() {
-  return (
-    <topTabNavigatorContainer.Navigator  screenOptions={{
-      tabBarActiveTintColor: Colors.primaryColor,
-      tabBarLabelStyle: { fontSize: 15, fontWeight:"700" },
-      tabBarIndicatorStyle:{backgroundColor:Colors.primaryColor}
-    }}>
-      <topTabNavigatorContainer.Screen title="авт" name="Login" component={Login} options={{ tabBarLabel: 'Вхід' }} />
-      <topTabNavigatorContainer.Screen name="Registration" component={Registration} options={{ tabBarLabel: 'Реєстрація' }} />
-    </topTabNavigatorContainer.Navigator>
-  );
+   return (
+      <topTabNavigatorContainer.Navigator
+         screenOptions={{
+            tabBarActiveTintColor: Colors.primaryColor,
+            tabBarLabelStyle: { fontSize: 15, fontWeight: "700" },
+            tabBarIndicatorStyle: { backgroundColor: Colors.primaryColor },
+         }}
+      >
+         <topTabNavigatorContainer.Screen
+            title="авт"
+            name="Login"
+            component={Login}
+            options={{ tabBarLabel: "Вхід" }}
+         />
+         <topTabNavigatorContainer.Screen
+            name="Registration"
+            component={Registration}
+            options={{ tabBarLabel: "Реєстрація" }}
+         />
+      </topTabNavigatorContainer.Navigator>
+   );
 }
 
 const AuthStackNavigator = createStackNavigator();
@@ -145,9 +191,8 @@ export const AuthNavigator = () => {
          <AuthStackNavigator.Screen
             name="TopTabNavigator"
             component={TopTabNavigator}
-            options={{headerTitle: "Авторизація"}}
+            options={{ headerTitle: "Авторизація" }}
          />
-         
       </AuthStackNavigator.Navigator>
    );
 };
