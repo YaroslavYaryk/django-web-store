@@ -23,6 +23,7 @@ import { screenOptions as cartScreenOptions } from "../screens/Product/Cart";
 import { screenOptions as categoriesScreenOptions } from "../screens/Product/Categories";
 import { screenOptions as authScreenOptions } from "../screens/Auth/AuthScreen";
 import { screenOptions as loginScreenOptions } from "../screens/Auth/Login";
+import { screenOptions as productListScreenOptions } from "../screens/Product/ProductsList";
 import Colors from "../constants/Colors";
 import Categories from "../screens/Product/Categories";
 import Cart from "../screens/Product/Cart";
@@ -39,6 +40,21 @@ const defaultNavOptions = {
    headerTitleStyle: {
       fontFamily: "Roboto",
       fontWeight: "700",
+   },
+   headerBackTitleStyle: {
+      fontFamily: "Roboto",
+   },
+   headerTintColor: Platform.OS === "android" ? "white" : Colors.primaryColor,
+};
+
+const defaultIconNavigationOption = {
+   headerStyle: {
+      backgroundColor: Platform.OS === "android" ? Colors.primaryColor : "",
+   },
+   headerTitleStyle: {
+      fontFamily: "Roboto",
+      fontWeight: "700",
+      marginLeft: -20,
    },
    headerBackTitleStyle: {
       fontFamily: "Roboto",
@@ -100,10 +116,13 @@ const ProductsStackNavigator = createStackNavigator();
 
 export const ProductsNavigator = () => {
    return (
-      <ProductsStackNavigator.Navigator screenOptions={defaultNavOptions}>
+      <ProductsStackNavigator.Navigator
+         screenOptions={defaultIconNavigationOption}
+      >
          <ProductsStackNavigator.Screen
             name="ProductsOverview"
             component={ProductList}
+            options={productListScreenOptions}
          />
          <ProductsStackNavigator.Screen
             name="ProductDetailsNavigator"
@@ -165,24 +184,7 @@ const AuthStackNavigator = createStackNavigator();
 
 export const AuthNavigator = () => {
    return (
-      <AuthStackNavigator.Navigator
-         screenOptions={{
-            headerStyle: {
-               backgroundColor:
-                  Platform.OS === "android" ? Colors.primaryColor : "",
-            },
-            headerTitleStyle: {
-               fontFamily: "Roboto",
-               fontWeight: "700",
-               marginLeft: -20,
-            },
-            headerBackTitleStyle: {
-               fontFamily: "Roboto",
-            },
-            headerTintColor:
-               Platform.OS === "android" ? "white" : Colors.primaryColor,
-         }}
-      >
+      <AuthStackNavigator.Navigator screenOptions={defaultIconNavigationOption}>
          <AuthStackNavigator.Screen
             name="Account"
             component={AuthScreen}
