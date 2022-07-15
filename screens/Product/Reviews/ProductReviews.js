@@ -10,11 +10,11 @@ import {
    TextInput,
 } from "react-native";
 import React, { useState, useEffect, useCallback, useReducer } from "react";
-import RATING_MARKS from "../../constants/ratingMark";
-import RatingStars from "../../components/RatingStars";
-import InputRating from "../../components/InputRating";
-import ImgPicker from "../../components/ImagePicker";
-import Colors from "../../constants/Colors";
+import RATING_MARKS from "../../../constants/ratingMark";
+import RatingStars from "../../../components/RatingStars";
+import InputRating from "../../../components/InputRating";
+import ImgPicker from "../../../components/ImagePicker";
+import Colors from "../../../constants/Colors";
 import { useWindowDimensions } from "react-native";
 
 const FORM_INPUT_UPDATE = "FORM_INPUT_UPDATE";
@@ -198,7 +198,7 @@ const ProductReviews = (props) => {
                </View>
             </View>
             <View
-               style={[styles.TextFieldCommentLabelOnBorder, { marginTop: 0 }]}
+               style={[styles.TextFieldCommentLabelOnBorder, { marginTop: 10 }]}
             >
                <InputRating
                   id="email"
@@ -225,13 +225,31 @@ const ProductReviews = (props) => {
                   { width: width - 26, marginLeft: 13 },
                ]}
             >
-               <TouchableOpacity
-                  onPress={() => {
-                     console.log("sent");
-                  }}
+               <View
+                  style={[
+                     styles.buttonStyle,
+                     { backgroundColor: Colors.primary },
+                  ]}
                >
-                  <Text style={styles.saveCommentText}>Відправити</Text>
-               </TouchableOpacity>
+                  <TouchableOpacity
+                     onPress={() => {
+                        props.navigation.navigate("ProductReviewsList", {
+                           productId: id,
+                        });
+                     }}
+                  >
+                     <Text style={[styles.saveCommentText]}>Відгуки</Text>
+                  </TouchableOpacity>
+               </View>
+               <View style={styles.buttonStyle}>
+                  <TouchableOpacity
+                     onPress={() => {
+                        console.log("sent");
+                     }}
+                  >
+                     <Text style={styles.saveCommentText}>Відправити</Text>
+                  </TouchableOpacity>
+               </View>
             </View>
          </ScrollView>
       </View>
@@ -286,16 +304,22 @@ const styles = StyleSheet.create({
       color: "grey",
    },
    saveCommentBlock: {
-      alignItems: "center",
-      backgroundColor: Colors.primaryColor,
-      paddingVertical: 12,
-      borderRadius: 15,
       marginTop: -10,
       marginBottom: 10,
+      flexDirection: "row",
+      justifyContent: "space-between",
    },
    saveCommentText: {
       color: "white",
       fontSize: 18,
+      fontWeight: "600",
+   },
+   buttonStyle: {
+      alignItems: "center",
+      backgroundColor: Colors.primaryColor,
+      width: "49%",
+      paddingVertical: 10,
+      borderRadius: 15,
    },
 });
 

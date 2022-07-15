@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import { NavigationContainer } from "@react-navigation/native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 
 import {
@@ -12,12 +11,13 @@ import { Platform, SafeAreaView, Button, View } from "react-native";
 import ProductDetails from "../screens/Product/ProductDetails";
 import ProductFeatures from "../screens/Product/ProductFeatures";
 import ProductImages from "../screens/Product/ProductImages";
-import ProductReview from "../screens/Product/ProductReviews";
+import ProductReview from "../screens/Product/Reviews/ProductReviews";
 import ProductList from "../screens/Product/ProductsList";
 import ProductsSearch from "../screens/Product/ProductsSearch";
 import ProductVideos from "../screens/Product/ProductVideos";
 import ProductCharacteristic from "../screens/Product/ProductCharacteristic";
 import ProductFullDescription from "../screens/Product/ProductFullDescription";
+import ProductReviewsList from "../screens/Product/Reviews/ProductReviewsList";
 import { screenOptions as prDetalsScreenOptions } from "../screens/Product/ProductDetails";
 import { screenOptions as cartScreenOptions } from "../screens/Product/Cart";
 import { screenOptions as categoriesScreenOptions } from "../screens/Product/Categories";
@@ -62,6 +62,26 @@ const defaultIconNavigationOption = {
    headerTintColor: Platform.OS === "android" ? "white" : Colors.primaryColor,
 };
 
+const ReviewStackNavigator = createStackNavigator();
+
+export const ReviewNavigator = () => {
+   return (
+      <ReviewStackNavigator.Navigator screenOptions={{ headerShown: false }}>
+         <ReviewStackNavigator.Screen
+            name="ProductReviewsList"
+            component={ProductReviewsList}
+            options={{}}
+         />
+         <ReviewStackNavigator.Screen
+            name="ProductReview"
+            component={ProductReview}
+            options={{ tabBarLabel: "Відгук" }}
+            initialParams={{}}
+         />
+      </ReviewStackNavigator.Navigator>
+   );
+};
+
 const productTopTabNavigatorContainer = createMaterialTopTabNavigator();
 
 function ProductTopTabNavigator(props) {
@@ -91,8 +111,8 @@ function ProductTopTabNavigator(props) {
             initialParams={{ productId: productId }}
          />
          <productTopTabNavigatorContainer.Screen
-            name="ProductReview"
-            component={ProductReview}
+            name="ReviewNavigator"
+            component={ReviewNavigator}
             options={{ tabBarLabel: "Відгуки" }}
             initialParams={{ productId: productId }}
          />
@@ -111,48 +131,6 @@ function ProductTopTabNavigator(props) {
       </productTopTabNavigatorContainer.Navigator>
    );
 }
-
-const ProductsStackNavigator = createStackNavigator();
-
-export const ProductsNavigator = () => {
-   return (
-      <ProductsStackNavigator.Navigator
-         screenOptions={defaultIconNavigationOption}
-      >
-         <ProductsStackNavigator.Screen
-            name="ProductsOverview"
-            component={ProductList}
-            options={productListScreenOptions}
-         />
-         <ProductsStackNavigator.Screen
-            name="ProductDetailsNavigator"
-            component={ProductTopTabNavigator}
-            // options={prDetalsScreenOptions}
-         />
-         <ProductsStackNavigator.Screen
-            name="ProductDescription"
-            component={ProductFullDescription}
-            // options={prDetalsScreenOptions}
-         />
-         <ProductsStackNavigator.Screen
-            name="ProductSearch"
-            component={ProductsSearch}
-            // options={cartScreenOptions}
-         />
-         <ProductsStackNavigator.Screen
-            name="ProductFeatures"
-            component={ProductFeatures}
-            // options={productDetailScreenOptions}
-         />
-
-         <ProductsStackNavigator.Screen
-            name="ProductVideos"
-            component={ProductVideos}
-            // options={cartScreenOptions}
-         />
-      </ProductsStackNavigator.Navigator>
-   );
-};
 
 const topTabNavigatorContainer = createMaterialTopTabNavigator();
 
@@ -258,7 +236,7 @@ export const CartNavigator = () => {
 
 const Tab = createMaterialBottomTabNavigator();
 
-export default BaseFullNavigator = () => {
+const BaseFullNavigator = () => {
    const [iconsColor, setIconsColors] = useState([
       Colors.primaryColor,
       "grey",
@@ -273,108 +251,148 @@ export default BaseFullNavigator = () => {
    };
 
    return (
-      <NavigationContainer>
-         <Tab.Navigator
-            activeColor={Colors.primaryColor}
-            barStyle={{
-               backgroundColor: "white",
-               color: "black",
+      <Tab.Navigator
+         activeColor={Colors.primaryColor}
+         barStyle={{
+            backgroundColor: "white",
+            color: "black",
+         }}
+      >
+         <Tab.Screen
+            name="ProductOverview"
+            component={ProductList}
+            listeners={{
+               tabPress: (e) => {
+                  // Prevent default action
+                  // e.preventDefault();
+
+                  //Any custom code here
+                  handleActiveIconColor(1);
+               },
             }}
-         >
-            <Tab.Screen
-               name="Product"
-               component={ProductsNavigator}
-               listeners={{
-                  tabPress: (e) => {
-                     // Prevent default action
-                     // e.preventDefault();
+            options={{
+               tabBarLabelPosition: "beside-icon",
 
-                     //Any custom code here
-                     handleActiveIconColor(1);
-                  },
-               }}
-               options={{
-                  tabBarLabelPosition: "beside-icon",
+               tabBarLabel: "Home",
+               tabBarIcon: () => (
+                  <Icon
+                     name="home-sharp"
+                     type={Icons.Ionicons}
+                     size={20}
+                     color={iconsColor[0]}
+                  />
+               ),
+            }}
+         />
+         <Tab.Screen
+            name="Categories"
+            component={CategoryNavigator}
+            listeners={{
+               tabPress: (e) => {
+                  // e.preventDefault();
+                  handleActiveIconColor(2);
+               },
+            }}
+            options={{
+               tabBarLabel: "Categories",
+               tabBarStyle: { display: "none" },
+               tabBarIcon: () => (
+                  <Icon
+                     name="appstore1"
+                     type={Icons.AntDesign}
+                     size={20}
+                     color={iconsColor[1]}
+                  />
+               ),
+            }}
+         />
+         <Tab.Screen
+            name="Cart"
+            component={CartNavigator}
+            listeners={{
+               tabPress: (e) => {
+                  // e.preventDefault();
+                  handleActiveIconColor(3);
+               },
+            }}
+            options={{
+               headerShown: true,
+               tabBarLabel: "Cart",
+               tabBarIcon: () => (
+                  <Icon
+                     name="shopping-cart"
+                     type={Icons.FontAwesome5}
+                     size={20}
+                     color={iconsColor[2]}
+                  />
+               ),
+            }}
+         />
 
-                  tabBarLabel: "Home",
-                  tabBarIcon: () => (
-                     <Icon
-                        name="home-sharp"
-                        type={Icons.Ionicons}
-                        size={20}
-                        color={iconsColor[0]}
-                     />
-                  ),
-               }}
-            />
-            <Tab.Screen
-               name="Categories"
-               component={CategoryNavigator}
-               listeners={{
-                  tabPress: (e) => {
-                     // e.preventDefault();
-                     handleActiveIconColor(2);
-                  },
-               }}
-               options={{
-                  tabBarLabel: "Categories",
-                  tabBarStyle: { display: "none" },
-                  tabBarIcon: () => (
-                     <Icon
-                        name="appstore1"
-                        type={Icons.AntDesign}
-                        size={20}
-                        color={iconsColor[1]}
-                     />
-                  ),
-               }}
-            />
-            <Tab.Screen
-               name="Cart"
-               component={CartNavigator}
-               listeners={{
-                  tabPress: (e) => {
-                     // e.preventDefault();
-                     handleActiveIconColor(3);
-                  },
-               }}
-               options={{
-                  headerShown: true,
-                  tabBarLabel: "Cart",
-                  tabBarIcon: () => (
-                     <Icon
-                        name="shopping-cart"
-                        type={Icons.FontAwesome5}
-                        size={20}
-                        color={iconsColor[2]}
-                     />
-                  ),
-               }}
-            />
+         <Tab.Screen
+            name="Auth"
+            component={AuthNavigator}
+            activeColor={Colors.primaryColor}
+            options={{
+               tabBarLabel: "Account",
+               tabBarIcon: () => (
+                  <Icon
+                     name="account-circle"
+                     type={Icons.MaterialIcons}
+                     size={24}
+                     color={iconsColor[3]}
+                  />
+               ),
+            }}
+            listeners={{
+               tabPress: (e) => {
+                  // e.preventDefault();
+                  handleActiveIconColor(4);
+               },
+            }}
+         />
+      </Tab.Navigator>
+   );
+};
 
-            <Tab.Screen
-               name="Auth"
-               component={AuthNavigator}
-               activeColor={Colors.primaryColor}
-               options={{
-                  tabBarLabel: "Account",
-                  tabBarIcon: () => (
-                     <Icon
-                        name="account-circle"
-                        type={Icons.MaterialIcons}
-                        size={24}
-                        color={iconsColor[3]}
-                     />
-                  ),
-               }}
-               listeners={{
-                  tabPress: (e) => {
-                     // e.preventDefault();
-                     handleActiveIconColor(4);
-                  },
-               }}
-            />
-         </Tab.Navigator>
-      </NavigationContainer>
+const ProductsStackNavigator = createStackNavigator();
+
+export default ProductsNavigator = () => {
+   return (
+      <ProductsStackNavigator.Navigator
+         screenOptions={defaultIconNavigationOption}
+      >
+         <ProductsStackNavigator.Screen
+            name="BaseFullNavigator"
+            component={BaseFullNavigator}
+            options={productListScreenOptions}
+         />
+         <ProductsStackNavigator.Screen
+            name="ProductDetailsNavigator"
+            component={ProductTopTabNavigator}
+            // options={prDetalsScreenOptions}
+         />
+         <ProductsStackNavigator.Screen
+            name="ProductDescription"
+            component={ProductFullDescription}
+            // options={prDetalsScreenOptions}
+         />
+         <ProductsStackNavigator.Screen
+            name="ProductSearch"
+            component={ProductsSearch}
+            // options={cartScreenOptions}
+         />
+         <ProductsStackNavigator.Screen
+            name="ProductFeatures"
+            component={ProductFeatures}
+            // options={productDetailScreenOptions}
+         />
+
+         <ProductsStackNavigator.Screen
+            name="ProductVideos"
+            component={ProductVideos}
+            // options={cartScreenOptions}
+         />
+      </ProductsStackNavigator.Navigator>
    );
 };

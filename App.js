@@ -4,10 +4,11 @@ import "react-native-gesture-handler";
 import ReduxThunk from "redux-thunk";
 import { configureStore } from "@reduxjs/toolkit";
 import { combineReducers, applyMiddleware } from "redux";
-import BaseFullNavigator from "./navigations/ProductNavigator";
+import ProductsNavigator from "./navigations/ProductNavigator";
 import { Provider } from "react-redux";
 import productReducer from "./redux-folder/reducers/productReducer";
 import productCharacteristicReducer from "./redux-folder/reducers/productCharacteristicReducer";
+import { NavigationContainer } from "@react-navigation/native";
 
 const rootReducer = combineReducers({
    products: productReducer,
@@ -29,7 +30,9 @@ const store = configureStore(
 export default function App() {
    return (
       <Provider store={store}>
-         <BaseFullNavigator />
+         <NavigationContainer>
+            <ProductsNavigator />
+         </NavigationContainer>
       </Provider>
    );
 }
