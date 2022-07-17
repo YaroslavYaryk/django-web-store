@@ -64,19 +64,21 @@ const defaultIconNavigationOption = {
 
 const ReviewStackNavigator = createStackNavigator();
 
-export const ReviewNavigator = () => {
+export const ReviewNavigator = (props) => {
+   const productId = props.route.params.productId;
    return (
       <ReviewStackNavigator.Navigator screenOptions={{ headerShown: false }}>
          <ReviewStackNavigator.Screen
             name="ProductReviewsList"
             component={ProductReviewsList}
             options={{}}
+            initialParams={{ productId: productId }}
          />
          <ReviewStackNavigator.Screen
             name="ProductReview"
             component={ProductReview}
             options={{ tabBarLabel: "Відгук" }}
-            initialParams={{}}
+            initialParams={{ productId: productId }}
          />
       </ReviewStackNavigator.Navigator>
    );
@@ -298,8 +300,8 @@ const BaseFullNavigator = () => {
                tabBarStyle: { display: "none" },
                tabBarIcon: () => (
                   <Icon
-                     name="appstore1"
-                     type={Icons.AntDesign}
+                     name="swatchbook"
+                     type={Icons.FontAwesome5}
                      size={20}
                      color={iconsColor[1]}
                   />

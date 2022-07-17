@@ -6,92 +6,77 @@ import {
    StyleSheet,
    Button,
    TouchableOpacity,
-   ActivityIndicator,
+   SafeAreaView,
    FlatList,
    Animated,
 } from "react-native";
+import { useSelector, useDispatch } from "react-redux";
+import React, { useState, useEffect } from "react";
 import Colors from "../../../constants/Colors";
 import { FontAwesome } from "@expo/vector-icons";
+import ReviewItem from "../../../components/ReviewItem";
+import BottomPopup from "../../../components/BottomPopup";
+import sortingDict from "../../../constants/productsReviewsSort";
+
+const popupList = [
+   { id: 0, name: "За датою", action: "date" },
+   { id: 1, name: "Найбільш корисні", action: "likesCount" },
+   { id: 2, name: "З фото та відео", action: "photos" },
+];
 
 const ProductReviewsList = (props) => {
+   const [isShow, setIsShow] = useState(false);
+   const [sortMethod, setSortMethod] = useState({
+      action: "date",
+      name: "За датою",
+   });
+   const productId = props.route.params.productId;
+   var [productReViews, setProductsReviews] = useState(
+      useSelector((state) => state.productReviews.productReviews)
+   );
+   // productReViews.sort((a, b) => (a.date > b.date ? 1 : -1));
+   useEffect(() => {
+      setProductsReviews(sortingDict[sortMethod.action](productReViews));
+   }, [sortMethod]);
+
    const scrollY = new Animated.Value(0);
    const diffClamp = Animated.diffClamp(scrollY, 0, 40);
    const translateY = diffClamp.interpolate({
       inputRange: [40, 40],
       outputRange: [0, -40],
    });
-   var arrayText = [
-      1,
-      1,
-      1,
-      12,
-      122,
-      2,
-      2,
-      2,
-      2,
-      2,
-      2,
-      2,
-      22,
-      2,
-      2,
-      2,
-      2,
-      2,
-      22,
-      2,
-      2,
-      2,
-      2,
-      2,
-      2,
-      2,
-      2,
-      2,
-      2,
-      2,
-      2,
-      2,
-      2,
-      2,
-      2,
-      2,
-      2,
-      2,
-      2,
-      2,
-      2,
-      2,
-      2,
-      2,
-      2,
-      2,
-      2,
-      2,
-      2,
-      2,
-      2,
-      2,
-      2,
-      2,
-      2,
-      2,
-      2,
-   ];
+
+   const close = () => {
+      setIsShow(false);
+   };
 
    return (
       <View style={{ flex: 1 }}>
-         <FlatList
-            data={arrayText}
-            renderItem={({ item }) => <Text>{item}</Text>}
-            keyExtractor={(item) => Math.random()}
-            onScroll={(e) => {
-               if (e.nativeEvent.contentOffset.y > 0) {
-                  scrollY.setValue(e.nativeEvent.contentOffset.y);
-               }
-            }}
-         />
+         {productReViews && (
+            <FlatList
+               data={productReViews}
+               renderItem={(itemData) => (
+                  <View
+                     style={{
+                        borderWidth: 0,
+                        shadowColor: "grey",
+                        shadowOpacity: 0.26,
+                        shadowOffset: { width: 2, height: 2 },
+                        shadowRadius: 8,
+                        elevation: 5,
+                     }}
+                  >
+                     <ReviewItem item={itemData.item}></ReviewItem>
+                  </View>
+               )}
+               keyExtractor={(item) => Math.random()}
+               onScroll={(e) => {
+                  if (e.nativeEvent.contentOffset.y > 0) {
+                     scrollY.setValue(e.nativeEvent.contentOffset.y);
+                  }
+               }}
+            />
+         )}
          <Animated.View
             style={{
                transform: [{ translateY: translateY }],
@@ -101,7 +86,7 @@ const ProductReviewsList = (props) => {
          >
             <View style={styles.stickyBottomBlock}>
                <View style={styles.stickyBottomOrderBlock}>
-                  <TouchableOpacity style={{}}>
+                  <TouchableOpacity style={{}} onPress={() => setIsShow(true)}>
                      <View style={styles.stickyBottomOrderBlockInner}>
                         <FontAwesome
                            name="unsorted"
@@ -113,7 +98,7 @@ const ProductReviewsList = (props) => {
                               Сортувати
                            </Text>
                            <Text style={styles.stickyBottomOrderTextSortMethod}>
-                              За датою
+                              {sortMethod.name}
                            </Text>
                         </View>
                      </View>
@@ -123,7 +108,7 @@ const ProductReviewsList = (props) => {
                   <TouchableOpacity
                      onPress={() => {
                         props.navigation.navigate("ProductReview", {
-                           productId: id,
+                           productId: productId,
                         });
                      }}
                   >
@@ -134,6 +119,17 @@ const ProductReviewsList = (props) => {
                </View>
             </View>
          </Animated.View>
+         <SafeAreaView style={{ flex: 1 }}>
+            <BottomPopup
+               show={isShow}
+               title={"Сортування"}
+               animationType={"fade"}
+               closePopup={close}
+               data={popupList}
+               haveOutsideTouch={true}
+               setSortMethod={setSortMethod}
+            />
+         </SafeAreaView>
       </View>
    );
 };
@@ -151,8 +147,8 @@ const styles = StyleSheet.create({
       width: "50%",
       justifyContent: "center",
       alignItems: "center",
-      borderWidth: 1,
-      borderColor: "red",
+      borderWidth: 0.5,
+      borderColor: "grey",
       borderTopLeftRadius: 10,
    },
    stickyBottomOrderBlockInner: {
