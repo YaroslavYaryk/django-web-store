@@ -1,9 +1,12 @@
+import sortingDict from "../../constants/productsReviewsSort";
+import PRODUCT_REVIEWS from "../../data/productReviews";
+
 export const DELETE_PRODUCT = "DELETE_PRODUCT";
 export const CREATE_PRODUCT = "CREATE_PRODUCT";
 export const UPDATE_PRODUCT = "UPDATE_PRODUCT";
 export const READ_PRODUCT_REVIEWS = "READ_PRODUCT_REVIEWS";
 
-export const fetchEvents = () => {
+export const fetchReviews = () => {
    try {
       return async (dispatch, getState) => {
          // const token = getState().auth.token;
@@ -43,9 +46,27 @@ export const fetchEvents = () => {
          //         )
          //     );
          // }
+
          dispatch({
             type: READ_PRODUCT_REVIEWS,
-            productReviews: [],
+            productReviews: PRODUCT_REVIEWS,
+         });
+      };
+   } catch (err) {
+      throw err;
+   }
+};
+
+export const sortReviews = (orderMethid, array) => {
+   try {
+      // console.log(orderMethid, "-----------");
+      // sortingDict[orderMethid](array).map((elem) => {
+      //    console.log(elem.likesCount, new Date(elem.date).getMonth());
+      // });
+      return async (dispatch, getState) => {
+         dispatch({
+            type: READ_PRODUCT_REVIEWS,
+            productReviews: sortingDict[orderMethid](array),
          });
       };
    } catch (err) {

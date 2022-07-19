@@ -1,5 +1,5 @@
 const sortDate = (array) => {
-   array.sort((a, b) => (a.date > b.date ? 1 : -1));
+   array.sort((a, b) => (a.date < b.date ? 1 : -1));
    return array;
 };
 

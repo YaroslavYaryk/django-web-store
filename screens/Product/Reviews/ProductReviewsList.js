@@ -8,15 +8,18 @@ import {
    TouchableOpacity,
    SafeAreaView,
    FlatList,
+   ActivityIndicator,
    Animated,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Colors from "../../../constants/Colors";
 import { FontAwesome } from "@expo/vector-icons";
 import ReviewItem from "../../../components/ReviewItem";
 import BottomPopup from "../../../components/BottomPopup";
 import sortingDict from "../../../constants/productsReviewsSort";
+import * as reviewActions from "../../../redux-folder/actions/productReviewsActions";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const popupList = [
    { id: 0, name: "За датою", action: "date" },
@@ -26,18 +29,51 @@ const popupList = [
 
 const ProductReviewsList = (props) => {
    const [isShow, setIsShow] = useState(false);
+   const [isLoading, setIsLoading] = useState(false);
+   const [error, setError] = useState(false);
+
    const [sortMethod, setSortMethod] = useState({
       action: "date",
       name: "За датою",
    });
    const productId = props.route.params.productId;
-   var [productReViews, setProductsReviews] = useState(
-      useSelector((state) => state.productReviews.productReviews)
+   var productReViews = useSelector(
+      (state) => state.productReviews.productReviews
    );
-   // productReViews.sort((a, b) => (a.date > b.date ? 1 : -1));
+
+   const dispatch = useDispatch();
+
+   // const fetchReviews = useCallback(async () => {
+   //    setError(null);
+   //    setIsLoading(true);
+   //    try {
+   //       await dispatch(reviewActions.fetchReviews());
+   //    } catch (err) {
+   //       setError(err.message);
+   //    }
+   //    setIsLoading(false);
+   // }, [dispatch, setError, setIsLoading]);
+
+   // useEffect(() => {
+   //    fetchReviews();
+   // }, [dispatch, fetchReviews]);
+
+   const sortReviews = useCallback(async () => {
+      setError(null);
+      setIsLoading(true);
+      try {
+         var orderMethod = await AsyncStorage.getItem("sortAction");
+
+         await dispatch(reviewActions.sortReviews(orderMethod, productReViews));
+      } catch (err) {
+         setError(err.message);
+      }
+      setIsLoading(false);
+   }, [dispatch, setError, setIsLoading]);
+
    useEffect(() => {
-      setProductsReviews(sortingDict[sortMethod.action](productReViews));
-   }, [sortMethod]);
+      sortReviews();
+   }, [dispatch, sortReviews, sortMethod]);
 
    const scrollY = new Animated.Value(0);
    const diffClamp = Animated.diffClamp(scrollY, 0, 40);
@@ -49,6 +85,35 @@ const ProductReviewsList = (props) => {
    const close = () => {
       setIsShow(false);
    };
+
+   if (isLoading) {
+      return (
+         <View style={styles.centered}>
+            <ActivityIndicator size="large" color={Colors.primaryColor} />
+         </View>
+      );
+   }
+
+   // if (error) {
+   //    return (
+   //       <View style={styles.centered}>
+   //          <Text>An error occured</Text>
+   //          <Button
+   //             title="Try Again"
+   //             onPress={loadProducts}
+   //             color={Colors.primaryColor}
+   //          />
+   //       </View>
+   //    );
+   // }
+
+   if (!isLoading && productReViews.length === 0) {
+      return (
+         <View style={styles.centered}>
+            <Text>There is no any product, please add some!</Text>
+         </View>
+      );
+   }
 
    return (
       <View style={{ flex: 1 }}>
@@ -173,6 +238,11 @@ const styles = StyleSheet.create({
    },
    stickyBottomOrderTextSortMethod: {
       fontSize: 10,
+   },
+   centered: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
    },
 });
 

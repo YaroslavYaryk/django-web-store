@@ -1,10 +1,10 @@
-import PRODUCT_REVIEWS from "../../data/productReviews";
 import {
    //   CREATE_PRODUCT,
    //   UPDATE_PRODUCT,
    //   DELETE_PRODUCT,
    READ_PRODUCT_REVIEWS,
 } from "../actions/productReviewsActions";
+import PRODUCT_REVIEWS from "../../data/productReviews";
 
 const initialState = {
    productReviews: PRODUCT_REVIEWS,

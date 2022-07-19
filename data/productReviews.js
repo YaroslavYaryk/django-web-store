@@ -1,4 +1,5 @@
 import ProductReview from "../models/ProductReview";
+import ProductReply from "../models/ProductReply";
 import User from "../models/User";
 const PRODUCT_REVIEWS = [
    new ProductReview(
@@ -22,7 +23,21 @@ const PRODUCT_REVIEWS = [
       "Поки не знайшов",
       4,
       "2022-08-10T09:52:44.871486Z",
-      1
+      5,
+      [
+         new ProductReply(
+            2,
+            "good one",
+            new User(14, "duhanov2003@gmail.com", "yaryk31", "Ярослав Диханов"),
+            "2022-08-10T09:52:44.871486Z"
+         ),
+         new ProductReply(
+            3,
+            "i guess it is an appropriate commnet",
+            new User(14, "duhanov2003@gmail.com", "yaryk31", "Ярослав Диханов"),
+            "2022-08-10T09:52:44.871486Z"
+         ),
+      ]
    ),
    new ProductReview(
       2,

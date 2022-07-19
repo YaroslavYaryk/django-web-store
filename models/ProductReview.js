@@ -9,7 +9,8 @@ class ProductReview {
       cons,
       rating,
       date,
-      likesCount
+      likesCount,
+      replies
    ) {
       this.id = id;
       this.productId = productId;
@@ -21,6 +22,7 @@ class ProductReview {
       this.rating = rating;
       this.date = date;
       this.likesCount = likesCount;
+      this.replies = replies;
    }
 }
 export default ProductReview;

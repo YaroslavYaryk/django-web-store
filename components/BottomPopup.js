@@ -9,6 +9,7 @@ import {
    TouchableOpacity,
    Alert,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default class BottomPopup extends Component {
    static defaultProps = {
@@ -24,6 +25,7 @@ export default class BottomPopup extends Component {
          <TouchableOpacity
             onPress={() => {
                props.setSortMethod({ action: item.action, name: item.name });
+               AsyncStorage.setItem("sortAction", item.action);
                props.closePopup();
             }}
             style={{

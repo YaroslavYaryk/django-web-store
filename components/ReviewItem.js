@@ -10,11 +10,14 @@ import {
    Button,
    Animated,
    Modal,
+   FlatList,
    ScrollView,
 } from "react-native";
 import monthDict from "../constants/DateMonth";
 import RatingItem from "./RatingItem";
 import { AntDesign } from "@expo/vector-icons";
+import ReplyItem from "./ReplyItem";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const ModalPoup = ({ visible, children }) => {
    const [showModal, setShowModal] = useState(visible);
@@ -58,7 +61,7 @@ const ModalPoup = ({ visible, children }) => {
 const ReviewItem = (props) => {
    const [visible, setVisible] = React.useState(false);
    const [imagePreview, setImagePreview] = useState(null);
-
+   const [repliesVisible, setRepliesVisible] = useState(false);
    const [likeImage, setLikeImage] = useState("hearto");
    const [commentLikes, setCommentLikes] = useState(props.item.likesCount);
 
@@ -78,6 +81,7 @@ const ReviewItem = (props) => {
          setCommentLikes(commentLikes - 1);
       }
    };
+   console.log(props.item.replies);
 
    return (
       <View style={styles.container}>
@@ -155,7 +159,6 @@ const ReviewItem = (props) => {
                               onPress={() => {
                                  setVisible(true);
                                  {
-                                    console.log(elem.url, 1);
                                     setImagePreview(elem.url);
                                  }
                               }}
@@ -215,6 +218,20 @@ const ReviewItem = (props) => {
                <View style={styles.footerInner}>
                   <TouchableOpacity
                      onPress={() => {
+                        console.log("reply");
+                     }}
+                  >
+                     <View style={{ flexDirection: "row", marginLeft: 10 }}>
+                        <MaterialCommunityIcons
+                           name="message-reply-text"
+                           size={24}
+                           color="black"
+                        />
+                     </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                     onPress={() => {
+                        console.log("reply");
                         likeProduct();
                      }}
                   >
@@ -226,6 +243,68 @@ const ReviewItem = (props) => {
                </View>
             </View>
          </View>
+         {props.item.replies && (
+            <View style={styles.repliesBlock}>
+               <View style={styles.repliesInner}>
+                  {!repliesVisible && (
+                     <TouchableOpacity
+                        onPress={() => setRepliesVisible(!repliesVisible)}
+                     >
+                        <View style={styles.repliesLabelBlock}>
+                           <View style={styles.repliesLabelBlockInner}>
+                              <Text style={styles.repliesLabelText}>
+                                 {props.item.replies.length} replies
+                              </Text>
+                              <AntDesign
+                                 name="caretdown"
+                                 size={20}
+                                 color="grey"
+                              />
+                           </View>
+                        </View>
+                     </TouchableOpacity>
+                  )}
+                  {repliesVisible && (
+                     <View>
+                        <FlatList
+                           data={props.item.replies}
+                           renderItem={(itemData) => (
+                              <View
+                                 style={{
+                                    borderWidth: 0,
+                                    shadowColor: "grey",
+                                    shadowOpacity: 0.26,
+                                    shadowOffset: { width: 2, height: 2 },
+                                    shadowRadius: 8,
+                                    elevation: 5,
+                                 }}
+                              >
+                                 <ReplyItem item={itemData.item} />
+                              </View>
+                           )}
+                           keyExtractor={(item) => Math.random()}
+                        />
+                        <View style={styles.repliesLabelBlock}>
+                           <TouchableOpacity
+                              onPress={() => setRepliesVisible(!repliesVisible)}
+                           >
+                              <View style={styles.repliesLabelBlockInner}>
+                                 <Text style={styles.repliesLabelText}>
+                                    {props.item.replies.length} replies
+                                 </Text>
+                                 <AntDesign
+                                    name="caretup"
+                                    size={20}
+                                    color="grey"
+                                 />
+                              </View>
+                           </TouchableOpacity>
+                        </View>
+                     </View>
+                  )}
+               </View>
+            </View>
+         )}
       </View>
    );
 };
@@ -297,12 +376,13 @@ const styles = StyleSheet.create({
       borderColor: "grey",
       position: "relative",
       paddingTop: 5,
-      paddingBottom: 17,
+      // paddingBottom: 17,
+      // borderWidth: 1,
+      marginBottom: -12,
    },
    footerInner: {
-      position: "absolute",
-      right: 5,
-      top: 7,
+      flexDirection: "row",
+      justifyContent: "space-between",
    },
    commentImages: {
       marginLeft: 10,
@@ -332,6 +412,27 @@ const styles = StyleSheet.create({
       height: 40,
       alignItems: "flex-end",
       justifyContent: "center",
+   },
+   repliesBlock: {
+      marginTop: 5,
+      borderColor: "grey",
+      paddingTop: 5,
+   },
+   repliesLabelBlock: {
+      marginTop: 10,
+      alignItems: "center",
+      marginBottom: -5,
+   },
+   repliesLabelBlockInner: {
+      alignItems: "center",
+      flexDirection: "row",
+      width: "20%",
+      justifyContent: "space-between",
+   },
+   repliesLabelText: {
+      fontSize: 15,
+      fontWeight: "700",
+      marginLeft: -10,
    },
 });
 
