@@ -41,11 +41,13 @@ const InputRating = (props) => {
    });
    const { onInputChange, id } = props;
 
-   useEffect(() => {
-      if (inputState.touched) {
-         onInputChange(id, inputState.value, inputState.isValid);
-      }
-   }, [inputState, onInputChange, id]);
+   if (onInputChange) {
+      useEffect(() => {
+         if (inputState.touched) {
+            onInputChange(id, inputState.value, inputState.isValid);
+         }
+      }, [inputState, onInputChange, id]);
+   }
 
    const textChangeHandler = (text) => {
       const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -58,6 +60,18 @@ const InputRating = (props) => {
       }
       if (props.setWordsCount) {
          props.setWordsCount(text.length);
+      }
+      if (props.setComment) {
+         props.setComment(text);
+      }
+      if (props.setFullName) {
+         props.setFullName(text);
+      }
+      if (props.setPros) {
+         props.setPros(text);
+      }
+      if (props.setCons) {
+         props.setCons(text);
       }
 
       dispatch({ type: INPUT_CHANGE, value: text, isValid: isValid });

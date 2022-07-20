@@ -41,6 +41,8 @@ const ProductReviewsList = (props) => {
       (state) => state.productReviews.productReviews
    );
 
+   const { commentId, openReplies } = props.route.params;
+   console.log(commentId, openReplies);
    const dispatch = useDispatch();
 
    // const fetchReviews = useCallback(async () => {
@@ -94,6 +96,13 @@ const ProductReviewsList = (props) => {
       );
    }
 
+   const replyToReview = (productId, commentId) => {
+      props.navigation.navigate("ReviewReply", {
+         productId: productId,
+         commentId: commentId,
+      });
+   };
+
    // if (error) {
    //    return (
    //       <View style={styles.centered}>
@@ -131,7 +140,12 @@ const ProductReviewsList = (props) => {
                         elevation: 5,
                      }}
                   >
-                     <ReviewItem item={itemData.item}></ReviewItem>
+                     <ReviewItem
+                        item={itemData.item}
+                        replyToReview={replyToReview}
+                        commentId={commentId}
+                        openReplies={openReplies}
+                     ></ReviewItem>
                   </View>
                )}
                keyExtractor={(item) => Math.random()}

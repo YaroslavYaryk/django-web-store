@@ -2,8 +2,8 @@ import sortingDict from "../../constants/productsReviewsSort";
 import PRODUCT_REVIEWS from "../../data/productReviews";
 
 export const DELETE_PRODUCT = "DELETE_PRODUCT";
-export const CREATE_PRODUCT = "CREATE_PRODUCT";
-export const UPDATE_PRODUCT = "UPDATE_PRODUCT";
+export const CREATE_PRODUCT_REVIEWS = "CREATE_PRODUCT_REVIEWS";
+export const CREATE_REVIEW_REPLY = "CREATE_REVIEW_REPLY";
 export const READ_PRODUCT_REVIEWS = "READ_PRODUCT_REVIEWS";
 
 export const fetchReviews = () => {
@@ -67,6 +67,70 @@ export const sortReviews = (orderMethid, array) => {
          dispatch({
             type: READ_PRODUCT_REVIEWS,
             productReviews: sortingDict[orderMethid](array),
+         });
+      };
+   } catch (err) {
+      throw err;
+   }
+};
+
+export const createReviewToProduct = (
+   productId,
+   rating,
+   comment,
+   pros,
+   cons,
+   fullName,
+   email
+) => {
+   try {
+      // console.log(orderMethid, "-----------");
+      // sortingDict[orderMethid](array).map((elem) => {
+      //    console.log(elem.likesCount, new Date(elem.date).getMonth());
+      // });
+
+      return async (dispatch, getState) => {
+         dispatch({
+            type: CREATE_PRODUCT_REVIEWS,
+            productData: {
+               productId,
+               rating,
+               comment,
+               pros,
+               cons,
+               fullName,
+               email,
+            },
+         });
+      };
+   } catch (err) {
+      throw err;
+   }
+};
+
+export const createReviewReply = (
+   productId,
+   commentId,
+   comment,
+   fullName,
+   email
+) => {
+   try {
+      // console.log(orderMethid, "-----------");
+      // sortingDict[orderMethid](array).map((elem) => {
+      //    console.log(elem.likesCount, new Date(elem.date).getMonth());
+      // });
+
+      return async (dispatch, getState) => {
+         dispatch({
+            type: CREATE_REVIEW_REPLY,
+            productData: {
+               productId,
+               commentId,
+               comment,
+               fullName,
+               email,
+            },
          });
       };
    } catch (err) {

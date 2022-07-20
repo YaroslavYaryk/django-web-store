@@ -61,7 +61,11 @@ const ModalPoup = ({ visible, children }) => {
 const ReviewItem = (props) => {
    const [visible, setVisible] = React.useState(false);
    const [imagePreview, setImagePreview] = useState(null);
-   const [repliesVisible, setRepliesVisible] = useState(false);
+   const properComment = props.item.id == props.commentId;
+
+   const [repliesVisible, setRepliesVisible] = useState(
+      properComment && props.openReplies ? true : false
+   );
    const [likeImage, setLikeImage] = useState("hearto");
    const [commentLikes, setCommentLikes] = useState(props.item.likesCount);
 
@@ -81,7 +85,6 @@ const ReviewItem = (props) => {
          setCommentLikes(commentLikes - 1);
       }
    };
-   console.log(props.item.replies);
 
    return (
       <View style={styles.container}>
@@ -150,7 +153,8 @@ const ReviewItem = (props) => {
                   </View>
                </View>
             </View>
-            {props.item.photos.length && (
+
+            {props.item.photos && (
                <View style={styles.commentImages}>
                   <ScrollView scrollEnabled horizontal>
                      {props.item.photos.map((elem) => (
@@ -218,7 +222,10 @@ const ReviewItem = (props) => {
                <View style={styles.footerInner}>
                   <TouchableOpacity
                      onPress={() => {
-                        console.log("reply");
+                        props.replyToReview(
+                           props.item.productId,
+                           props.item.id
+                        );
                      }}
                   >
                      <View style={{ flexDirection: "row", marginLeft: 10 }}>
@@ -243,7 +250,8 @@ const ReviewItem = (props) => {
                </View>
             </View>
          </View>
-         {props.item.replies && (
+
+         {props.item.replies.length > 0 && (
             <View style={styles.repliesBlock}>
                <View style={styles.repliesInner}>
                   {!repliesVisible && (

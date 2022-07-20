@@ -27,12 +27,14 @@ const PRODUCT_REVIEWS = [
       [
          new ProductReply(
             2,
+            1,
             "good one",
             new User(14, "duhanov2003@gmail.com", "yaryk31", "Ярослав Диханов"),
             "2022-08-10T09:52:44.871486Z"
          ),
          new ProductReply(
             3,
+            1,
             "i guess it is an appropriate commnet",
             new User(14, "duhanov2003@gmail.com", "yaryk31", "Ярослав Диханов"),
             "2022-08-10T09:52:44.871486Z"
@@ -60,7 +62,8 @@ const PRODUCT_REVIEWS = [
       "Немвє",
       3,
       "2022-07-11T09:52:44.871486Z",
-      0
+      0,
+      []
    ),
    new ProductReview(
       3,
@@ -83,7 +86,8 @@ const PRODUCT_REVIEWS = [
       "Багато",
       5,
       "2022-09-10T09:52:44.871486Z",
-      4
+      4,
+      []
    ),
 ];
 

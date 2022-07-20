@@ -18,6 +18,7 @@ import ProductVideos from "../screens/Product/ProductVideos";
 import ProductCharacteristic from "../screens/Product/ProductCharacteristic";
 import ProductFullDescription from "../screens/Product/ProductFullDescription";
 import ProductReviewsList from "../screens/Product/Reviews/ProductReviewsList";
+import ReviewReply from "../screens/Product/Reviews/ReviewReply";
 import { screenOptions as prDetalsScreenOptions } from "../screens/Product/ProductDetails";
 import { screenOptions as cartScreenOptions } from "../screens/Product/Cart";
 import { screenOptions as categoriesScreenOptions } from "../screens/Product/Categories";
@@ -77,7 +78,11 @@ export const ReviewNavigator = (props) => {
          <ReviewStackNavigator.Screen
             name="ProductReview"
             component={ProductReview}
-            options={{ tabBarLabel: "Відгук" }}
+            initialParams={{ productId: productId }}
+         />
+         <ReviewStackNavigator.Screen
+            name="ReviewReply"
+            component={ReviewReply}
             initialParams={{ productId: productId }}
          />
       </ReviewStackNavigator.Navigator>

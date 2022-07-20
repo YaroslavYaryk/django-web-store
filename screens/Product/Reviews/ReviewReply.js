@@ -10,64 +10,44 @@ import {
    TextInput,
 } from "react-native";
 import React, { useState, useEffect, useCallback, useReducer } from "react";
-import { useSelector, useDispatch } from "react-redux";
-
 import RATING_MARKS from "../../../constants/ratingMark";
 import RatingStars from "../../../components/RatingStars";
 import InputRating from "../../../components/InputRating";
 import ImgPicker from "../../../components/ImagePicker";
 import Colors from "../../../constants/Colors";
 import { useWindowDimensions } from "react-native";
+import { useSelector, useDispatch } from "react-redux";
 import * as reviewActions from "../../../redux-folder/actions/productReviewsActions";
 
-const ProductReviews = (props) => {
-   const [ratingStars, setRatingStars] = useState(0);
-   const [ratingMark, setRatingMark] = useState("Оцініть товар");
-   const [pickedImage, setPickedImage] = useState();
+const FORM_INPUT_UPDATE = "FORM_INPUT_UPDATE";
+
+const ReviewReply = (props) => {
    const [wordCountComment, setWordComment] = useState(0);
-   const [wordCountPros, setWordPros] = useState(0);
-   const [wordCountCons, setWordCons] = useState(0);
    const [fullName, setFullName] = useState("Ярослав Диханов");
    const [comment, setComment] = useState("");
-   const [pros, setPros] = useState("");
-   const [cons, setCons] = useState("");
-   const [isLoading, setIsLoading] = useState(false);
-   const productId = props.route.params.productId;
-
-   const onImageTakeHandler = (imageUri) => {
-      setPickedImage(imageUri);
-   };
-   const dispatch = useDispatch();
-
    const { width } = useWindowDimensions();
-
+   const { commentId, productId } = props.route.params;
+   const dispatch = useDispatch();
    const email = "duhanov2003@gmail.com";
+   const [isLoading, setIsLoading] = useState(false);
 
-   useEffect(() => {
-      if (ratingStars == 0) {
-         setRatingMark("Оцініть товар");
-      } else {
-         setRatingMark(RATING_MARKS[ratingStars]);
-      }
-   }, [ratingStars]);
-
-   const handleAddReview = () => {
+   const handleAddReply = () => {
       setIsLoading(true);
 
       dispatch(
-         reviewActions.createReviewToProduct(
+         reviewActions.createReviewReply(
             productId,
-            ratingStars,
+            commentId,
             comment,
-            pros,
-            cons,
             fullName,
             email
          )
       );
       setIsLoading(false);
       props.navigation.navigate("ProductReviewsList", {
-         productId: id,
+         productId: productId,
+         commentId: commentId,
+         openReplies: true,
       });
    };
 
@@ -82,12 +62,6 @@ const ProductReviews = (props) => {
    return (
       <View style={styles.container}>
          <ScrollView>
-            <View style={styles.ratingBlock}>
-               <RatingStars setRatingStars={setRatingStars} />
-               <View style={styles.ratingTitle}>
-                  <Text style={styles.ratingTitleText}>{ratingMark}</Text>
-               </View>
-            </View>
             <View style={styles.TextFieldComment}>
                <InputRating
                   id="comment"
@@ -98,71 +72,22 @@ const ProductReviews = (props) => {
                   minLength={8}
                   autoCapitalize="none"
                   errorText="Please enter a valid comment."
+                  //   onChangeText={(value) => setComment(value)}
                   initialValue=""
                   login={true}
                   height={80}
                   placeholder="Коментар"
                   setWordsCount={setWordComment}
-                  maxLength={2000}
                   setComment={setComment}
+                  maxLength={2000}
                />
                <View style={styles.wordCount}>
                   <Text>{wordCountComment}/2000</Text>
                </View>
             </View>
-            <View style={[styles.TextFieldCommentLittle, { marginTop: 50 }]}>
-               <InputRating
-                  id="pros"
-                  label="pros"
-                  keyboardType="default"
-                  minLength={8}
-                  pros
-                  alignTop
-                  required
-                  autoCapitalize="none"
-                  errorText="Будь ласка введіть переваги"
-                  initialValue=""
-                  login={true}
-                  height={50}
-                  placeholder="Переваги"
-                  setWordsCount={setWordPros}
-                  maxLength={200}
-                  setPros={setPros}
-               />
-               <View style={styles.wordCountLittle}>
-                  <Text>{wordCountPros}/200</Text>
-               </View>
-            </View>
-            <View style={[styles.TextFieldCommentLittle, { marginTop: 20 }]}>
-               <InputRating
-                  id="cons"
-                  label="cons"
-                  keyboardType="default"
-                  minLength={8}
-                  cons
-                  alignTop
-                  required
-                  autoCapitalize="none"
-                  errorText="Будь ласка введіть недоліки"
-                  initialValue=""
-                  login={true}
-                  height={50}
-                  placeholder="Недоліки"
-                  setWordsCount={setWordCons}
-                  maxLength={200}
-                  setCons={setCons}
-               />
-               <View style={styles.wordCountLittle}>
-                  <Text>{wordCountCons}/200</Text>
-               </View>
-            </View>
-            <View style={styles.imagePicker}></View>
-            <ImgPicker
-               onImageTaken={onImageTakeHandler}
-               imageUri={pickedImage}
-            />
+
             <View
-               style={[styles.TextFieldCommentLabelOnBorder, { marginTop: 10 }]}
+               style={[styles.TextFieldCommentLabelOnBorder, { marginTop: 40 }]}
             >
                <InputRating
                   id="fullName"
@@ -173,10 +98,11 @@ const ProductReviews = (props) => {
                   required
                   autoCapitalize="none"
                   errorText="Будь ласка введіть Ім'я та прізвище"
+                  //   onInputChange={inputChangeHandler}
                   initialValue={fullName}
+                  setFullName={setFullName}
                   login={true}
                   height={50}
-                  setFullName={setFullName}
                />
                <View style={styles.TextFieldCommentLabelOnBorderText}>
                   <Text style={styles.labelOnBorder}>Ім'я та прізвище</Text>
@@ -228,7 +154,7 @@ const ProductReviews = (props) => {
                <View style={styles.buttonStyle}>
                   <TouchableOpacity
                      onPress={() => {
-                        handleAddReview();
+                        handleAddReply();
                      }}
                   >
                      <Text style={styles.saveCommentText}>Відправити</Text>
@@ -261,6 +187,7 @@ const styles = StyleSheet.create({
    },
    TextFieldComment: {
       position: "relative",
+      marginTop: 10,
    },
    TextFieldCommentLittle: {
       position: "relative",
@@ -312,4 +239,4 @@ const styles = StyleSheet.create({
    },
 });
 
-export default ProductReviews;
+export default ReviewReply;
