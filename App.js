@@ -9,12 +9,14 @@ import { Provider } from "react-redux";
 import productReducer from "./redux-folder/reducers/productReducer";
 import productCharacteristicReducer from "./redux-folder/reducers/productCharacteristicReducer";
 import prReviewsReducer from "./redux-folder/reducers/prReviewsReducer";
+import cartReducer from "./redux-folder/reducers/cartReducer";
 import { NavigationContainer } from "@react-navigation/native";
 
 const rootReducer = combineReducers({
    products: productReducer,
    prodCharacteristic: productCharacteristicReducer,
    productReviews: prReviewsReducer,
+   cart: cartReducer,
 });
 
 const store = configureStore(

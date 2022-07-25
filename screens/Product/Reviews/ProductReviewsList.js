@@ -42,7 +42,6 @@ const ProductReviewsList = (props) => {
    );
 
    const { commentId, openReplies } = props.route.params;
-   console.log(commentId, openReplies);
    const dispatch = useDispatch();
 
    // const fetchReviews = useCallback(async () => {

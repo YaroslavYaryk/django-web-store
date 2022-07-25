@@ -15,9 +15,21 @@ import Colors from "../../constants/Colors";
 import { FlatGrid } from "react-native-super-grid";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import CustomHeaderButton from "../../components/CustomHeaderButton";
+import { useState, useEffect } from "react";
+import * as cartActions from "../../redux-folder/actions/cart";
+import CartPopup from "../../components/wrappers/CartPopup";
 
 const ProductsList = (props) => {
    const products = useSelector((state) => state.products.products);
+   const [isLoading, setIsLoading] = useState(false);
+   const [fetch, setArr] = useState(0);
+   const [visible, setVisible] = useState(true);
+
+   useEffect(() => {
+      props.navigation.setParams({
+         fetch: fetch,
+      });
+   }, [dispatch]);
 
    const getProductDetails = (id, title) => {
       props.navigation.navigate("ProductDetailsNavigator", {
@@ -28,6 +40,23 @@ const ProductsList = (props) => {
          },
       });
    };
+   const dispatch = useDispatch();
+
+   const addProductToCart = (productId, fullName, image, price) => {
+      try {
+         dispatch(
+            cartActions.addProductToCart(productId, fullName, image, price)
+         );
+      } catch (err) {}
+   };
+
+   if (isLoading) {
+      return (
+         <View style={styles.center}>
+            <ActivityIndicator size="large" color={Colors.primaryColor} />
+         </View>
+      );
+   }
 
    return (
       <View style={styles.wrapper}>
@@ -38,6 +67,8 @@ const ProductsList = (props) => {
             renderItem={(itemData) => (
                <ProductItem
                   item={itemData.item}
+                  addProductToCart={addProductToCart}
+                  setVisible={setVisible}
                   onSelect={() => {
                      getProductDetails(
                         itemData.item.id,
@@ -47,12 +78,23 @@ const ProductsList = (props) => {
                ></ProductItem>
             )}
          />
+         <CartPopup
+            visible={visible}
+            setVisible={setVisible}
+            haveOutsideTouch={true}
+         />
       </View>
    );
 };
 
 export const screenOptions = (navData) => {
    return {
+      // headerShown: false,
+      headerTitleStyle: {
+         fontFamily: "Roboto",
+         fontWeight: "700",
+         marginLeft: -20,
+      },
       headerTitle: "Electron",
       headerLeft: () => (
          <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
@@ -65,6 +107,11 @@ export const screenOptions = (navData) => {
 const styles = StyleSheet.create({
    wrapper: {
       width: "100%",
+   },
+   center: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
    },
 });
 

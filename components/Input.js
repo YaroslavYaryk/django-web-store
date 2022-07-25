@@ -58,7 +58,6 @@ const Input = (props) => {
       }
       const phoneRegex = /^\+?[1-9][0-9]{7,14}$/;
       if (props.id == "phone" && !phoneRegex.test(text.toLowerCase())) {
-         console.log(text.toLowerCase(), phoneRegex.test(text.toLowerCase));
          setError(`Invalid phone number`);
          isValid = false;
       }

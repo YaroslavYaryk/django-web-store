@@ -238,7 +238,6 @@ const ReviewItem = (props) => {
                   </TouchableOpacity>
                   <TouchableOpacity
                      onPress={() => {
-                        console.log("reply");
                         likeProduct();
                      }}
                   >

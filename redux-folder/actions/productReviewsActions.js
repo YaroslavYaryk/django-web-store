@@ -59,10 +59,6 @@ export const fetchReviews = () => {
 
 export const sortReviews = (orderMethid, array) => {
    try {
-      // console.log(orderMethid, "-----------");
-      // sortingDict[orderMethid](array).map((elem) => {
-      //    console.log(elem.likesCount, new Date(elem.date).getMonth());
-      // });
       return async (dispatch, getState) => {
          dispatch({
             type: READ_PRODUCT_REVIEWS,
@@ -84,11 +80,6 @@ export const createReviewToProduct = (
    email
 ) => {
    try {
-      // console.log(orderMethid, "-----------");
-      // sortingDict[orderMethid](array).map((elem) => {
-      //    console.log(elem.likesCount, new Date(elem.date).getMonth());
-      // });
-
       return async (dispatch, getState) => {
          dispatch({
             type: CREATE_PRODUCT_REVIEWS,
@@ -116,11 +107,6 @@ export const createReviewReply = (
    email
 ) => {
    try {
-      // console.log(orderMethid, "-----------");
-      // sortingDict[orderMethid](array).map((elem) => {
-      //    console.log(elem.likesCount, new Date(elem.date).getMonth());
-      // });
-
       return async (dispatch, getState) => {
          dispatch({
             type: CREATE_REVIEW_REPLY,

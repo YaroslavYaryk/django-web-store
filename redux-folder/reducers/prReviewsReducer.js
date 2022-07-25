@@ -20,7 +20,6 @@ const prReviewsReducer = (state = initialState, action) => {
          };
 
       case CREATE_PRODUCT_REVIEWS:
-         // console.log(action.productData);
          const newProductReview = new ProductReview(
             Math.round(Math.random() * (100000000000000 - 3) + 3),
             action.productData.productId,
@@ -39,7 +38,6 @@ const prReviewsReducer = (state = initialState, action) => {
             productReviews: state.productReviews.concat(newProductReview),
          };
       case CREATE_REVIEW_REPLY:
-         // console.log(action.productData);
          const reviewIndex = state.productReviews.findIndex(
             (prod) => prod.id === action.productData.commentId
          );

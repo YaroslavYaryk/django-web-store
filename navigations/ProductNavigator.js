@@ -63,6 +63,22 @@ const defaultIconNavigationOption = {
    headerTintColor: Platform.OS === "android" ? "white" : Colors.primaryColor,
 };
 
+const defaultHideNavigationOption = {
+   headerShown: false,
+   headerStyle: {
+      backgroundColor: Platform.OS === "android" ? Colors.primaryColor : "",
+   },
+   headerTitleStyle: {
+      fontFamily: "Roboto",
+      fontWeight: "700",
+      marginLeft: -20,
+   },
+   headerBackTitleStyle: {
+      fontFamily: "Roboto",
+   },
+   headerTintColor: Platform.OS === "android" ? "white" : Colors.primaryColor,
+};
+
 const ReviewStackNavigator = createStackNavigator();
 
 export const ReviewNavigator = (props) => {
@@ -241,6 +257,20 @@ export const CartNavigator = () => {
    );
 };
 
+const ProductListStackNavigator = createStackNavigator();
+
+export const ProductListNavigator = () => {
+   return (
+      <ProductListStackNavigator.Navigator screenOptions={defaultNavOptions}>
+         <ProductListStackNavigator.Screen
+            name="ProductList"
+            component={ProductList}
+            options={productListScreenOptions}
+         />
+      </ProductListStackNavigator.Navigator>
+   );
+};
+
 const Tab = createMaterialBottomTabNavigator();
 
 const BaseFullNavigator = () => {
@@ -267,7 +297,7 @@ const BaseFullNavigator = () => {
       >
          <Tab.Screen
             name="ProductOverview"
-            component={ProductList}
+            component={ProductListNavigator}
             listeners={{
                tabPress: (e) => {
                   // Prevent default action
@@ -372,12 +402,12 @@ export default ProductsNavigator = () => {
          <ProductsStackNavigator.Screen
             name="BaseFullNavigator"
             component={BaseFullNavigator}
-            options={productListScreenOptions}
+            options={{ headerShown: false }}
          />
          <ProductsStackNavigator.Screen
             name="ProductDetailsNavigator"
             component={ProductTopTabNavigator}
-            // options={prDetalsScreenOptions}
+            options={prDetalsScreenOptions}
          />
          <ProductsStackNavigator.Screen
             name="ProductDescription"
