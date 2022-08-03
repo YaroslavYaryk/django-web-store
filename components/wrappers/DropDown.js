@@ -1,13 +1,13 @@
 import {
-    Text,
-    View,
-    ScrollView,
-    Image,
-    StyleSheet,
-    Button,
-    Dimensions,
-    TouchableOpacity,
-    ActivityIndicator,
+   Text,
+   View,
+   ScrollView,
+   Image,
+   StyleSheet,
+   Button,
+   Dimensions,
+   TouchableOpacity,
+   ActivityIndicator,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { Platform } from "react-native";
@@ -20,31 +20,31 @@ import React, { useRef, useState } from "react";
 import { Transition, Transitioning } from "react-native-reanimated";
 
 const transition = (
-    <Transition.Together>
-        <Transition.In type="fade" durationMs={200} />
-        <Transition.Change />
-        <Transition.Out type="fade" durationMs={200} />
-    </Transition.Together>
+   <Transition.Together>
+      <Transition.In type="fade" durationMs={200} />
+      <Transition.Change />
+      <Transition.Out type="fade" durationMs={200} />
+   </Transition.Together>
 );
 
 const DropDown = (props) => {
-    return (
-        <Transitioning.View
-            ref={props.ref}
-            transition={transition}
-            style={{ ...styles.container, ...props.style }}
-        >
-            {props.chilren}
-        </Transitioning.View>
-    );
+   return (
+      <Transitioning.View
+         ref={props.ref}
+         transition={transition}
+         style={{ ...styles.container, ...props.style }}
+      >
+         {props.children}
+      </Transitioning.View>
+   );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "white",
-        // height: 200,
-    },
+   container: {
+      flex: 1,
+      backgroundColor: "white",
+      // height: 200,
+   },
 });
 
 export default DropDown;

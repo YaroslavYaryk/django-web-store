@@ -3,6 +3,8 @@ import {
    DELETE_PRODUCT_FROM_CART,
    DELETE_ALL_FROM_CART,
    ADD_PRODUCT_TO_CART,
+   DELETE_ONE_PRODUCT_FROM_CART,
+   ADD_ONE_PRODUCT_TO_CART,
 } from "../actions/cart";
 import CART from "../../data/cart";
 import CartItem from "../../models/Cart/CartItem";
@@ -28,11 +30,26 @@ const cartReducer = (state = initialState, action) => {
          cart.products = cart_products;
          cart.totalProducts -= 1;
          cart.totalPrice -= action.productPrice;
-         console.log(cart);
          return {
             ...state,
             cartProducts: cart,
          };
+
+      case DELETE_ONE_PRODUCT_FROM_CART:
+         const cart1 = state.cartProducts;
+         console.log(action);
+         const productIndex = cart1.products.findIndex(
+            (prod) => prod.productId === action.productId
+         );
+         const ProductItem = cart1.products[productIndex];
+         ProductItem.count -= 1;
+         cart1.products[productIndex] = ProductItem;
+         cart1.totalPrice -= action.productPrice;
+         return {
+            ...state,
+            cartProducts: cart1,
+         };
+
       case DELETE_ALL_FROM_CART:
          const newCart = state.cartProducts;
          newCart.products = [];
@@ -51,7 +68,7 @@ const cartReducer = (state = initialState, action) => {
             action.productObject.image,
             action.productObject.price
          );
-         if (state.cartProducts.length) {
+         if (state.cartProducts) {
             cartObj1 = state.cartProducts;
 
             const prodInCart = cartObj1.products.find(
@@ -80,8 +97,20 @@ const cartReducer = (state = initialState, action) => {
             );
          }
          return {
-            ...state,
             cartProducts: cartObj1,
+         };
+      case ADD_ONE_PRODUCT_TO_CART:
+         var cartObj2 = state.cartProducts;
+
+         const productIndex1 = cartObj2.products.findIndex(
+            (prod) => prod.productId === action.productId
+         );
+         const ProductItem1 = cartObj2.products[productIndex1];
+         ProductItem1.count += 1;
+         cartObj2.products[productIndex1] = ProductItem1;
+         cartObj2.totalPrice += action.productPrice;
+         return {
+            cartProducts: cartObj2,
          };
    }
    return state;

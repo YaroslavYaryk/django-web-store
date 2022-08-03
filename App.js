@@ -10,13 +10,20 @@ import productReducer from "./redux-folder/reducers/productReducer";
 import productCharacteristicReducer from "./redux-folder/reducers/productCharacteristicReducer";
 import prReviewsReducer from "./redux-folder/reducers/prReviewsReducer";
 import cartReducer from "./redux-folder/reducers/cartReducer";
+import novaPoshtaReducer from "./redux-folder/reducers/novaPoshtaReducer";
+import orderReducer from "./redux-folder/reducers/orderReducer";
+import userReducer from "./redux-folder/reducers/userReducer";
 import { NavigationContainer } from "@react-navigation/native";
+import { LogBox } from "react-native";
 
 const rootReducer = combineReducers({
    products: productReducer,
    prodCharacteristic: productCharacteristicReducer,
    productReviews: prReviewsReducer,
    cart: cartReducer,
+   cities: novaPoshtaReducer,
+   orders: orderReducer,
+   auth: userReducer,
 });
 
 const store = configureStore(
@@ -32,6 +39,9 @@ const store = configureStore(
 );
 
 export default function App() {
+   LogBox.ignoreLogs(["Warning: ..."]); // Ignore log notification by message
+   LogBox.ignoreAllLogs(); //Ignore all log notifications
+
    return (
       <Provider store={store}>
          <NavigationContainer>

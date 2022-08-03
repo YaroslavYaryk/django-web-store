@@ -18,15 +18,32 @@ import { useState, useCallback, useEffect } from "react";
 import CartProductItem from "../../components/CartProductItem";
 import Colors from "../../constants/Colors";
 import * as cartActions from "../../redux-folder/actions/cart";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as orderActions from "../../redux-folder/actions/orderActions";
 import { useFocusEffect, useIsFocused } from "@react-navigation/native";
+import * as authActions from "../../redux-folder/actions/userActions";
 
 const Cart = (props) => {
    const cart = useSelector((state) => state.cart.cartProducts);
+   const orders = useSelector((state) => state.orders.orders);
+   const userId = useSelector((state) => state.auth.userId);
+   const user = useSelector((state) => state.auth.user);
+   // console.log(user);
    const [isLoading, setIsLoading] = useState(false);
    const [productDelete, setProductDelete] = useState(null);
    const [fetch, setfetch] = useState(0);
    const dispatch = useDispatch();
+   // console.log(orders);
+
+   useEffect(() => {
+      dispatch(authActions.fetchUserInfo(userId));
+   }, [userId]);
+
+   useEffect(() => {
+      const currentOrder = orders.find((elem) => elem.cartId === cart.id);
+      if (currentOrder) {
+         dispatch(orderActions.discartOrder(cart.id));
+      }
+   }, []);
 
    const fetchCart = () => {
       setIsLoading(true);
@@ -46,8 +63,29 @@ const Cart = (props) => {
       setIsLoading(false);
    };
 
+   const removeOneProductFromCart = (productId, productPrice) => {
+      setIsLoading(true);
+      try {
+         dispatch(
+            cartActions.deleteOneProductFromCart(productId, productPrice)
+         );
+      } catch (err) {
+         console.log(err);
+      }
+      setIsLoading(false);
+   };
+
+   const addOneProductFromCart = (productId, productPrice) => {
+      setIsLoading(true);
+      try {
+         dispatch(cartActions.addOneProductToCart(productId, productPrice));
+      } catch (err) {
+         console.log(err);
+      }
+      setIsLoading(false);
+   };
+
    useEffect(() => {
-      console.log(cart);
       fetchCart();
    }, [dispatch, fetchCart, cart, productDelete, fetch, isFocused]);
 
@@ -101,6 +139,8 @@ const Cart = (props) => {
                            item={itemData.item}
                            removeProductFromCart={removeProductFromCart}
                            setProductDelete={setProductDelete}
+                           removeOneProductFromCart={removeOneProductFromCart}
+                           addOneProductFromCart={addOneProductFromCart}
                         />
                      </View>
                   )}
@@ -118,9 +158,38 @@ const Cart = (props) => {
                   borderRadius: 10,
                }}
             >
+               {}
                <TouchableOpacity
                   onPress={() => {
-                     console.log("order");
+                     dispatch(orderActions.createOrder(1, cart.id));
+
+                     if (
+                        Boolean(
+                           user.firstName &&
+                              user.lastName &&
+                              user.middleName &&
+                              user.phone &&
+                              user.livingPlace
+                        )
+                     ) {
+                        dispatch(
+                           orderActions.addPlaceToOrder(
+                              cart.id,
+                              -1,
+                              user.livingPlace
+                           )
+                        );
+                        console.log(true);
+                        props.navigation.navigate("OrderNavigator", {
+                           screen: "OrderFull",
+                           params: { cartId: cart.id },
+                        });
+                     } else {
+                        props.navigation.navigate("OrderNavigator", {
+                           screen: "OrderBase",
+                           params: { cartId: cart.id },
+                        });
+                     }
                   }}
                   style={{ flexDirection: "row", alignItems: "flex-end" }}
                >

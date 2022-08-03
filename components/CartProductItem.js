@@ -16,15 +16,23 @@ import { useState } from "react";
 
 const CartProductItem = (props) => {
    const [dropdownVisible, setDropdownVisible] = useState(false);
-   const [productCount, setProductCount] = useState(props.item.count);
    const changeProductCount = (operation) => {
       if (operation == "plus") {
-         setProductCount(productCount + 1);
+         props.addOneProductFromCart(props.item.productId, props.item.price);
       } else {
-         if (productCount > 1) {
-            setProductCount(productCount - 1);
+         if (props.item.count > 1) {
+            props.removeOneProductFromCart(
+               props.item.productId,
+               props.item.price
+            );
+         } else {
+            props.removeProductFromCart(
+               props.item.productId,
+               props.item.price * props.item.count
+            );
          }
       }
+      props.setProductDelete(Math.random() * (100000000000000 - 3) + 3);
    };
 
    return (
@@ -72,16 +80,22 @@ const CartProductItem = (props) => {
                <Text style={{ fontSize: 13 }}>₴</Text>
             </View>
          </View>
-         <View style={styles.eventButtonBlock}>
-            <TouchableOpacity
-               onPress={() => {
-                  setDropdownVisible(!dropdownVisible);
-               }}
-            >
-               <Entypo name="dots-three-vertical" size={18} color={"green"} />
-            </TouchableOpacity>
-         </View>
-         {dropdownVisible && (
+         {!props.orderScreen && (
+            <View style={styles.eventButtonBlock}>
+               <TouchableOpacity
+                  onPress={() => {
+                     setDropdownVisible(!dropdownVisible);
+                  }}
+               >
+                  <Entypo
+                     name="dots-three-vertical"
+                     size={18}
+                     color={"green"}
+                  />
+               </TouchableOpacity>
+            </View>
+         )}
+         {dropdownVisible && !props.orderScreen && (
             <View style={styles.dropDownBlock}>
                <View>
                   <View>

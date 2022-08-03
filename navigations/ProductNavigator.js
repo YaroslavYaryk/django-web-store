@@ -32,7 +32,11 @@ import Icon, { Icons } from "../components/Icon";
 import Login from "../screens/Auth/Login";
 import Registration from "../screens/Auth/Registration";
 import AuthScreen from "../screens/Auth/AuthScreen";
+import OrderFirst from "../screens/Product/Orders/OrderFirst";
+import OrderSecond from "../screens/Product/Orders/OrderSecond";
+import DeliveryScreen from "../screens/Product/Orders/DeliveryScreen";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
+import ChoosePlaceScreen from "../screens/Product/Orders/ChoosePlaceScreen";
 
 const defaultNavOptions = {
    headerStyle: {
@@ -392,6 +396,31 @@ const BaseFullNavigator = () => {
    );
 };
 
+const OrderStackNavigator = createStackNavigator();
+
+export const OrderNavigator = () => {
+   return (
+      <OrderStackNavigator.Navigator screenOptions={defaultNavOptions}>
+         <OrderStackNavigator.Screen name="OrderBase" component={OrderFirst} />
+         <OrderStackNavigator.Screen
+            name="OrderFull"
+            component={OrderSecond}
+            // options={productsOverviewScreenOptions}
+         />
+         <OrderStackNavigator.Screen
+            name="DeliveryScreen"
+            component={DeliveryScreen}
+            // options={productsOverviewScreenOptions}
+         />
+         <OrderStackNavigator.Screen
+            name="ChoosePlaceScreen"
+            component={ChoosePlaceScreen}
+            // options={productsOverviewScreenOptions}
+         />
+      </OrderStackNavigator.Navigator>
+   );
+};
+
 const ProductsStackNavigator = createStackNavigator();
 
 export default ProductsNavigator = () => {
@@ -420,15 +449,9 @@ export default ProductsNavigator = () => {
             // options={cartScreenOptions}
          />
          <ProductsStackNavigator.Screen
-            name="ProductFeatures"
-            component={ProductFeatures}
-            // options={productDetailScreenOptions}
-         />
-
-         <ProductsStackNavigator.Screen
-            name="ProductVideos"
-            component={ProductVideos}
-            // options={cartScreenOptions}
+            name="OrderNavigator"
+            component={OrderNavigator}
+            options={{ headerShown: false }}
          />
       </ProductsStackNavigator.Navigator>
    );

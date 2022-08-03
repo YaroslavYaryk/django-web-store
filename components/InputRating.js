@@ -61,17 +61,8 @@ const InputRating = (props) => {
       if (props.setWordsCount) {
          props.setWordsCount(text.length);
       }
-      if (props.setComment) {
-         props.setComment(text);
-      }
-      if (props.setFullName) {
-         props.setFullName(text);
-      }
-      if (props.setPros) {
-         props.setPros(text);
-      }
-      if (props.setCons) {
-         props.setCons(text);
+      if (props.setText) {
+         props.setText(text);
       }
 
       dispatch({ type: INPUT_CHANGE, value: text, isValid: isValid });
@@ -93,7 +84,6 @@ const InputRating = (props) => {
    return (
       <View style={styles.formControl}>
          <TextInput
-            {...props}
             secureTextEntry={hiddenText}
             style={[
                styles.input,
@@ -102,6 +92,7 @@ const InputRating = (props) => {
                   textAlignVertical: props.alignTop ? "top" : "center",
                },
             ]}
+            {...props}
             value={inputState.value}
             onChangeText={textChangeHandler}
             onBlur={lostFocusHandler}
@@ -117,7 +108,15 @@ const InputRating = (props) => {
             </View>
          )}
          {!inputState.isValid && inputState.touched && !error && (
-            <View style={styles.errorContainerLine}></View>
+            <View
+               style={[
+                  styles.errorContainerLine,
+                  {
+                     marginLeft: props.ml ? props.ml : 0,
+                     width: props.wdt ? props.wdt : "100%",
+                  },
+               ]}
+            ></View>
          )}
       </View>
    );

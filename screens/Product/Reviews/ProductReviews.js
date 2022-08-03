@@ -104,7 +104,7 @@ const ProductReviews = (props) => {
                   placeholder="Коментар"
                   setWordsCount={setWordComment}
                   maxLength={2000}
-                  setComment={setComment}
+                  setText={setComment}
                />
                <View style={styles.wordCount}>
                   <Text>{wordCountComment}/2000</Text>
@@ -116,7 +116,6 @@ const ProductReviews = (props) => {
                   label="pros"
                   keyboardType="default"
                   minLength={8}
-                  pros
                   alignTop
                   required
                   autoCapitalize="none"
@@ -127,7 +126,7 @@ const ProductReviews = (props) => {
                   placeholder="Переваги"
                   setWordsCount={setWordPros}
                   maxLength={200}
-                  setPros={setPros}
+                  setText={setPros}
                />
                <View style={styles.wordCountLittle}>
                   <Text>{wordCountPros}/200</Text>
@@ -139,7 +138,6 @@ const ProductReviews = (props) => {
                   label="cons"
                   keyboardType="default"
                   minLength={8}
-                  cons
                   alignTop
                   required
                   autoCapitalize="none"
@@ -150,7 +148,7 @@ const ProductReviews = (props) => {
                   placeholder="Недоліки"
                   setWordsCount={setWordCons}
                   maxLength={200}
-                  setCons={setCons}
+                  setText={setCons}
                />
                <View style={styles.wordCountLittle}>
                   <Text>{wordCountCons}/200</Text>
@@ -169,14 +167,13 @@ const ProductReviews = (props) => {
                   label="Full Name"
                   keyboardType="default"
                   minLength={8}
-                  pros
                   required
                   autoCapitalize="none"
                   errorText="Будь ласка введіть Ім'я та прізвище"
                   initialValue={fullName}
                   login={true}
                   height={50}
-                  setFullName={setFullName}
+                  setText={setFullName}
                />
                <View style={styles.TextFieldCommentLabelOnBorderText}>
                   <Text style={styles.labelOnBorder}>Ім'я та прізвище</Text>

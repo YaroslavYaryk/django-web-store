@@ -23,7 +23,7 @@ const ProductsList = (props) => {
    const products = useSelector((state) => state.products.products);
    const [isLoading, setIsLoading] = useState(false);
    const [fetch, setArr] = useState(0);
-   const [visible, setVisible] = useState(true);
+   const [visible, setVisible] = useState(false);
 
    useEffect(() => {
       props.navigation.setParams({
@@ -78,11 +78,7 @@ const ProductsList = (props) => {
                ></ProductItem>
             )}
          />
-         <CartPopup
-            visible={visible}
-            setVisible={setVisible}
-            haveOutsideTouch={true}
-         />
+         <CartPopup visible={visible} setVisible={setVisible} />
       </View>
    );
 };
