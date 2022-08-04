@@ -1,4 +1,9 @@
-import { READ_USER_INFO, CHANGE_USER_INFO } from "../actions/userActions";
+import {
+   READ_USER_INFO,
+   CHANGE_USER_INFO,
+   CHANGE_USER_LIVING_PLACE,
+   CHANGE_USER_WARE_HOUSE,
+} from "../actions/userActions";
 import User from "../../models/User";
 
 const initialState = {
@@ -21,6 +26,7 @@ export default (state = initialState, action) => {
                action.lastName,
                action.middleName,
                action.livingPlace,
+               action.wareHouse,
                action.phone
             ),
          };
@@ -35,6 +41,21 @@ export default (state = initialState, action) => {
          return {
             ...state,
             user: usss,
+         };
+      case CHANGE_USER_LIVING_PLACE:
+         const ussss = state.user;
+         ussss.livingPlace = action.livingPlace;
+         return {
+            ...state,
+            user: ussss,
+         };
+
+      case CHANGE_USER_WARE_HOUSE:
+         const usssss = state.user;
+         usssss.wareHouse = action.wareHouse;
+         return {
+            ...state,
+            user: usssss,
          };
 
       default:

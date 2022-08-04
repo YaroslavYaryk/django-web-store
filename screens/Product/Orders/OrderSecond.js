@@ -23,6 +23,7 @@ import CartArea from "../../../components/wrappers/CartArea";
 import * as novaPoshtaAction from "../../../redux-folder/actions/novaPoshtaActions";
 import * as orderActions from "../../../redux-folder/actions/orderActions";
 import * as authActions from "../../../redux-folder/actions/userActions";
+import { useIsFocused } from "@react-navigation/native";
 
 const OrderSecond = (props) => {
    const cart = useSelector((state) => state.cart.cartProducts);
@@ -47,32 +48,29 @@ const OrderSecond = (props) => {
    const order = useSelector((state) =>
       state.orders.orders.find((elem) => elem.cartId === cartId)
    );
-
+   console.log(user);
    const cityWarehousFirst = useSelector(
       (state) => state.cities.cityWareHouses
    );
-   // console.log(cityWarehousFirst);
-
-   // console.log(order);
+   const isFocused = useIsFocused();
 
    const setWareHouse = async () => {
       const wareHouse = await AsyncStorage.getItem("wareHouse");
       const transformedData = JSON.parse(wareHouse);
-      console.log(wareHouse);
       const { CityDescription, CityRef, Description, Ref } = transformedData;
-      if (!order.postDescription) {
+      console.log(order.place, CityDescription);
+      if (order.place != CityDescription || !user.wareHouse) {
          dispatch(orderActions.addWareHouse(cartId, Description, Ref, CityRef));
+         dispatch(authActions.changeUserWareHouse(1, Description));
       }
    };
 
    useEffect(() => {
       dispatch(novaPoshtaAction.fetchCityPost(order.place, 1));
-      if (!order.postDescription) {
-         setWareHouse();
-      }
-   }, []);
+      setWareHouse();
+   }, [isFocused]);
 
-   console.log(order);
+   // console.log(order);
 
    const fetchCart = () => {
       setIsLoading(true);
@@ -205,7 +203,7 @@ const OrderSecond = (props) => {
                         </View>
                         <View style={styles.postAddressTextBlock}>
                            <Text style={styles.postAddressTextBlockText}>
-                              {order.place}, {order.postDescription}
+                              {user.livingPlace}, {user.wareHouse}
                            </Text>
                         </View>
                      </View>
@@ -220,7 +218,11 @@ const OrderSecond = (props) => {
                   <View style={styles.deliveryFooter}>
                      <TouchableOpacity
                         onPress={() => {
-                           props.navigation.navigate("DeliveryScreen");
+                           props.navigation.navigate("DeliveryScreen", {
+                              params: {
+                                 cartId: cartId,
+                              },
+                           });
                         }}
                      >
                         <View style={styles.buttonChange}>

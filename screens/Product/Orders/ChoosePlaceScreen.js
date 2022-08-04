@@ -19,6 +19,7 @@ import Autocomplete from "react-native-autocomplete-input";
 import { useSelector, useDispatch } from "react-redux";
 import * as novaPoshtaAction from "../../../redux-folder/actions/novaPoshtaActions";
 import * as orderActions from "../../../redux-folder/actions/orderActions";
+import * as authActions from "../../../redux-folder/actions/userActions";
 
 const re = /\(.*?\)/;
 
@@ -30,6 +31,12 @@ const ChoosePlaceScreen = (props) => {
    const cartId = props.route.params.cartId
       ? props.route.params.cartId
       : props.route.params.params.cartId;
+
+   const redirectToDelivery = props.route.params.redirectToDelivery
+      ? props.route.params.redirectToDelivery
+      : props.route.params.params.redirectToDelivery;
+
+   console.log(redirectToDelivery);
 
    const dispatch = useDispatch();
 
@@ -62,34 +69,61 @@ const ChoosePlaceScreen = (props) => {
             <VirtualizedList
                // style={{ height: "100%" }}
                getItemCount={(data) => data.length}
-               keyExtractor={(item) => item.Area + item.Ref}
+               keyExtractor={(item) =>
+                  item.Area
+                     ? item.Area + item.Ref + Math.random()
+                     : item + Math.random()
+               }
                getItem={(data, index) => data[index]}
                initialNumToRender={10}
                data={cities && !defaultDataQuery ? cities : data}
                renderItem={(itemData) => (
                   <TouchableOpacity
+                     key={itemData.item.Area + itemData.item.Ref}
                      onPress={() => {
-                        cities.length && !defaultDataQuery
-                           ? dispatch(
-                                orderActions.addPlaceToOrder(
-                                   cartId,
-                                   itemData.item.CityID,
-                                   itemData.item.Description.split(" ")[0]
-                                )
-                             )
-                           : dispatch(
-                                orderActions.addPlaceToOrder(
-                                   cartId,
-                                   -1,
-                                   itemData.item
-                                )
-                             );
-                        props.navigation.navigate("OrderBase", {
-                           params: { cartId: cartId },
-                        });
+                        if (cities.length && !defaultDataQuery) {
+                           dispatch(
+                              orderActions.addPlaceToOrder(
+                                 cartId,
+                                 itemData.item.CityID,
+                                 itemData.item.Description.split(" ")[0]
+                              )
+                           );
+                           dispatch(
+                              authActions.changeUserLivingPlace(
+                                 1,
+                                 itemData.item.Description.split(" ")[0]
+                              )
+                           );
+                        } else {
+                           dispatch(
+                              orderActions.addPlaceToOrder(
+                                 cartId,
+                                 -1,
+                                 itemData.item
+                              )
+                           );
+                           dispatch(
+                              authActions.changeUserLivingPlace(
+                                 1,
+                                 itemData.item
+                              )
+                           );
+                        }
+
+                        if (redirectToDelivery) {
+                           props.navigation.navigate("DeliveryScreen", {
+                              params: { cartId: cartId },
+                           });
+                        } else {
+                           props.navigation.navigate("OrderBase", {
+                              params: { cartId: cartId },
+                           });
+                        }
                      }}
                   >
                      <View
+                        key={itemData.item.Area + itemData.item.Ref}
                         style={{
                            marginHorizontal: 20,
                            marginVertical: 10,
