@@ -7,7 +7,8 @@ class Order {
       place,
       postId,
       postDescription,
-      deliveryType = "Доставка до поштовогоо відділення"
+      deliveryType = "Доставка до пункту видачі",
+      priceMethod = 2
    ) {
       this.id = id;
       this.ownerId = ownerId;
@@ -17,6 +18,7 @@ class Order {
       this.postId = postId;
       this.postDescription = postDescription;
       this.deliveryType = deliveryType;
+      this.priceMethod = priceMethod;
    }
 }
 export default Order;

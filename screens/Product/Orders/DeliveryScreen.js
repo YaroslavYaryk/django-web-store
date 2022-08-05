@@ -16,8 +16,12 @@ import { AntDesign } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useSelector, useDispatch } from "react-redux";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-
-import { useState } from "react";
+import deliveryType from "../../../constants/deliveryType";
+import * as orderActions from "../../../redux-folder/actions/orderActions";
+import * as authActions from "../../../redux-folder/actions/userActions";
+import { useIsFocused } from "@react-navigation/native";
+import ButtonSave from "../../../components/ButtonSave";
+import { useState, useEffect } from "react";
 
 const re = /.*:/;
 
@@ -28,6 +32,10 @@ const DeliveryScreen = (props) => {
       : props.route.params.params.cartId;
    const userId = useSelector((state) => state.auth.userId);
    const user = useSelector((state) => state.auth.user);
+   const order = useSelector((state) =>
+      state.orders.orders.find((elem) => elem.cartId === cartId)
+   );
+   const dispatch = useDispatch();
 
    const data = [
       {
@@ -37,6 +45,28 @@ const DeliveryScreen = (props) => {
          label: "Доставка до пункту видачі",
       },
    ];
+
+   const isFocused = useIsFocused();
+
+   useEffect(() => {
+      if (user.deliveryType) {
+         dispatch(orderActions.addDeliveryType(cartId, user.deliveryType));
+      }
+   }, [isFocused]);
+
+   var delType;
+   if (user.deliveryType) {
+      delType = deliveryType[user.deliveryType];
+   } else if (order.deliveryType) {
+      delType = deliveryType[order.deliveryType];
+   } else {
+      delType = 1;
+   }
+
+   const saveDeliveryData = () => {
+      props.navigation.navigate("OrderFull", { params: { cartId: cartId } });
+   };
+
    return (
       <View>
          <View style={{}}>
@@ -85,11 +115,14 @@ const DeliveryScreen = (props) => {
             style={{ marginHorizontal: 10, marginTop: 20, marginBottom: 10 }}
          >
             <RadioButtonRN
-               initial={1}
+               initial={delType}
                activeColor={Colors.primaryColor}
                circleSize={10}
                data={data}
-               selectedBtn={(e) => console.log(e)}
+               selectedBtn={(e) => {
+                  dispatch(orderActions.addDeliveryType(cartId, e.label));
+                  dispatch(authActions.changeUserDeliveryType(1, e.label));
+               }}
             />
          </View>
          <View>
@@ -128,6 +161,7 @@ const DeliveryScreen = (props) => {
                </View>
             </TouchableOpacity>
          </View>
+         <ButtonSave save={saveDeliveryData} />
       </View>
    );
 };

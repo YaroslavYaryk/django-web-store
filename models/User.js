@@ -8,6 +8,7 @@ class User {
       middleName = "",
       livingPlace = "",
       wareHouse = "",
+      deliveryType = "",
       phone = ""
    ) {
       this.id = id;
@@ -18,6 +19,7 @@ class User {
       this.middleName = middleName;
       this.livingPlace = livingPlace;
       this.wareHouse = wareHouse;
+      this.deliveryType = deliveryType;
       this.phone = phone;
    }
 }

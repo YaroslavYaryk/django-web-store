@@ -3,6 +3,7 @@ import {
    CHANGE_USER_INFO,
    CHANGE_USER_LIVING_PLACE,
    CHANGE_USER_WARE_HOUSE,
+   CHANGE_USER_DELIVERY_TYPE,
 } from "../actions/userActions";
 import User from "../../models/User";
 
@@ -27,6 +28,7 @@ export default (state = initialState, action) => {
                action.middleName,
                action.livingPlace,
                action.wareHouse,
+               action.deliveryType,
                action.phone
             ),
          };
@@ -56,6 +58,13 @@ export default (state = initialState, action) => {
          return {
             ...state,
             user: usssss,
+         };
+      case CHANGE_USER_DELIVERY_TYPE:
+         const usser = state.user;
+         usser.deliveryType = action.deliveryType;
+         return {
+            ...state,
+            user: usser,
          };
 
       default:

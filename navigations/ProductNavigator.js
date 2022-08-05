@@ -38,6 +38,7 @@ import DeliveryScreen from "../screens/Product/Orders/DeliveryScreen";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import ChoosePlaceScreen from "../screens/Product/Orders/ChoosePlaceScreen";
 import ChooseWareHouse from "../screens/Product/Orders/ChooseWareHouse";
+import PaymentMethodsScreen from "../screens/Product/Orders/PaymentMethodsScreen";
 
 const defaultNavOptions = {
    headerStyle: {
@@ -421,6 +422,11 @@ export const OrderNavigator = () => {
          <OrderStackNavigator.Screen
             name="ChooseWareHouse"
             component={ChooseWareHouse}
+            // options={productsOverviewScreenOptions}
+         />
+         <OrderStackNavigator.Screen
+            name="PaymentMethodsScreen"
+            component={PaymentMethodsScreen}
             // options={productsOverviewScreenOptions}
          />
       </OrderStackNavigator.Navigator>

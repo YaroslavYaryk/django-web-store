@@ -24,6 +24,10 @@ import * as novaPoshtaAction from "../../../redux-folder/actions/novaPoshtaActio
 import * as orderActions from "../../../redux-folder/actions/orderActions";
 import * as authActions from "../../../redux-folder/actions/userActions";
 import { useIsFocused } from "@react-navigation/native";
+import {
+   priceMethods,
+   priceMethodsList,
+} from "../../../constants/priceMethods";
 
 const OrderSecond = (props) => {
    const cart = useSelector((state) => state.cart.cartProducts);
@@ -48,7 +52,7 @@ const OrderSecond = (props) => {
    const order = useSelector((state) =>
       state.orders.orders.find((elem) => elem.cartId === cartId)
    );
-   console.log(user);
+   // console.log(user);
    const cityWarehousFirst = useSelector(
       (state) => state.cities.cityWareHouses
    );
@@ -58,7 +62,6 @@ const OrderSecond = (props) => {
       const wareHouse = await AsyncStorage.getItem("wareHouse");
       const transformedData = JSON.parse(wareHouse);
       const { CityDescription, CityRef, Description, Ref } = transformedData;
-      console.log(order.place, CityDescription);
       if (order.place != CityDescription || !user.wareHouse) {
          dispatch(orderActions.addWareHouse(cartId, Description, Ref, CityRef));
          dispatch(authActions.changeUserWareHouse(1, Description));
@@ -137,6 +140,26 @@ const OrderSecond = (props) => {
       );
    }
 
+   const answer1 = "Відправимо в понеділок";
+   const answer2 = "Відправимо завтра";
+   const answer3 = "Відправимо сьогодні";
+
+   var sendingDelay;
+   var currDate = new Date();
+   var curHours = currDate.getHours();
+   var curDayOfWeek = currDate.getDay();
+   if (curDayOfWeek == 6 || curDayOfWeek == 7) {
+      sendingDelay = answer1;
+   } else if (curHours > 16) {
+      if (curDayOfWeek == 5) {
+         sendingDelay = answer1;
+      } else {
+         sendingDelay = answer2;
+      }
+   } else {
+      sendingDelay = answer3;
+   }
+
    return (
       <View style={styles.container}>
          <ScrollView>
@@ -212,13 +235,81 @@ const OrderSecond = (props) => {
                         <Text> ₴ </Text>
                      </View>
                      <View style={styles.timeToSending}>
-                        <Text>Відправим завтра</Text>
+                        <Text>{sendingDelay}</Text>
                      </View>
                   </View>
                   <View style={styles.deliveryFooter}>
                      <TouchableOpacity
                         onPress={() => {
                            props.navigation.navigate("DeliveryScreen", {
+                              params: {
+                                 cartId: cartId,
+                              },
+                           });
+                        }}
+                     >
+                        <View style={styles.buttonChange}>
+                           <Text style={styles.buttonChangeText}>Змінити</Text>
+                        </View>
+                     </TouchableOpacity>
+                  </View>
+               </View>
+            </CartArea>
+            <CartArea>
+               <View style={styles.deliveryBlock}>
+                  <View style={styles.deliveryHeder}>
+                     <View style={styles.headerLabel}>
+                        <Text style={styles.labelHeaderText}>Метод оплати</Text>
+                     </View>
+                  </View>
+                  <View style={styles.deliveryBody}>
+                     <View style={{ marginTop: -5 }}>
+                        <View style={{}}>
+                           <Text style={styles.postAddressTextBlockText}>
+                              {priceMethods[order.priceMethod]}
+                           </Text>
+                        </View>
+                     </View>
+                  </View>
+                  <View style={styles.deliveryFooter}>
+                     <TouchableOpacity
+                        onPress={() => {
+                           props.navigation.navigate("PaymentMethodsScreen", {
+                              params: {
+                                 cartId: cartId,
+                              },
+                           });
+                        }}
+                     >
+                        <View style={styles.buttonChange}>
+                           <Text style={styles.buttonChangeText}>Змінити</Text>
+                        </View>
+                     </TouchableOpacity>
+                  </View>
+               </View>
+            </CartArea>
+            <CartArea>
+               <View style={styles.deliveryBlock}>
+                  <View style={styles.deliveryHeder}>
+                     <View style={styles.headerLabel}>
+                        <Text style={styles.labelHeaderText}>
+                           Отримувач замовлення
+                        </Text>
+                     </View>
+                  </View>
+                  <View style={styles.deliveryBody}>
+                     <View style={{ marginTop: -5 }}>
+                        <View style={{}}>
+                           <Text style={styles.postAddressTextBlockText}>
+                              {priceMethods[order.priceMethod]}
+                           </Text>
+                        </View>
+                     </View>
+                  </View>
+                  <View style={styles.deliveryFooter}>
+                     <TouchableOpacity
+                        onPress={() => {
+                           props.navigation.navigate("PaymentMethodsScreen", {
                               params: {
                                  cartId: cartId,
                               },

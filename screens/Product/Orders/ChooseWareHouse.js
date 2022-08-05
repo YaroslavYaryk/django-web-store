@@ -72,6 +72,11 @@ const ChooseWareHouse = (props) => {
                               itemData.item.Description
                            )
                         );
+                        const a = "Доставка до пункту видачі";
+                        if (user.deliveryType != a) {
+                           console.log("here");
+                           dispatch(authActions.changeUserDeliveryType(1, a));
+                        }
 
                         props.navigation.navigate("DeliveryScreen", {
                            params: { cartId: cartId },
