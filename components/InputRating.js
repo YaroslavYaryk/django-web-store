@@ -50,6 +50,7 @@ const InputRating = (props) => {
    }
 
    const textChangeHandler = (text) => {
+      console.log(text);
       const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       let isValid = true;
       if (props.required && text.trim().length === 0) {
@@ -68,8 +69,10 @@ const InputRating = (props) => {
       dispatch({ type: INPUT_CHANGE, value: text, isValid: isValid });
    };
 
-   const lostFocusHandler = () => {
-      dispatch({ type: INPUT_BLUR });
+   const lostFocusHandler = (word) => {
+      if (!word) {
+         dispatch({ type: INPUT_BLUR });
+      }
    };
 
    const reveal1Password = () => {
@@ -95,7 +98,9 @@ const InputRating = (props) => {
             {...props}
             value={inputState.value}
             onChangeText={textChangeHandler}
-            onBlur={lostFocusHandler}
+            onBlur={() => {
+               lostFocusHandler(inputState.value);
+            }}
             placeholder={props.placeholder}
             maxLength={props.maxLength}
             multiline={true}

@@ -5,6 +5,7 @@ import {
    ADD_WARE_HOUSE_TO_ORDER,
    ADD_DELIVERY_TYPE_TO_ORDER,
    CHANGE_PAYMENT_METHOD,
+   ADD_RECIEVER_INFO,
 } from "../actions/orderActions";
 import Order from "../../models/Order";
 
@@ -86,6 +87,22 @@ const orderReducer = (state = initialState, action) => {
          OrderItem4.priceMethod = action.paymentMethodKod;
 
          orderInstance3[orderIndex4] = OrderItem4;
+         return {
+            ...state,
+            orders: orderInstance3,
+         };
+      case ADD_RECIEVER_INFO:
+         var orderInstance3 = state.orders;
+         const orderIndex5 = orderInstance3.findIndex(
+            (el) => el.cartId === action.cartId
+         );
+         const OrderItem5 = orderInstance3[orderIndex5];
+         OrderItem5.recieverFirstName = action.recieverFirstName;
+         OrderItem5.recieverLastName = action.recieverLastName;
+         OrderItem5.recieverMiddleName = action.recieverMiddleName;
+         OrderItem5.recieverPhone = action.recieverPhone;
+
+         orderInstance3[orderIndex5] = OrderItem5;
          return {
             ...state,
             orders: orderInstance3,

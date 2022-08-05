@@ -39,6 +39,7 @@ import { createMaterialBottomTabNavigator } from "@react-navigation/material-bot
 import ChoosePlaceScreen from "../screens/Product/Orders/ChoosePlaceScreen";
 import ChooseWareHouse from "../screens/Product/Orders/ChooseWareHouse";
 import PaymentMethodsScreen from "../screens/Product/Orders/PaymentMethodsScreen";
+import ChangeUserOrderInfo from "../screens/Product/Orders/ChangeUserOrderInfo";
 
 const defaultNavOptions = {
    headerStyle: {
@@ -427,6 +428,11 @@ export const OrderNavigator = () => {
          <OrderStackNavigator.Screen
             name="PaymentMethodsScreen"
             component={PaymentMethodsScreen}
+            // options={productsOverviewScreenOptions}
+         />
+         <OrderStackNavigator.Screen
+            name="ChangeUserOrderInfo"
+            component={ChangeUserOrderInfo}
             // options={productsOverviewScreenOptions}
          />
       </OrderStackNavigator.Navigator>

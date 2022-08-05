@@ -4,6 +4,7 @@ export const ADD_WARE_HOUSE_TO_ORDER = "ADD_WARE_HOUSE_TO_ORDER";
 export const ADD_DELIVERY_TYPE_TO_ORDER = "ADD_DELIVERY_TYPE_TO_ORDER";
 export const DISCARD_ORDER = "DISCARD_ORDER";
 export const CHANGE_PAYMENT_METHOD = "CHANGE_pAYMENT_METHOD";
+export const ADD_RECIEVER_INFO = "ADD_RECIEVER_INFO";
 
 export const createOrder = (ownerId, cartId) => {
    try {
@@ -85,6 +86,29 @@ export const discartOrder = (cartId) => {
          dispatch({
             type: DISCARD_ORDER,
             cartId,
+         });
+      };
+   } catch (err) {
+      throw err;
+   }
+};
+
+export const addRecieverInfo = (
+   cartId,
+   lastName,
+   firstName,
+   middleName,
+   phone
+) => {
+   try {
+      return async (dispatch, getState) => {
+         dispatch({
+            type: ADD_RECIEVER_INFO,
+            cartId,
+            recieverFirstName: firstName,
+            recieverLastName: lastName,
+            recieverMiddleName: middleName,
+            recieverPhone: phone,
          });
       };
    } catch (err) {

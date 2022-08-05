@@ -10,14 +10,14 @@ export const fetchUserInfo = (userId) => {
          dispatch({
             type: READ_USER_INFO,
             email: "duhanov2003@gmail.com",
-            firstName: "yaroslav",
+            firstName: "Ярослав",
             id: userId,
             lastName: "Диханов ",
             livingPlace: "Володимирець",
             wareHouse: "Відділення №1: вул. Повстанців, 68",
             middleName: "Юрійович ",
             deliveryType: "Доставка до пункту видачі",
-            phone: "38073737383",
+            phone: "+38073737383",
             username: "yaryk31",
          });
       };

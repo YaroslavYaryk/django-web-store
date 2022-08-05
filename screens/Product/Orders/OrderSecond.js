@@ -66,6 +66,9 @@ const OrderSecond = (props) => {
          dispatch(orderActions.addWareHouse(cartId, Description, Ref, CityRef));
          dispatch(authActions.changeUserWareHouse(1, Description));
       }
+      if (!order.postDescription) {
+         dispatch(orderActions.addWareHouse(cartId, user.wareHouse, -1, -1));
+      }
    };
 
    useEffect(() => {
@@ -299,9 +302,22 @@ const OrderSecond = (props) => {
                   </View>
                   <View style={styles.deliveryBody}>
                      <View style={{ marginTop: -5 }}>
-                        <View style={{}}>
+                        <View style={{ marginLeft: 5 }}>
                            <Text style={styles.postAddressTextBlockText}>
-                              {priceMethods[order.priceMethod]}
+                              {order.recieverastName
+                                 ? order.recieverLastName
+                                 : user.lastName}{" "}
+                              {order.recieverFirstName
+                                 ? order.recieverFirstName
+                                 : user.firstName}{" "}
+                              {order.recieverMiddleName
+                                 ? order.recieverMiddleName
+                                 : user.middleName}
+                           </Text>
+                           <Text>
+                              {order.recieverPhone
+                                 ? order.recieverPhone
+                                 : user.phone}
                            </Text>
                         </View>
                      </View>
@@ -309,7 +325,7 @@ const OrderSecond = (props) => {
                   <View style={styles.deliveryFooter}>
                      <TouchableOpacity
                         onPress={() => {
-                           props.navigation.navigate("PaymentMethodsScreen", {
+                           props.navigation.navigate("ChangeUserOrderInfo", {
                               params: {
                                  cartId: cartId,
                               },
