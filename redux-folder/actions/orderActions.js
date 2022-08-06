@@ -1,3 +1,4 @@
+export const FETCH_ORDERS = "FETCH_ORDERS";
 export const ADD_BASE_INFO_TO_ORDER = "ADD_BASE_INFO_TO_ORDER";
 export const ADD_PLACE_TO_ORDER = "ADD_PLACE_TO_ORDER";
 export const ADD_WARE_HOUSE_TO_ORDER = "ADD_WARE_HOUSE_TO_ORDER";
@@ -5,6 +6,22 @@ export const ADD_DELIVERY_TYPE_TO_ORDER = "ADD_DELIVERY_TYPE_TO_ORDER";
 export const DISCARD_ORDER = "DISCARD_ORDER";
 export const CHANGE_PAYMENT_METHOD = "CHANGE_pAYMENT_METHOD";
 export const ADD_RECIEVER_INFO = "ADD_RECIEVER_INFO";
+export const ADD_ORDER_COUPON = "ADD_ORDER_COUPON";
+export const ADD_ORDER_TOTAL_PRICE = "ADD_ORDER_TOTAL_PRICE";
+
+export const fetchOrders = (ownerId, cartId) => {
+   try {
+      return async (dispatch, getState) => {
+         dispatch({
+            type: FETCH_ORDERS,
+            cartId,
+            orders: [],
+         });
+      };
+   } catch (err) {
+      throw err;
+   }
+};
 
 export const createOrder = (ownerId, cartId) => {
    try {
@@ -29,6 +46,20 @@ export const addPlaceToOrder = (cartId, placeId, place) => {
             cartId,
             placeId,
             place,
+         });
+      };
+   } catch (err) {
+      throw err;
+   }
+};
+
+export const addOrderTotalPrice = (cartId, totalPrice) => {
+   try {
+      return async (dispatch, getState) => {
+         dispatch({
+            type: ADD_ORDER_TOTAL_PRICE,
+            cartId,
+            totalPrice,
          });
       };
    } catch (err) {
@@ -73,6 +104,20 @@ export const changePaymentMethod = (cartId, paymentMethodKod) => {
             type: CHANGE_PAYMENT_METHOD,
             cartId,
             paymentMethodKod,
+         });
+      };
+   } catch (err) {
+      throw err;
+   }
+};
+
+export const addOrderCoupon = (cartId, coupon) => {
+   try {
+      return async (dispatch, getState) => {
+         dispatch({
+            type: ADD_ORDER_COUPON,
+            cartId,
+            coupon,
          });
       };
    } catch (err) {

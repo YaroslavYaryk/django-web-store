@@ -158,7 +158,6 @@ const Cart = (props) => {
                   borderRadius: 10,
                }}
             >
-               {}
                <TouchableOpacity
                   onPress={() => {
                      dispatch(orderActions.createOrder(1, cart.id));
@@ -179,7 +178,6 @@ const Cart = (props) => {
                               user.livingPlace
                            )
                         );
-                        console.log(true);
                         props.navigation.navigate("OrderNavigator", {
                            screen: "OrderFull",
                            params: { cartId: cart.id },

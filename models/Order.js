@@ -12,7 +12,9 @@ class Order {
       recieverFirstName = "",
       recieverLastName = "",
       recieverMiddleName = "",
-      recieverPhone = ""
+      recieverPhone = "",
+      coupones = [],
+      totalPrice
    ) {
       this.id = id;
       this.ownerId = ownerId;
@@ -27,6 +29,8 @@ class Order {
       this.recieverLastName = recieverLastName;
       this.recieverMiddleName = recieverMiddleName;
       this.recieverPhone = recieverPhone;
+      this.coupones = coupones;
+      this.totalPrice = totalPrice;
    }
 }
 export default Order;

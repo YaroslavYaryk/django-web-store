@@ -50,7 +50,6 @@ const InputRating = (props) => {
    }
 
    const textChangeHandler = (text) => {
-      console.log(text);
       const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       let isValid = true;
       if (props.required && text.trim().length === 0) {
@@ -64,6 +63,14 @@ const InputRating = (props) => {
       }
       if (props.setText) {
          props.setText(text);
+      }
+      if (props.id == "coupon") {
+         if (text.indexOf(" ") >= 0) {
+            isValid = false;
+            setError("Невірний купон");
+         } else {
+            isValid = true;
+         }
       }
 
       dispatch({ type: INPUT_CHANGE, value: text, isValid: isValid });
@@ -122,6 +129,11 @@ const InputRating = (props) => {
                   },
                ]}
             ></View>
+         )}
+         {!inputState.isValid && error && !inputState.touched && (
+            <View style={styles.errorContainer}>
+               <Text style={styles.errorText}>{error}</Text>
+            </View>
          )}
       </View>
    );

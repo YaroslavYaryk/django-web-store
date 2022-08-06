@@ -17,6 +17,7 @@ import {
 import { AntDesign } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Colors from "../../constants/Colors";
+import { FontAwesome5 } from "@expo/vector-icons";
 
 const ModalPoup = ({ visible, children }) => {
    const [showModal, setShowModal] = useState(visible);
@@ -63,10 +64,10 @@ const CartPopup = (props) => {
       <View style={{ backgroundColor: "green", marginTop: 50 }}>
          <ModalPoup visible={visible}>
             <View style={{ alignItems: "center" }}>
-               <AntDesign
-                  name="checkcircleo"
+               <FontAwesome5
+                  name={props.iconName ? props.iconName : "check-circle"}
                   size={100}
-                  color={Colors.primaryColor}
+                  color={props.color ? props.color : Colors.primaryColor}
                />
                <View style={styles.header}>
                   <TouchableOpacity
@@ -84,7 +85,11 @@ const CartPopup = (props) => {
             </View>
             <View style={{ alignItems: "center", marginTop: 15 }}>
                <Text style={{ fontSize: 16 }}>
-                  Товар успішно додано в корзину
+                  {props.text ? (
+                     props.text
+                  ) : (
+                     <Text>Товар успішно додано в корзину</Text>
+                  )}
                </Text>
             </View>
          </ModalPoup>

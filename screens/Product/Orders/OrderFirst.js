@@ -15,7 +15,9 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { useState, useEffect, useReducer, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import * as authActions from "../../../redux-folder/actions/userActions";
+import * as orderActions from "../../../redux-folder/actions/orderActions";
 import { AntDesign } from "@expo/vector-icons";
+import UserInfoForms from "../../../components/UserInfoForms";
 
 const OrderFirst = (props) => {
    const [buttonDisabled, setButtonDisabled] = useState(true);
@@ -109,98 +111,21 @@ const OrderFirst = (props) => {
                      </View>
                   </View>
                </TouchableOpacity>
-               <View style={styles.LastName}>
-                  <InputRating
-                     id="lastName"
-                     label="last name"
-                     keyboardType="default"
-                     minLength={2}
-                     //  alignTop
-                     required
-                     autoCapitalize="none"
-                     //  errorText="Будь ласка введіть прізвище"
-                     initialValue={inpSurName}
-                     login={true}
-                     height={50}
-                     placeholder="Прізвище"
-                     maxLength={200}
-                     ml={20}
-                     wdt={"90%"}
-                     setText={setInpSurName}
-                  />
-                  <View style={styles.TextFieldCommentLabelOnBorderText}>
-                     <Text style={styles.labelOnBorder}>Прізвище</Text>
-                  </View>
-               </View>
-               <View style={styles.firstName}>
-                  <InputRating
-                     id="firstName"
-                     label="first name"
-                     keyboardType="default"
-                     minLength={2}
-                     //  alignTop
-                     required
-                     autoCapitalize="none"
-                     //  errorText="Будь ласка введіть ім'я"
-                     initialValue={inpName}
-                     login={true}
-                     height={50}
-                     placeholder="Ім'я"
-                     maxLength={200}
-                     ml={20}
-                     wdt={"90%"}
-                     setText={setInpName}
-                  />
-                  <View style={styles.TextFieldCommentLabelOnBorderText}>
-                     <Text style={styles.labelOnBorder}>Ім'я</Text>
-                  </View>
-               </View>
-               <View style={styles.middleName}>
-                  <InputRating
-                     id="middleName"
-                     label="middle name"
-                     keyboardType="default"
-                     minLength={2}
-                     //  alignTop
-                     required
-                     autoCapitalize="none"
-                     //  errorText="Будь ласка введіть по батькові"
-                     initialValue={inpMiddleName}
-                     login={true}
-                     height={50}
-                     placeholder="По батькові"
-                     maxLength={200}
-                     ml={20}
-                     wdt={"90%"}
-                     setText={setInpMiddleName}
-                  />
-                  <View style={styles.TextFieldCommentLabelOnBorderText}>
-                     <Text style={styles.labelOnBorder}>По батькові</Text>
-                  </View>
-               </View>
-               <View style={styles.phone}>
-                  <InputRating
-                     id="phone"
-                     label="phone"
-                     keyboardType="default"
-                     minLength={2}
-                     //  alignTop
-                     required
-                     autoCapitalize="none"
-                     //  errorText="Будь ласка введіть по номер талефону"
-                     initialValue={inpPhone}
-                     login={true}
-                     height={50}
-                     placeholder="Номер телефону"
-                     maxLength={200}
-                     ml={20}
-                     wdt={"90%"}
-                     setText={setinpPhone}
-                  />
-                  <View style={styles.TextFieldCommentLabelOnBorderText}>
-                     <Text style={styles.labelOnBorder}>Номер телефону</Text>
-                  </View>
-               </View>
+               <UserInfoForms
+                  inpSurName={inpSurName}
+                  setInpSurName={setInpSurName}
+                  inpName={inpName}
+                  setInpName={setInpName}
+                  inpMiddleName={inpMiddleName}
+                  setInpMiddleName={setInpMiddleName}
+                  inpPhone={inpPhone}
+                  setinpPhone={setinpPhone}
+                  cartId={cartId}
+                  dispatch={dispatch}
+                  user={user}
+                  order={order}
+                  saveMyself
+               />
                <View style={{ alignItems: "center" }}>
                   <View
                      style={[
@@ -225,6 +150,17 @@ const OrderFirst = (props) => {
                                  order.place
                               )
                            );
+
+                           dispatch(
+                              orderActions.addRecieverInfo(
+                                 cartId,
+                                 inpSurName,
+                                 inpName,
+                                 inpMiddleName,
+                                 inpPhone
+                              )
+                           );
+
                            props.navigation.navigate("OrderFull", {
                               params: { cartId: cartId },
                            });

@@ -6,8 +6,12 @@ import {
    ADD_DELIVERY_TYPE_TO_ORDER,
    CHANGE_PAYMENT_METHOD,
    ADD_RECIEVER_INFO,
+   ADD_ORDER_COUPON,
+   ADD_ORDER_TOTAL_PRICE,
+   FETCH_ORDERS,
 } from "../actions/orderActions";
 import Order from "../../models/Order";
+import Coupon from "../../models/Coupon";
 
 const initialState = {
    orders: [],
@@ -15,14 +19,27 @@ const initialState = {
 
 const orderReducer = (state = initialState, action) => {
    switch (action.type) {
+      case FETCH_ORDERS:
+         return { orders: state.orders };
+
       case ADD_BASE_INFO_TO_ORDER:
+         console.log("reducer");
          const orderInstance = new Order(
             action.id,
             action.ownerId,
             action.cartId,
             "",
             "",
-            ""
+            "",
+            "",
+            "Доставка до пункту видачі",
+            2,
+            "",
+            "",
+            "",
+            "",
+            [],
+            null
          );
          return {
             orders: state.orders.concat(orderInstance),
@@ -103,6 +120,34 @@ const orderReducer = (state = initialState, action) => {
          OrderItem5.recieverPhone = action.recieverPhone;
 
          orderInstance3[orderIndex5] = OrderItem5;
+         return {
+            ...state,
+            orders: orderInstance3,
+         };
+
+      case ADD_ORDER_COUPON:
+         var orderInstance3 = state.orders;
+         const orderIndex6 = orderInstance3.findIndex(
+            (el) => el.cartId === action.cartId
+         );
+         const OrderItem6 = orderInstance3[orderIndex6];
+         OrderItem6.coupones.push(action.coupon);
+
+         orderInstance3[orderIndex6] = OrderItem6;
+         return {
+            ...state,
+            orders: orderInstance3,
+         };
+
+      case ADD_ORDER_TOTAL_PRICE:
+         var orderInstance3 = state.orders;
+         const orderIndex7 = orderInstance3.findIndex(
+            (el) => el.cartId === action.cartId
+         );
+         const OrderItem7 = orderInstance3[orderIndex7];
+         OrderItem7.totalPrice = action.totalPrice;
+
+         orderInstance3[orderIndex7] = OrderItem7;
          return {
             ...state,
             orders: orderInstance3,

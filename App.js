@@ -13,6 +13,7 @@ import cartReducer from "./redux-folder/reducers/cartReducer";
 import novaPoshtaReducer from "./redux-folder/reducers/novaPoshtaReducer";
 import orderReducer from "./redux-folder/reducers/orderReducer";
 import userReducer from "./redux-folder/reducers/userReducer";
+import couponReducer from "./redux-folder/reducers/couponReducer";
 import { NavigationContainer } from "@react-navigation/native";
 import { LogBox } from "react-native";
 
@@ -24,6 +25,7 @@ const rootReducer = combineReducers({
    cities: novaPoshtaReducer,
    orders: orderReducer,
    auth: userReducer,
+   coupones: couponReducer,
 });
 
 const store = configureStore(

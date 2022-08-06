@@ -45,6 +45,8 @@ const ProductsList = (props) => {
       });
    };
    const dispatch = useDispatch();
+   const orders = useSelector((state) => state.orders.orders);
+   console.log(orders);
 
    const addProductToCart = (productId, fullName, image, price) => {
       try {
