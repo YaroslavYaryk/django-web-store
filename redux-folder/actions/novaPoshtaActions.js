@@ -96,7 +96,6 @@ export const fetchCityPost = (city, limit = 20) => {
 };
 
 const saveDataToStorage = (CityDescription, CityRef, Description, Ref) => {
-   console.log("set");
    AsyncStorage.setItem(
       "wareHouse",
       JSON.stringify({

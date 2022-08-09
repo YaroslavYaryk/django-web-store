@@ -46,7 +46,6 @@ const ProductsList = (props) => {
    };
    const dispatch = useDispatch();
    const orders = useSelector((state) => state.orders.orders);
-   console.log(orders);
 
    const addProductToCart = (productId, fullName, image, price) => {
       try {
@@ -63,7 +62,7 @@ const ProductsList = (props) => {
          </View>
       );
    }
-   if (!products.length) {
+   if (!products) {
       return (
          <View
             style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
@@ -84,19 +83,22 @@ const ProductsList = (props) => {
                alignItems: "center",
             }}
          >
-            <View style={{ width: "80%" }}>
+            <View style={{ width: "100%" }}>
                <TextInput
                   mode="outlined"
                   value={searchValue}
                   onChangeText={(el) => setSearchValue(el)}
                   label={"Search"}
                   underlineColor="black"
+                  onFocus={() => {
+                     props.navigation.navigate("SearchNavigator");
+                  }}
                   activeOutlineColor="green"
                   activeUnderlineColor="#F2F4F6"
                   left={<TextInput.Icon name="home-search-outline" />}
                />
             </View>
-            <View style={{ width: "19%" }}>
+            {/* <View style={{ width: "19%" }}>
                <TouchableOpacity
                   onPress={() => {
                      dispatch(productActions.SearchProducts(searchValue));
@@ -116,7 +118,7 @@ const ProductsList = (props) => {
                      </Text>
                   </View>
                </TouchableOpacity>
-            </View>
+            </View> */}
          </View>
          <FlatGrid
             data={products}

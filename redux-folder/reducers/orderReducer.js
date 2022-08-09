@@ -23,7 +23,6 @@ const orderReducer = (state = initialState, action) => {
          return { orders: state.orders };
 
       case ADD_BASE_INFO_TO_ORDER:
-         console.log("reducer");
          const orderInstance = new Order(
             action.id,
             action.ownerId,
@@ -54,7 +53,6 @@ const orderReducer = (state = initialState, action) => {
          OrderItem.place = action.place;
 
          orderInstance2[orderIndex] = OrderItem;
-         // console.log(orderInstance2);
          return {
             orders: orderInstance2,
          };

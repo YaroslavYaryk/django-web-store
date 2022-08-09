@@ -19,13 +19,16 @@ export default class BottomPopup extends Component {
       haveOutsideTouch: false,
       data: [],
    };
-
    renderItem = (item, props) => {
       return (
          <TouchableOpacity
             onPress={() => {
                props.setSortMethod({ action: item.action, name: item.name });
-               AsyncStorage.setItem("sortAction", item.action);
+               if (props.sortProducts) {
+                  props.sortProducts(item.action);
+               } else {
+                  AsyncStorage.setItem("sortAction", item.action);
+               }
                props.closePopup();
             }}
             style={{

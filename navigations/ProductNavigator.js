@@ -40,6 +40,8 @@ import ChoosePlaceScreen from "../screens/Product/Orders/ChoosePlaceScreen";
 import ChooseWareHouse from "../screens/Product/Orders/ChooseWareHouse";
 import PaymentMethodsScreen from "../screens/Product/Orders/PaymentMethodsScreen";
 import ChangeUserOrderInfo from "../screens/Product/Orders/ChangeUserOrderInfo";
+import SearchInputScreen from "../screens/Product/Search/SearchInputScreen";
+import SearchResultScreen from "../screens/Product/Search/SearchResultScreen";
 
 const defaultNavOptions = {
    headerStyle: {
@@ -439,6 +441,25 @@ export const OrderNavigator = () => {
    );
 };
 
+const SearchStackNavigator = createStackNavigator();
+
+export const SearchNavigator = () => {
+   return (
+      <SearchStackNavigator.Navigator screenOptions={defaultNavOptions}>
+         <SearchStackNavigator.Screen
+            name="SearchInput"
+            component={SearchInputScreen}
+            options={{ headerShown: false }}
+         />
+         <SearchStackNavigator.Screen
+            name="SearchResultScreen"
+            component={SearchResultScreen}
+            // options={{ headerShown: false }}
+         />
+      </SearchStackNavigator.Navigator>
+   );
+};
+
 const ProductsStackNavigator = createStackNavigator();
 
 export default ProductsNavigator = () => {
@@ -462,9 +483,9 @@ export default ProductsNavigator = () => {
             // options={prDetalsScreenOptions}
          />
          <ProductsStackNavigator.Screen
-            name="ProductSearch"
-            component={ProductsSearch}
-            // options={cartScreenOptions}
+            name="SearchNavigator"
+            component={SearchNavigator}
+            options={{ headerShown: false }}
          />
          <ProductsStackNavigator.Screen
             name="OrderNavigator"

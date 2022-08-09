@@ -74,7 +74,6 @@ const ChooseWareHouse = (props) => {
                         );
                         const a = "Доставка до пункту видачі";
                         if (user.deliveryType != a) {
-                           console.log("here");
                            dispatch(authActions.changeUserDeliveryType(1, a));
                         }
 
@@ -94,7 +93,6 @@ const ChooseWareHouse = (props) => {
                         }}
                      >
                         <View style={{}}>
-                           {/* {console.log(itemData.item)} */}
                            <Text style={{ fontSize: 16, fontWeight: "500" }}>
                               {itemData.item.Description}
                            </Text>

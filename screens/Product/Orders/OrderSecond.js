@@ -75,7 +75,6 @@ const OrderSecond = (props) => {
 
    useEffect(() => {
       dispatch(orderActions.fetchOrders(1, cartId));
-      console.log(order);
    }, [inpCoupon]);
 
    const isFocused = useIsFocused();

@@ -17,7 +17,9 @@ class Product {
       video,
       warranty,
       price,
-      is_available
+      is_available,
+      commentCount,
+      rating
    ) {
       this.id = id;
       this.slug = slug;
@@ -37,6 +39,8 @@ class Product {
       this.warranty = warranty;
       this.price = price;
       this.isAvailable = is_available;
+      this.commentCount = commentCount;
+      this.rating = rating;
    }
 }
 export default Product;

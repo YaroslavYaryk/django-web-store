@@ -39,7 +39,6 @@ export default (state = initialState, action) => {
          usss.middleName = action.middleName;
          usss.phone = action.phone;
          usss.livingPlace = action.livingPlace;
-         console.log(state.user, usss);
          return {
             ...state,
             user: usss,

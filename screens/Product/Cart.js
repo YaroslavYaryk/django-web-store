@@ -27,12 +27,10 @@ const Cart = (props) => {
    const orders = useSelector((state) => state.orders.orders);
    const userId = useSelector((state) => state.auth.userId);
    const user = useSelector((state) => state.auth.user);
-   // console.log(user);
    const [isLoading, setIsLoading] = useState(false);
    const [productDelete, setProductDelete] = useState(null);
    const [fetch, setfetch] = useState(0);
    const dispatch = useDispatch();
-   // console.log(orders);
 
    useEffect(() => {
       dispatch(authActions.fetchUserInfo(userId));

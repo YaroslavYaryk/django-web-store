@@ -36,8 +36,6 @@ const ChoosePlaceScreen = (props) => {
       ? props.route.params.redirectToDelivery
       : props.route.params.params.redirectToDelivery;
 
-   console.log(redirectToDelivery);
-
    const dispatch = useDispatch();
 
    const changeTextHandler = (text) => {
@@ -135,7 +133,6 @@ const ChoosePlaceScreen = (props) => {
                      >
                         {cities.length && !defaultDataQuery ? (
                            <View style={{}}>
-                              {/* {console.log(itemData.item)} */}
                               <Text style={{ fontSize: 16, fontWeight: "500" }}>
                                  {itemData.item.Description.split(" ")[0]}
                               </Text>

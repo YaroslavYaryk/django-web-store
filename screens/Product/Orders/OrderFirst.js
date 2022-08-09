@@ -30,7 +30,6 @@ const OrderFirst = (props) => {
    }, []);
 
    const user = useSelector((state) => state.auth.user);
-   // console.log(user);
 
    const cartId = props.route.params.cartId
       ? props.route.params.cartId
@@ -38,7 +37,6 @@ const OrderFirst = (props) => {
    const order = useSelector((state) =>
       state.orders.orders.find((elem) => elem.cartId === cartId)
    );
-   // console.log(order);
 
    const [inpSurName, setInpSurName] = useState(user.lastName);
    const [inpName, setInpName] = useState(user.firstName);

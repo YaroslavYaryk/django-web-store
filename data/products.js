@@ -23,7 +23,9 @@ const PRODUCTS = [
       "none",
       2,
       27000,
-      true
+      true,
+      15,
+      4
    ),
    new Product(
       2,
@@ -43,7 +45,9 @@ const PRODUCTS = [
       "none",
       2,
       2700,
-      true
+      true,
+      10,
+      3
    ),
    new Product(
       3,
@@ -65,7 +69,9 @@ const PRODUCTS = [
       "none",
       2,
       27000,
-      true
+      true,
+      1,
+      5
    ),
 ];
 

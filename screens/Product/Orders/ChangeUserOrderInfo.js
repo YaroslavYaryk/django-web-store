@@ -31,7 +31,6 @@ const ChangeUserOrderInfo = (props) => {
    }, []);
 
    const user = useSelector((state) => state.auth.user);
-   // console.log(user);
 
    const cartId = props.route.params.cartId
       ? props.route.params.cartId

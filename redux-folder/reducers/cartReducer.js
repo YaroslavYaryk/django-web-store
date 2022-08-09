@@ -37,7 +37,6 @@ const cartReducer = (state = initialState, action) => {
 
       case DELETE_ONE_PRODUCT_FROM_CART:
          const cart1 = state.cartProducts;
-         console.log(action);
          const productIndex = cart1.products.findIndex(
             (prod) => prod.productId === action.productId
          );

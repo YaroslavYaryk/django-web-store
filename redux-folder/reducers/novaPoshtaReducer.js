@@ -10,7 +10,6 @@ const novaPoshtaReducer = (state = initialState, action) => {
       case READ_CITIES:
          if (action.cities) {
             if (action.cities[0]) {
-               console.log("here1");
                return { ...state, cities: action.cities[0].data };
             } else {
                return { ...state, cities: action.cities.data };

@@ -29,13 +29,21 @@ const ProductItem = (props) => {
          setLikeImage("hearto");
       }
    };
-
    return (
-      <View style={styles.product}>
+      <View
+         style={[
+            styles.product,
+            {
+               marginVertical:
+                  props.showMethod == "vertical" ? props.margVert : 0,
+               paddingVertical: props.showMethod == "vertical" ? 20 : 0,
+            },
+         ]}
+      >
          <View style={styles.touchable}>
             <TouchableCmp onPress={props.onSelect} useForeground>
                <View style={{ alignItems: "center" }}>
-                  <View style={styles.imageContainer}>
+                  <View style={[styles.imageContainer, ,]}>
                      <Image
                         style={styles.image}
                         source={{
@@ -82,7 +90,10 @@ const ProductItem = (props) => {
                            flexDirection: "row",
                         }}
                      >
-                        <RatingItem stars={4} reviews={15} />
+                        <RatingItem
+                           stars={props.item.rating}
+                           reviews={props.item.commentCount}
+                        />
                         <Text style={{ fontSize: 11, paddingTop: 3 }}>
                            {" "}
                            Відгуки
@@ -93,11 +104,10 @@ const ProductItem = (props) => {
                      <View style={styles.titleBlock}>
                         <Text style={styles.price}>
                            {props.item.price}
-                           <Text style={{ fontSize: 16 }}>₴</Text>
+                           <Text style={{ fontSize: 16 }}> ₴</Text>
                         </Text>
                         <TouchableOpacity
                            onPress={() => {
-                              console.log("added to cart");
                               props.addProductToCart(
                                  props.item.id,
                                  props.item.name,
