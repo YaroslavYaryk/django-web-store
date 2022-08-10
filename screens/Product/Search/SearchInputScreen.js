@@ -52,7 +52,7 @@ const SearchInputScreen = (props) => {
                flexDirection: "row",
                justifyContent: "space-between",
                alignItems: "center",
-               borderBottomWidth: 1,
+               borderBottomWidth: 0.5,
             }}
          >
             <View>
@@ -72,10 +72,10 @@ const SearchInputScreen = (props) => {
                   value={searchValue}
                   onChangeText={(el) => onSearchItemChange(el)}
                   // label={"Search"}
-                  underlineColor="white"
+                  underlineColor="#F2F2F2"
                   activeOutlineColor="green"
                   color="red"
-                  activeUnderlineColor="#F2F4F6"
+                  activeUnderlineColor="#F3F5F6"
                   selectionColor="black"
                   right={<TextInput.Icon name="home-search-outline" />}
                />

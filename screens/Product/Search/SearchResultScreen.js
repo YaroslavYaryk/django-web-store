@@ -12,7 +12,7 @@ import {
    SafeAreaView,
 } from "react-native";
 import Colors from "../../../constants/Colors";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import * as productActions from "../../../redux-folder/actions/productActions";
 import ProductItem from "../../../components/ProductItem";
 import { FlatGrid } from "react-native-super-grid";
@@ -20,6 +20,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { Feather, Octicons, AntDesign, FontAwesome } from "@expo/vector-icons";
 import BottomPopup from "../../../components/BottomPopup";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useWindowDimensions } from "react-native";
+import DrawerFilter from "../Filter/DrawerFilter";
 
 const popupList = [
    { id: 0, name: "За датою", action: "date" },
@@ -38,6 +40,12 @@ const SearchResultScreen = (props) => {
    const [error, setError] = useState(null);
    const [visible, setVisible] = useState(false);
    const [showMethod, setShowMethod] = useState(2);
+
+   const [currentTab, setCurrentTab] = useState("Home");
+   // To get the curretn Status of menu ...
+   const [showMenu, setShowMenu] = useState(false);
+
+   const { width } = useWindowDimensions();
 
    const close = () => {
       setIsShow(false);
@@ -98,143 +106,227 @@ const SearchResultScreen = (props) => {
       await dispatch(productActions.sortProducts(sortAction, searchProducts));
    };
 
+   const closeSideBar = () => {
+      Animated.timing(offsetValue, {
+         // YOur Random Value...
+         toValue: showMenu ? 0 : -230,
+         duration: 300,
+         useNativeDriver: true,
+      }).start();
+      setShowMenu(!showMenu);
+   };
+
+   const offsetValue = useRef(new Animated.Value(0)).current;
    return (
-      <View>
-         <Animated.View
-            style={{
-               transform: [{ translateY: translateY }],
-               elevation: 4,
-               zIndex: 0,
-            }}
-         >
-            <View
+      <View style={{ flex: 1 }}>
+         <SafeAreaView style={[styles.container]}>
+            <DrawerFilter
+               width={width}
+               closeSideBar={closeSideBar}
+               resultCount={searchProducts.length}
+            />
+
+            <Animated.View
                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  borderBottomWidth: 1,
-                  borderBottomColor: "grey",
-                  paddingVertical: 5,
-                  paddingHorizontal: 20,
-                  alignItems: "center",
+                  flexGrow: 1,
+                  backgroundColor: "white",
+                  position: "absolute",
+                  top: 0,
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  paddingHorizontal: 15,
+                  paddingVertical: 20,
+                  borderRadius: showMenu ? 15 : 0,
+                  // Transforming View...
+                  transform: [{ translateX: offsetValue }],
                }}
             >
-               <View>
-                  <TouchableOpacity
-                     style={{}}
-                     onPress={() => {
-                        setIsShow(!isShow);
+               <Animated.View
+                  style={{
+                     transform: [{ translateY: translateY }],
+                     // elevation: 4,
+                     zIndex: 0,
+                     marginTop: -20,
+                     width: width,
+                     marginLeft: -15,
+                     // borderWidth: 1,
+                  }}
+               >
+                  <View
+                     style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        borderBottomWidth: 1,
+                        borderBottomColor: "grey",
+                        paddingVertical: 5,
+                        paddingHorizontal: 20,
+                        alignItems: "center",
                      }}
                   >
-                     <View style={styles.stickyBottomOrderBlockInner}>
-                        <FontAwesome
-                           name="unsorted"
-                           size={24}
-                           color={Colors.primaryColor}
-                        />
-                        <View style={styles.stickyBottomOrderBlockInnerText}>
-                           <Text style={styles.stickyBottomOrderText}>
-                              Сортувати
-                           </Text>
-                           <Text style={styles.stickyBottomOrderTextSortMethod}>
-                              {sortMethod.name}
-                           </Text>
-                        </View>
+                     <View>
+                        <TouchableOpacity
+                           style={{}}
+                           onPress={() => {
+                              setIsShow(!isShow);
+                           }}
+                        >
+                           <View style={styles.stickyBottomOrderBlockInner}>
+                              <FontAwesome
+                                 name="unsorted"
+                                 size={24}
+                                 color={Colors.primaryColor}
+                              />
+                              <View
+                                 style={styles.stickyBottomOrderBlockInnerText}
+                              >
+                                 <Text style={styles.stickyBottomOrderText}>
+                                    Сортувати
+                                 </Text>
+                                 <Text
+                                    style={
+                                       styles.stickyBottomOrderTextSortMethod
+                                    }
+                                 >
+                                    {sortMethod.name}
+                                 </Text>
+                              </View>
+                           </View>
+                        </TouchableOpacity>
                      </View>
-                  </TouchableOpacity>
-               </View>
-               <View>
-                  <TouchableOpacity style={{}} onPress={() => {}}>
-                     <View style={styles.stickyBottomOrderBlockInner}>
-                        <AntDesign
-                           name="filter"
-                           size={24}
-                           color={Colors.primaryColor}
-                        />
-                        <View style={styles.stickyBottomOrderBlockInnerText}>
-                           <Text style={styles.stickyBottomOrderText}>
-                              Фільтр
-                           </Text>
-                           <Text style={styles.stickyBottomOrderTextSortMethod}>
-                              Знайдено {searchProducts.length} тов...
-                           </Text>
-                        </View>
+                     <View>
+                        <TouchableOpacity
+                           style={{}}
+                           onPress={() => {
+                              Animated.timing(offsetValue, {
+                                 // YOur Random Value...
+                                 toValue: showMenu ? 0 : -230,
+                                 duration: 300,
+                                 useNativeDriver: true,
+                              }).start();
+
+                              //
+
+                              setShowMenu(!showMenu);
+                           }}
+                        >
+                           <View style={styles.stickyBottomOrderBlockInner}>
+                              <AntDesign
+                                 name="filter"
+                                 size={24}
+                                 color={Colors.primaryColor}
+                              />
+                              <View
+                                 style={styles.stickyBottomOrderBlockInnerText}
+                              >
+                                 <Text style={styles.stickyBottomOrderText}>
+                                    Фільтр
+                                 </Text>
+                                 <Text
+                                    style={
+                                       styles.stickyBottomOrderTextSortMethod
+                                    }
+                                 >
+                                    Знайдено {searchProducts.length} тов...
+                                 </Text>
+                              </View>
+                           </View>
+                        </TouchableOpacity>
                      </View>
-                  </TouchableOpacity>
-               </View>
-               <View>
-                  {showMethod == 1 ? (
-                     <Octicons
-                        name="three-bars"
-                        size={24}
-                        color={Colors.primaryColor}
-                        onPress={() => setShowMethod(2)}
+                     <View>
+                        {showMethod == 1 ? (
+                           <Octicons
+                              name="three-bars"
+                              size={24}
+                              color={Colors.primaryColor}
+                              onPress={() => setShowMethod(2)}
+                           />
+                        ) : (
+                           <Feather
+                              name="square"
+                              size={24}
+                              color={Colors.primaryColor}
+                              onPress={() => setShowMethod(1)}
+                           />
+                        )}
+                     </View>
+                  </View>
+               </Animated.View>
+               <View style={{ marginLeft: -15, width }}>
+                  {showMethod == 2 ? (
+                     <FlatGrid
+                        data={searchProducts}
+                        keyExtractor={(item) => item.id}
+                        spacing={20}
+                        renderItem={(itemData) => (
+                           <ProductItem
+                              item={itemData.item}
+                              addProductToCart={addProductToCart}
+                              setVisible={setVisible}
+                              onSelect={() => {
+                                 getProductDetails(
+                                    itemData.item.id,
+                                    itemData.item.onlyName
+                                 );
+                              }}
+                           ></ProductItem>
+                        )}
                      />
                   ) : (
-                     <Feather
-                        name="square"
-                        size={24}
-                        color={Colors.primaryColor}
-                        onPress={() => setShowMethod(1)}
+                     <FlatList
+                        data={searchProducts}
+                        keyExtractor={(item) => item.id}
+                        spacing={20}
+                        renderItem={(itemData) => (
+                           <ProductItem
+                              item={itemData.item}
+                              addProductToCart={addProductToCart}
+                              setVisible={setVisible}
+                              onSelect={() => {
+                                 getProductDetails(
+                                    itemData.item.id,
+                                    itemData.item.onlyName
+                                 );
+                              }}
+                              margVert={10}
+                              showMethod={
+                                 showMethod == 1 ? "vertical" : "horisontal"
+                              }
+                           ></ProductItem>
+                        )}
                      />
                   )}
                </View>
-            </View>
-         </Animated.View>
-         {showMethod == 2 ? (
-            <FlatGrid
-               data={searchProducts}
-               keyExtractor={(item) => item.id}
-               spacing={20}
-               renderItem={(itemData) => (
-                  <ProductItem
-                     item={itemData.item}
-                     addProductToCart={addProductToCart}
-                     setVisible={setVisible}
-                     onSelect={() => {
-                        getProductDetails(
-                           itemData.item.id,
-                           itemData.item.onlyName
-                        );
-                     }}
-                  ></ProductItem>
-               )}
-            />
-         ) : (
-            <FlatList
-               data={searchProducts}
-               keyExtractor={(item) => item.id}
-               spacing={20}
-               renderItem={(itemData) => (
-                  <ProductItem
-                     item={itemData.item}
-                     addProductToCart={addProductToCart}
-                     setVisible={setVisible}
-                     onSelect={() => {
-                        getProductDetails(
-                           itemData.item.id,
-                           itemData.item.onlyName
-                        );
-                     }}
-                     margVert={10}
-                     showMethod={showMethod == 1 ? "vertical" : "horisontal"}
-                  ></ProductItem>
-               )}
-            />
-         )}
-         <SafeAreaView style={{ flex: 1 }}>
-            <BottomPopup
-               show={isShow}
-               title={"Сортування"}
-               animationType={"fade"}
-               closePopup={close}
-               data={popupList}
-               haveOutsideTouch={true}
-               setSortMethod={setSortMethod}
-               sortProducts={HandleSortProducts}
-            />
+               <SafeAreaView style={{ flex: 1 }}>
+                  <BottomPopup
+                     show={isShow}
+                     title={"Сортування"}
+                     animationType={"fade"}
+                     closePopup={close}
+                     data={popupList}
+                     haveOutsideTouch={true}
+                     setSortMethod={setSortMethod}
+                     sortProducts={HandleSortProducts}
+                  />
+               </SafeAreaView>
+            </Animated.View>
          </SafeAreaView>
       </View>
    );
+};
+
+export const screenOptions = (navData) => {
+   const props = navData.navigation.getState();
+
+   // if (props.routes[0].params) {
+   //    dispatch = props.routes[0].params.dispatch;
+   //    setdeleteAll = props.routes[0].params.setdeleteAll;
+   //    deleteAll = props.routes[0].params.deleteAll;
+   // }
+
+   return {
+      headerTitle: "Search",
+   };
 };
 
 const styles = StyleSheet.create({
@@ -284,6 +376,11 @@ const styles = StyleSheet.create({
       flex: 1,
       justifyContent: "center",
       alignItems: "center",
+   },
+   container: {
+      flex: 1,
+      alignItems: "flex-start",
+      justifyContent: "flex-start",
    },
 });
 export default SearchResultScreen;

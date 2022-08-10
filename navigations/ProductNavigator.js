@@ -42,6 +42,7 @@ import PaymentMethodsScreen from "../screens/Product/Orders/PaymentMethodsScreen
 import ChangeUserOrderInfo from "../screens/Product/Orders/ChangeUserOrderInfo";
 import SearchInputScreen from "../screens/Product/Search/SearchInputScreen";
 import SearchResultScreen from "../screens/Product/Search/SearchResultScreen";
+import { screenOptions as searchResultScreenOptions } from "../screens/Product/Search/SearchResultScreen";
 
 const defaultNavOptions = {
    headerStyle: {
@@ -454,7 +455,7 @@ export const SearchNavigator = () => {
          <SearchStackNavigator.Screen
             name="SearchResultScreen"
             component={SearchResultScreen}
-            // options={{ headerShown: false }}
+            options={searchResultScreenOptions}
          />
       </SearchStackNavigator.Navigator>
    );
