@@ -267,6 +267,25 @@ export const CartNavigator = () => {
    );
 };
 
+const SearchStackNavigator = createStackNavigator();
+
+export const SearchNavigator = () => {
+   return (
+      <SearchStackNavigator.Navigator screenOptions={defaultNavOptions}>
+         <SearchStackNavigator.Screen
+            name="SearchInput"
+            component={SearchInputScreen}
+            options={{ headerShown: false }}
+         />
+         <SearchStackNavigator.Screen
+            name="SearchResultScreen"
+            component={SearchResultScreen}
+            options={searchResultScreenOptions}
+         />
+      </SearchStackNavigator.Navigator>
+   );
+};
+
 const ProductListStackNavigator = createStackNavigator();
 
 export const ProductListNavigator = () => {
@@ -276,6 +295,11 @@ export const ProductListNavigator = () => {
             name="ProductList"
             component={ProductList}
             options={productListScreenOptions}
+         />
+         <ProductListStackNavigator.Screen
+            name="SearchNavigator"
+            component={SearchNavigator}
+            options={{ headerShown: false }}
          />
       </ProductListStackNavigator.Navigator>
    );
@@ -442,25 +466,6 @@ export const OrderNavigator = () => {
    );
 };
 
-const SearchStackNavigator = createStackNavigator();
-
-export const SearchNavigator = () => {
-   return (
-      <SearchStackNavigator.Navigator screenOptions={defaultNavOptions}>
-         <SearchStackNavigator.Screen
-            name="SearchInput"
-            component={SearchInputScreen}
-            options={{ headerShown: false }}
-         />
-         <SearchStackNavigator.Screen
-            name="SearchResultScreen"
-            component={SearchResultScreen}
-            options={searchResultScreenOptions}
-         />
-      </SearchStackNavigator.Navigator>
-   );
-};
-
 const ProductsStackNavigator = createStackNavigator();
 
 export default ProductsNavigator = () => {
@@ -483,11 +488,7 @@ export default ProductsNavigator = () => {
             component={ProductFullDescription}
             // options={prDetalsScreenOptions}
          />
-         <ProductsStackNavigator.Screen
-            name="SearchNavigator"
-            component={SearchNavigator}
-            options={{ headerShown: false }}
-         />
+
          <ProductsStackNavigator.Screen
             name="OrderNavigator"
             component={OrderNavigator}

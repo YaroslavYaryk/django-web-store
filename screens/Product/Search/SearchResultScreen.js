@@ -107,9 +107,10 @@ const SearchResultScreen = (props) => {
    };
 
    const closeSideBar = () => {
+      console.log(offsetValue);
       Animated.timing(offsetValue, {
          // YOur Random Value...
-         toValue: showMenu ? 0 : -230,
+         toValue: showMenu ? 0 : -330,
          duration: 300,
          useNativeDriver: true,
       }).start();

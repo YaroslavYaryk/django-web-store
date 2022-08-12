@@ -10,7 +10,7 @@ import {
    FlatList,
 } from "react-native";
 import { TextInput } from "react-native-paper";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Colors from "../../../constants/Colors";
 import { useSelector, useDispatch } from "react-redux";
 import * as productActions from "../../../redux-folder/actions/productActions";
@@ -20,6 +20,8 @@ import { Feather } from "@expo/vector-icons";
 
 const SearchInputScreen = (props) => {
    const searchProducts = useSelector((state) => state.products.searchProducts);
+
+   const ref = useRef(null);
 
    const [searchValue, setSearchValue] = useState("");
 
@@ -33,6 +35,10 @@ const SearchInputScreen = (props) => {
          },
       });
    };
+
+   useEffect(() => {
+      ref.current.focus();
+   }, []);
 
    const onSearchItemChange = (el) => {
       setSearchValue(el);
@@ -67,6 +73,7 @@ const SearchInputScreen = (props) => {
             </View>
             <View style={{ width: "92%" }}>
                <TextInput
+                  ref={ref}
                   style={{ backgroundColor: "#F2F4F6" }}
                   //   mode="outlined"
                   value={searchValue}
