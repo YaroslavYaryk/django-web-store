@@ -5,6 +5,7 @@ import {
    Image,
    FlatList,
    StyleSheet,
+   Animated,
    Button,
    TouchableOpacity,
    ActivityIndicator,
@@ -15,12 +16,14 @@ import Colors from "../../constants/Colors";
 import { FlatGrid } from "react-native-super-grid";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import CustomHeaderButton from "../../components/CustomHeaderButton";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import * as cartActions from "../../redux-folder/actions/cart";
 import CartPopup from "../../components/wrappers/CartPopup";
 import { TextInput } from "react-native-paper";
 import { Ionicons } from "@expo/vector-icons";
 import * as productActions from "../../redux-folder/actions/productActions";
+import { Feather } from '@expo/vector-icons'; 
+import ButtonScrollToTop from "../../components/Filter/ButtonScrollToTop";
 
 const ProductsList = (props) => {
    const products = useSelector((state) => state.products.products);
@@ -28,6 +31,11 @@ const ProductsList = (props) => {
    const [fetch, setArr] = useState(0);
    const [visible, setVisible] = useState(false);
    const [searchValue, setSearchValue] = useState("");
+   const [buttonToTopVisible, setButtonToTopVisible] = useState(false)
+
+   const fadeAnim = useRef(new Animated.Value(0)).current
+
+   const ref = useRef()
 
    useEffect(() => {
       props.navigation.setParams({
@@ -70,6 +78,23 @@ const ProductsList = (props) => {
             <Text>There are no products</Text>
          </View>
       );
+   }
+
+   const scrollToTop = () =>{
+      ref.current.scrollToOffset({ offset: 0, animated: true })
+   }
+
+   const scrollHandler = (e) =>{
+      if (e.nativeEvent.contentOffset.y > 300){
+         setButtonToTopVisible(true)
+      }else{
+         setButtonToTopVisible(false)
+      }
+      Animated.timing(fadeAnim, {
+         toValue: buttonToTopVisible?1:0, // Animate to opacity: 1 (opaque)
+         duration: 200, // Make it take a while
+         useNativeDriver: true
+     }).start();
    }
 
    return (
@@ -121,6 +146,10 @@ const ProductsList = (props) => {
             </View> */}
          </View>
          <FlatGrid
+            onScroll={
+               scrollHandler
+            }
+            ref={ref}
             data={products}
             keyExtractor={(item) => item.id}
             spacing={20}
@@ -139,6 +168,7 @@ const ProductsList = (props) => {
             )}
          />
          <CartPopup visible={visible} setVisible={setVisible} />
+         <ButtonScrollToTop fadeAnim={fadeAnim} scrollToTop={scrollToTop}  />
       </View>
    );
 };
@@ -163,12 +193,14 @@ export const screenOptions = (navData) => {
 const styles = StyleSheet.create({
    wrapper: {
       width: "100%",
+      marginBottom:70
    },
    center: {
       flex: 1,
       justifyContent: "center",
       alignItems: "center",
    },
+
 });
 
 export default ProductsList;

@@ -1,7 +1,7 @@
 class HardDrive {
-   constructor(id, capacity, type) {
+   constructor(id, name, type) {
       this.id = id;
-      this.capacity = capacity;
+      this.name = name;
       this.type = type;
    }
 }

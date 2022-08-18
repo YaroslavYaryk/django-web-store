@@ -19,6 +19,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { toggleAnimation } from "../../constants/animation";
 import { FontAwesome } from "@expo/vector-icons";
 import Colors from "../../constants/Colors";
+import FilterItem from "./FIlterItem";
 
 const a = [
    { name: 1 },
@@ -48,11 +49,9 @@ const FilterDropDownItem = (props) => {
 
          var newSelected;
          if (elemToChange.selected == 1) {
-            console.log("1");
             newSelected = props.selectedOptions;
             newSelected.push(elemToChange);
          } else {
-            console.log(2);
             newSelected = props.selectedOptions.filter(
                (elem) => elem.id !== elemToChange.id
             );
@@ -124,34 +123,11 @@ const FilterDropDownItem = (props) => {
                <View style={{ overflow: "hidden" }}>
                   {props.query &&
                      props.query.map((el) => (
-                        <View
+                        <FilterItem
                            key={el.id + Math.random()}
-                           style={{
-                              flexDirection: "row",
-                              marginVertical: 5,
-                              alignItems: "center",
-                              justifyContent: "space-between",
-                              paddingHorizontal: 10,
-                           }}
-                        >
-                           <FontAwesome
-                              name={el.selected ? "check-square-o" : "square-o"}
-                              size={24}
-                              color={Colors.primaryColor}
-                              onPress={() => {
-                                 selectProductOption(el.id);
-                              }}
-                           />
-
-                           <View style={{ padding: 5 }} key={el.id}>
-                              <Text style={{}}>{el.name}</Text>
-                           </View>
-                           <FontAwesome
-                              name="info-circle"
-                              size={20}
-                              color="black"
-                           />
-                        </View>
+                           el={el}
+                           selectProductOption={selectProductOption}
+                        />
                      ))}
                   {/* <ScrollView>
                         {a.map((el) => (

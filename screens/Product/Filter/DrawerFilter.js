@@ -20,6 +20,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
 import { getValue } from "../../../constants/dictMethods";
 import FilterPriceBlock from "../../../components/Filter/FilterPriceBlock";
+import { Dimensions } from "react-native";
+import Colors from "../../../constants/Colors";
 
 const DrawerFilter = (props) => {
    const filterOptions = useSelector((state) => state.filter);
@@ -29,6 +31,16 @@ const DrawerFilter = (props) => {
          name: elem.name,
          selected: 0,
          type: "brand",
+         info: elem.info,
+      }))
+   );
+   const [selectedProcessors, setSelectedProcessors] = useState(
+      filterOptions.processors.map((elem) => ({
+         id: elem.id,
+         name: elem.name,
+         selected: 0,
+         type: "processor",
+         info: elem.info,
       }))
    );
 
@@ -40,6 +52,11 @@ const DrawerFilter = (props) => {
 
    const optionDict = [
       { type: "brand", value: selectedBrands, set: setSelectedBrands },
+      {
+         type: "processor",
+         value: selectedProcessors,
+         set: setSelectedProcessors,
+      },
    ];
 
    useEffect(() => {
@@ -51,8 +68,12 @@ const DrawerFilter = (props) => {
       setSelectedOptions([...elements]);
    };
 
-   const setOptions = (elements) => {
+   const setBrandsOptions = (elements) => {
       setSelectedBrands([...elements]);
+   };
+
+   const setProcessorsOptions = (elements) => {
+      setSelectedProcessors([...elements]);
    };
 
    const unSelectOption = (id, type) => {
@@ -68,17 +89,30 @@ const DrawerFilter = (props) => {
       setPrice([minValue, maxValue]);
    };
 
-   const cancelFilterOption = (id, type) => {
-      const newSelectedOptions = selectedOptions.filter(
-         (el) => el.type == type && el.id != id
-      );
-      setSelectedOptions([...newSelectedOptions]);
+   const cancelFilterOption = (id, type, superNode = false) => {
+      if (!superNode) {
+         const newSelectedOptions = selectedOptions.filter(
+            (el) => el.type == type && el.id != id
+         );
+         setSelectedOptions([...newSelectedOptions]);
+      }
 
       if (type == "priceBlock") {
-         console.log("here");
          setDefaultPrice();
       } else {
          unSelectOption(id, type);
+      }
+   };
+
+   const cancelAllOptions = () => {
+      for (let index = 0; index < selectedOptions.length; index++) {
+         console.log(index);
+         cancelFilterOption(
+            selectedOptions[index].id,
+            selectedOptions[index].type,
+            true
+         );
+         setSelectedOptions([]);
       }
    };
 
@@ -151,15 +185,20 @@ const DrawerFilter = (props) => {
                   </View>
                ))}
             </View>
-            <View style={{ height: "100%" }}>
-               <ScrollView>
+            <ScrollView style={{ height: "100%" }}>
+               <View
+                  style={{
+                     height: Dimensions.get("window").height * 2,
+                  }}
+               >
                   <FilterDropDownItem
                      title={"Бренд:"}
                      query={selectedBrands}
-                     setOptions={setOptions}
+                     setOptions={setBrandsOptions}
                      selectedOptions={selectedOptions}
                      setSelectedOptions={selectFilterOption}
                   />
+
                   <FilterPriceBlock
                      title={"Ціна:"}
                      selectedOptions={selectedOptions}
@@ -167,8 +206,47 @@ const DrawerFilter = (props) => {
                      price={price}
                      setPrice={setPrice}
                   />
-               </ScrollView>
-               {/* <FilterDropDownItem query={{}} /> */}
+                  <FilterDropDownItem
+                     title={"Процесор:"}
+                     query={selectedProcessors}
+                     setOptions={setProcessorsOptions}
+                     selectedOptions={selectedOptions}
+                     setSelectedOptions={selectFilterOption}
+                  />
+                  {/* <FilterDropDownItem query={{}} /> */}
+               </View>
+            </ScrollView>
+         </View>
+         <View
+            style={[
+               {
+                  zIndex: 100,
+                  width: 230,
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  borderWidth: 0.5,
+                  padding: 10,
+                  borderRadius: 10,
+                  backgroundColor: "#F0F0F0",
+               },
+               styles.positionInBottom,
+            ]}
+         >
+            <View style={styles.bottomButtonBlock}>
+               <TouchableOpacity
+                  onPress={() => {
+                     cancelAllOptions();
+                  }}
+               >
+                  <Text style={styles.bottomButtonText}>Скинути</Text>
+               </TouchableOpacity>
+            </View>
+            <Text>|</Text>
+            <View style={styles.bottomButtonBlock}>
+               <TouchableOpacity>
+                  <Text style={styles.bottomButtonText}>Застосувати</Text>
+               </TouchableOpacity>
             </View>
          </View>
       </View>
@@ -182,6 +260,20 @@ const styles = StyleSheet.create({
    },
    HeaderFilterTextSecond: {
       fontSize: 12,
+   },
+   positionInBottom: {
+      position: "absolute",
+      // width: 50,
+      // left: -15,
+      height: 50,
+      bottom: 0,
+      zIndex: 100,
+   },
+   bottomButtonBlock: {},
+   bottomButtonText: {
+      color: Colors.primaryColor,
+      fontSize: 16,
+      fontWeight: "600",
    },
 });
 

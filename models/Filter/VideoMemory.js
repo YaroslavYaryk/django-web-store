@@ -1,7 +1,7 @@
 class VideoMemory {
-   constructor(id, capacity, slug) {
+   constructor(id, name, slug) {
       this.id = id;
-      this.capacity = capacity;
+      this.name = name;
       this.slug = slug;
    }
 }

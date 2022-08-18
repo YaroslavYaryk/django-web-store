@@ -55,9 +55,6 @@ const FilterPriceBlock = (props) => {
       outputRange: ["360deg", "180deg"],
    });
 
-   const [fromValue, setFromValue] = useState(props.price[0]);
-   const [toValue, setToValue] = useState(props.price[1]);
-
    const multiSliderValuesChange = (values) => {
       props.setPrice(values);
       addNewOption();
@@ -82,7 +79,6 @@ const FilterPriceBlock = (props) => {
       }
       props.setSelectedOptions([...selectedOptions]);
    };
-   console.log(props.price, "here");
 
    return (
       <View

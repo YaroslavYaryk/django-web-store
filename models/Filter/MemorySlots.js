@@ -1,7 +1,7 @@
 class MemorySlots {
-   constructor(id, numOfSlots, slug) {
+   constructor(id, name, slug) {
       this.id = id;
-      this.numOfSlots = numOfSlots;
+      this.name = name;
       this.slug = slug;
    }
 }

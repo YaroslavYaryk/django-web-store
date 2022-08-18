@@ -22,6 +22,7 @@ import BottomPopup from "../../../components/BottomPopup";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useWindowDimensions } from "react-native";
 import DrawerFilter from "../Filter/DrawerFilter";
+import ButtonScrollToTop from "../../../components/Filter/ButtonScrollToTop";
 
 const popupList = [
    { id: 0, name: "За датою", action: "date" },
@@ -50,6 +51,32 @@ const SearchResultScreen = (props) => {
    const close = () => {
       setIsShow(false);
    };
+
+
+   const [buttonToTopVisible, setButtonToTopVisible] = useState(false)
+
+   const fadeAnim = useRef(new Animated.Value(0)).current
+
+   const ref = useRef()
+
+   const scrollToTop = () =>{
+      ref.current.scrollToOffset({ offset: 0, animated: true })
+   }
+
+   const scrollHandler = (e) =>{
+      console.log("here")
+      if (e.nativeEvent.contentOffset.y > 300){
+         setButtonToTopVisible(true)
+      }else{
+         setButtonToTopVisible(false)
+      }
+      Animated.timing(fadeAnim, {
+         toValue: buttonToTopVisible?1:0, // Animate to opacity: 1 (opaque)
+         duration: 200, // Make it take a while
+         useNativeDriver: true
+     }).start();
+   }
+
 
    const searchProducts = useSelector((state) => state.products.searchProducts);
 
@@ -256,6 +283,7 @@ const SearchResultScreen = (props) => {
                <View style={{ marginLeft: -15, width }}>
                   {showMethod == 2 ? (
                      <FlatGrid
+                     ref={ref} onScroll={scrollHandler}
                         data={searchProducts}
                         keyExtractor={(item) => item.id}
                         spacing={20}
@@ -275,6 +303,7 @@ const SearchResultScreen = (props) => {
                      />
                   ) : (
                      <FlatList
+                     ref={ref} onScroll={scrollHandler}
                         data={searchProducts}
                         keyExtractor={(item) => item.id}
                         spacing={20}
@@ -298,6 +327,7 @@ const SearchResultScreen = (props) => {
                      />
                   )}
                </View>
+               <ButtonScrollToTop fadeAnim={fadeAnim} scrollToTop={scrollToTop} bottom={30} />
                <SafeAreaView style={{ flex: 1 }}>
                   <BottomPopup
                      show={isShow}
