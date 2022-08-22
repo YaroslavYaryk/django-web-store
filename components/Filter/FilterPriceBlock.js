@@ -73,7 +73,6 @@ const FilterPriceBlock = (props) => {
          });
       } else {
          var newElem = selectedOptions[existedElemIndex];
-         console.log(newElem);
          (newElem.name = `від ${props.price[0]} до ${props.price[1]}`),
             (selectedOptions[existedElemIndex] = newElem);
       }

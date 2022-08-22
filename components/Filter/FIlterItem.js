@@ -45,12 +45,12 @@ const FilterItem = (props) => {
          />
 
          <View style={{ padding: 5 }} key={el.id}>
-            <Text style={{}}>{el.name}</Text>
+            <Text style={{}}>{el.name }{el.type=="hardDrive"?" Гб":""}</Text>
          </View>
          <FontAwesome
             name="info-circle"
             size={20}
-            color="black"
+            color={el.info?"black":"transparent"}
             onPress={() => {
                setShowInfo(!showInfo);
             }}

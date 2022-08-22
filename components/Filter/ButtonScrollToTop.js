@@ -16,7 +16,6 @@ import Colors from "../../constants/Colors";
 
 
 const ButtonScrollToTop = (props) => {
-   console.log(props.bottom)
     return ( <Animated.View style={[styles.buttonScrollToTop, {opacity:props.fadeAnim, bottom:props.bottom?props.bottom:70 }]}><TouchableOpacity onPress={()=>{
         props.scrollToTop()
 

@@ -64,7 +64,6 @@ const SearchResultScreen = (props) => {
    }
 
    const scrollHandler = (e) =>{
-      console.log("here")
       if (e.nativeEvent.contentOffset.y > 300){
          setButtonToTopVisible(true)
       }else{
@@ -134,10 +133,9 @@ const SearchResultScreen = (props) => {
    };
 
    const closeSideBar = () => {
-      console.log(offsetValue);
       Animated.timing(offsetValue, {
          // YOur Random Value...
-         toValue: showMenu ? 0 : -330,
+         toValue: showMenu ? 0 : -280,
          duration: 300,
          useNativeDriver: true,
       }).start();
@@ -228,7 +226,7 @@ const SearchResultScreen = (props) => {
                            onPress={() => {
                               Animated.timing(offsetValue, {
                                  // YOur Random Value...
-                                 toValue: showMenu ? 0 : -230,
+                                 toValue: showMenu ? 0 : -280,
                                  duration: 300,
                                  useNativeDriver: true,
                               }).start();
@@ -363,6 +361,8 @@ export const screenOptions = (navData) => {
 const styles = StyleSheet.create({
    container: {
       flex: 1,
+      width:500,
+      borderWidth:1
    },
    centered: { flex: 1, justifyContent: "center", alignItems: "center" },
    stickyBottomBlock: {

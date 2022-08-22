@@ -43,6 +43,40 @@ const DrawerFilter = (props) => {
          info: elem.info,
       }))
    );
+   const [selectedRams, setSelectedRams] = useState(
+      filterOptions.rams.map((elem) => ({
+         id: elem.id,
+         name: elem.name,
+         selected: 0,
+         type: "ram",
+      }))
+   );
+
+   const [selectedHardDrive, setSelectedHardDrive] = useState(
+      filterOptions.handDrives.map((elem) => ({
+         id: elem.id,
+         name: elem.name,
+         selected: 0,
+         type: "hardDrive",
+      }))
+   );
+   const [selectedMemortTypes, setSelectedMemoryTypes] = useState(
+      filterOptions.memoryTypes.map((elem) => ({
+         id: elem.id,
+         name: elem.name,
+         selected: 0,
+         type: "memoryType",
+      }))
+   );
+
+   const [selectedMemortSlots, setSelectedMemorySlots] = useState(
+      filterOptions.memorySlots.map((elem) => ({
+         id: elem.id,
+         name: elem.name,
+         selected: 0,
+         type: "memorySlots",
+      }))
+   );
 
    const minValue = 2700;
    const maxValue = 99999;
@@ -57,6 +91,12 @@ const DrawerFilter = (props) => {
          value: selectedProcessors,
          set: setSelectedProcessors,
       },
+      {type:"ram", value:selectedRams, set:setSelectedRams},
+      {type:"hardDrive",value: selectedHardDrive, set: setSelectedHardDrive},
+      {type:"memoryType",value: selectedMemortTypes, set: setSelectedMemoryTypes},
+      {type:"memorySlots",value: selectedMemortSlots, set: setSelectedMemorySlots},
+
+
    ];
 
    useEffect(() => {
@@ -74,6 +114,22 @@ const DrawerFilter = (props) => {
 
    const setProcessorsOptions = (elements) => {
       setSelectedProcessors([...elements]);
+   };
+
+   const setRamOptions = (elements) => {
+      setSelectedRams([...elements]);
+   };
+
+   const setHardDriveOptions = (elements) => {
+      setSelectedHardDrive([...elements]);
+   };
+   
+   const setMemoryTypeOptions = (elements) => {
+      setSelectedMemoryTypes([...elements]);
+   };
+
+   const setMemorySlotsOptions = (elements) => {
+      setSelectedMemorySlots([...elements]);
    };
 
    const unSelectOption = (id, type) => {
@@ -106,7 +162,6 @@ const DrawerFilter = (props) => {
 
    const cancelAllOptions = () => {
       for (let index = 0; index < selectedOptions.length; index++) {
-         console.log(index);
          cancelFilterOption(
             selectedOptions[index].id,
             selectedOptions[index].type,
@@ -121,13 +176,13 @@ const DrawerFilter = (props) => {
          style={{
             alignItems: "flex-end",
             padding: 15,
-            width: props.width,
+            width: props.width ,
             flex: 1,
             backgroundColor: "#D9D9D9",
             overflow: "hidden",
          }}
       >
-         <View style={{ width: 200 }}>
+         <View style={{ width: 250 }}>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
                <View>
                   <Ionicons
@@ -139,7 +194,7 @@ const DrawerFilter = (props) => {
                      }}
                   />
                </View>
-               <View style={{ marginLeft: 15 }}>
+               <View style={{ marginLeft: 10 }}>
                   <View>
                      <Text style={styles.HeaderFilterText}>Фільтр</Text>
                      <Text style={styles.HeaderFilterTextSecond}>
@@ -188,7 +243,7 @@ const DrawerFilter = (props) => {
             <ScrollView style={{ height: "100%" }}>
                <View
                   style={{
-                     height: Dimensions.get("window").height * 2,
+                     height: Dimensions.get("window").height * 3,
                   }}
                >
                   <FilterDropDownItem
@@ -213,6 +268,34 @@ const DrawerFilter = (props) => {
                      selectedOptions={selectedOptions}
                      setSelectedOptions={selectFilterOption}
                   />
+                  <FilterDropDownItem
+                     title={"Оперативна пам'ять:"}
+                     query={selectedRams}
+                     setOptions={setRamOptions}
+                     selectedOptions={selectedOptions}
+                     setSelectedOptions={selectFilterOption}
+                  />
+                   <FilterDropDownItem
+                     title={"Кількість слотів оперативної пам'яті:"}
+                     query={selectedMemortSlots}
+                     setOptions={setMemorySlotsOptions}
+                     selectedOptions={selectedOptions}
+                     setSelectedOptions={selectFilterOption}
+                  />
+                  <FilterDropDownItem
+                     title={"Постійна пам'ять:"}
+                     query={selectedHardDrive}
+                     setOptions={setHardDriveOptions}
+                     selectedOptions={selectedOptions}
+                     setSelectedOptions={selectFilterOption}
+                  />
+                  <FilterDropDownItem
+                     title={"Тип пам'яті:"}
+                     query={selectedMemortTypes}
+                     setOptions={setMemoryTypeOptions}
+                     selectedOptions={selectedOptions}
+                     setSelectedOptions={selectFilterOption}
+                  />
                   {/* <FilterDropDownItem query={{}} /> */}
                </View>
             </ScrollView>
@@ -221,7 +304,7 @@ const DrawerFilter = (props) => {
             style={[
                {
                   zIndex: 100,
-                  width: 230,
+                  width: 280,
                   flexDirection: "row",
                   justifyContent: "space-between",
                   alignItems: "center",

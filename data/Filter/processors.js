@@ -13,7 +13,7 @@ const PROCESSORS = [
    new Processor(5, "AMD Razen 5", "amd-razen-5"),
    new Processor(6, "AMD Razen 7", "amd-razen-7"),
    new Processor(7, "AMD Razen 9", "AMD-Razen-9"),
-   new Processor(8, "snapdragon 765g", "snapdragon-765g"),
+   new Processor(8, "snapdragon 765g", "snapdragon-765g","some proc"),
    new Processor(9, "Intel Celeron", "intel-celeron"),
    new Processor(10, "Intel Pentium", "intel-pentium"),
 ];
