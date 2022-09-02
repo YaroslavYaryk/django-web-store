@@ -3,7 +3,7 @@ class OperatSystem {
       this.id = id;
       this.name = name;
       this.slug = slug;
-      this.info=info
+      this.info = info;
    }
 }
 export default OperatSystem;

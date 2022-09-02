@@ -49,6 +49,7 @@ const DrawerFilter = (props) => {
          name: elem.name,
          selected: 0,
          type: "ram",
+         info: elem.info,
       }))
    );
 
@@ -58,6 +59,7 @@ const DrawerFilter = (props) => {
          name: elem.name,
          selected: 0,
          type: "hardDrive",
+         info: elem.info,
       }))
    );
    const [selectedMemortTypes, setSelectedMemoryTypes] = useState(
@@ -66,6 +68,7 @@ const DrawerFilter = (props) => {
          name: elem.name,
          selected: 0,
          type: "memoryType",
+         info: elem.info,
       }))
    );
 
@@ -75,6 +78,57 @@ const DrawerFilter = (props) => {
          name: elem.name,
          selected: 0,
          type: "memorySlots",
+         info: elem.info,
+      }))
+   );
+
+   const [selectedOperSystem, setSelectedOperSystem] = useState(
+      filterOptions.operatSystems.map((elem) => ({
+         id: elem.id,
+         name: elem.name,
+         selected: 0,
+         type: "operatSystems",
+         info: elem.info,
+      }))
+   );
+
+   const [selectedScreenDiagonal, setSelectedScreenDiagonal] = useState(
+      filterOptions.screenDiagonals.map((elem) => ({
+         id: elem.id,
+         name: elem.name,
+         selected: 0,
+         type: "screenDiagonals",
+         info: elem.info,
+      }))
+   );
+
+   const [selectedScreenTypes, setSelectedScreenTypes] = useState(
+      filterOptions.screenTypes.map((elem) => ({
+         id: elem.id,
+         name: elem.name,
+         selected: 0,
+         type: "screenTypes",
+         info: elem.info,
+      }))
+   );
+
+   const [selectedVideoCards, setSelectedVideoCards] = useState(
+      filterOptions.videoCards.map((elem) => ({
+         id: elem.id,
+         name: elem.name,
+         selected: 0,
+         type: "videoCards",
+         info: elem.info,
+      }))
+   );
+
+   const [selectedVideoMemories, setSelectedVideoMemories] = useState(
+      filterOptions.videoMemories.map((elem) => ({
+         id: elem.id,
+         name: elem.name,
+         selected: 0,
+         type: "videoMemories",
+         info: elem.info,
       }))
    );
 
@@ -91,12 +145,47 @@ const DrawerFilter = (props) => {
          value: selectedProcessors,
          set: setSelectedProcessors,
       },
-      {type:"ram", value:selectedRams, set:setSelectedRams},
-      {type:"hardDrive",value: selectedHardDrive, set: setSelectedHardDrive},
-      {type:"memoryType",value: selectedMemortTypes, set: setSelectedMemoryTypes},
-      {type:"memorySlots",value: selectedMemortSlots, set: setSelectedMemorySlots},
-
-
+      { type: "ram", value: selectedRams, set: setSelectedRams },
+      {
+         type: "hardDrive",
+         value: selectedHardDrive,
+         set: setSelectedHardDrive,
+      },
+      {
+         type: "memoryType",
+         value: selectedMemortTypes,
+         set: setSelectedMemoryTypes,
+      },
+      {
+         type: "memorySlots",
+         value: selectedMemortSlots,
+         set: setSelectedMemorySlots,
+      },
+      {
+         type: "operatSystems",
+         value: selectedOperSystem,
+         set: setSelectedOperSystem,
+      },
+      {
+         type: "screenDiagonals",
+         value: selectedScreenDiagonal,
+         set: setSelectedScreenDiagonal,
+      },
+      {
+         type: "screenTypes",
+         value: selectedScreenTypes,
+         set: setSelectedScreenTypes,
+      },
+      {
+         type: "videoCards",
+         value: selectedVideoCards,
+         set: setSelectedVideoCards,
+      },
+      {
+         type: "videoMemories",
+         value: selectedVideoMemories,
+         set: setSelectedVideoMemories,
+      },
    ];
 
    useEffect(() => {
@@ -123,13 +212,32 @@ const DrawerFilter = (props) => {
    const setHardDriveOptions = (elements) => {
       setSelectedHardDrive([...elements]);
    };
-   
+
    const setMemoryTypeOptions = (elements) => {
       setSelectedMemoryTypes([...elements]);
    };
 
    const setMemorySlotsOptions = (elements) => {
       setSelectedMemorySlots([...elements]);
+   };
+
+   const setOperSystemOptions = (elements) => {
+      setSelectedOperSystem([...elements]);
+   };
+
+   const setScreenDiagonalOptions = (elements) => {
+      setSelectedScreenDiagonal([...elements]);
+   };
+
+   const setScreenTypesOptions = (elements) => {
+      setSelectedScreenTypes([...elements]);
+   };
+
+   const setVideoCardsOptions = (elements) => {
+      setSelectedVideoCards([...elements]);
+   };
+   const setVideoMemoryOptions = (elements) => {
+      setSelectedVideoMemories([...elements]);
    };
 
    const unSelectOption = (id, type) => {
@@ -176,7 +284,7 @@ const DrawerFilter = (props) => {
          style={{
             alignItems: "flex-end",
             padding: 15,
-            width: props.width ,
+            width: props.width,
             flex: 1,
             backgroundColor: "#D9D9D9",
             overflow: "hidden",
@@ -240,11 +348,13 @@ const DrawerFilter = (props) => {
                   </View>
                ))}
             </View>
-            <ScrollView style={{ height: "100%" }}>
+            <ScrollView>
                <View
-                  style={{
-                     height: Dimensions.get("window").height * 3,
-                  }}
+                  style={
+                     {
+                        // height: Dimensions.get("window").height * 4,
+                     }
+                  }
                >
                   <FilterDropDownItem
                      title={"Бренд:"}
@@ -275,7 +385,7 @@ const DrawerFilter = (props) => {
                      selectedOptions={selectedOptions}
                      setSelectedOptions={selectFilterOption}
                   />
-                   <FilterDropDownItem
+                  <FilterDropDownItem
                      title={"Кількість слотів оперативної пам'яті:"}
                      query={selectedMemortSlots}
                      setOptions={setMemorySlotsOptions}
@@ -296,11 +406,47 @@ const DrawerFilter = (props) => {
                      selectedOptions={selectedOptions}
                      setSelectedOptions={selectFilterOption}
                   />
+                  <FilterDropDownItem
+                     title={"Операційна система:"}
+                     query={selectedOperSystem}
+                     setOptions={setOperSystemOptions}
+                     selectedOptions={selectedOptions}
+                     setSelectedOptions={selectFilterOption}
+                  />
+                  <FilterDropDownItem
+                     title={"Діагональ екрану:"}
+                     query={selectedScreenDiagonal}
+                     setOptions={setScreenDiagonalOptions}
+                     selectedOptions={selectedOptions}
+                     setSelectedOptions={selectFilterOption}
+                  />
+                  <FilterDropDownItem
+                     title={"Тип екрану:"}
+                     query={selectedScreenTypes}
+                     setOptions={setScreenTypesOptions}
+                     selectedOptions={selectedOptions}
+                     setSelectedOptions={selectFilterOption}
+                  />
+                  <FilterDropDownItem
+                     title={"Відео карта:"}
+                     query={selectedVideoCards}
+                     setOptions={setVideoCardsOptions}
+                     selectedOptions={selectedOptions}
+                     setSelectedOptions={selectFilterOption}
+                  />
+                  <FilterDropDownItem
+                     title={"Відео пам'ять:"}
+                     query={selectedVideoMemories}
+                     setOptions={setVideoMemoryOptions}
+                     selectedOptions={selectedOptions}
+                     setSelectedOptions={selectFilterOption}
+                  />
+                  <View style={{ height: 40 }}></View>
                   {/* <FilterDropDownItem query={{}} /> */}
                </View>
             </ScrollView>
          </View>
-         <View
+         {/* <View
             style={[
                {
                   zIndex: 100,
@@ -331,7 +477,7 @@ const DrawerFilter = (props) => {
                   <Text style={styles.bottomButtonText}>Застосувати</Text>
                </TouchableOpacity>
             </View>
-         </View>
+         </View> */}
       </View>
    );
 };

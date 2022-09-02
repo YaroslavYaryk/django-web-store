@@ -31,7 +31,7 @@ const popupList = [
    { id: 3, name: "Найбільш коментовані", action: "commentMax" },
 ];
 
-const SearchResultScreen = (props) => {
+const CategoryProducts = (props) => {
    const [isShow, setIsShow] = useState(false);
    const [sortMethod, setSortMethod] = useState({
       action: "date",
@@ -74,8 +74,10 @@ const SearchResultScreen = (props) => {
          useNativeDriver: true,
       }).start();
    };
-
-   const searchProducts = useSelector((state) => state.products.searchProducts);
+   const productType = props.route.params.productType;
+   const categoryProducts = useSelector((state) =>
+      state.products.products.filter((el) => el.productType === productType)
+   );
 
    const dispatch = useDispatch();
 
@@ -97,12 +99,6 @@ const SearchResultScreen = (props) => {
       } catch (err) {}
    };
 
-   const searchValue = props.route.params.searchValue;
-
-   useEffect(() => {
-      dispatch(productActions.SearchProducts(searchValue));
-   }, [searchValue]);
-
    const scrollY = new Animated.Value(0);
    const diffClamp = Animated.diffClamp(scrollY, -5, 55);
    const translateY = diffClamp.interpolate({
@@ -118,7 +114,7 @@ const SearchResultScreen = (props) => {
       );
    }
 
-   if (!isLoading && searchProducts.length === 0) {
+   if (!isLoading && categoryProducts.length === 0) {
       return (
          <View style={styles.centered}>
             <Text>There is no any product!</Text>
@@ -127,7 +123,7 @@ const SearchResultScreen = (props) => {
    }
 
    const HandleSortProducts = async (sortAction) => {
-      await dispatch(productActions.sortProducts(sortAction, searchProducts));
+      await dispatch(productActions.sortProducts(sortAction, categoryProducts));
    };
 
    const closeSideBar = () => {
@@ -147,7 +143,7 @@ const SearchResultScreen = (props) => {
             <DrawerFilter
                width={width}
                closeSideBar={closeSideBar}
-               resultCount={searchProducts.length}
+               resultCount={categoryProducts.length}
             />
 
             <Animated.View
@@ -251,7 +247,7 @@ const SearchResultScreen = (props) => {
                                        styles.stickyBottomOrderTextSortMethod
                                     }
                                  >
-                                    Знайдено {searchProducts.length} тов...
+                                    Знайдено {categoryProducts.length} тов...
                                  </Text>
                               </View>
                            </View>
@@ -281,7 +277,7 @@ const SearchResultScreen = (props) => {
                      <FlatGrid
                         ref={ref}
                         onScroll={scrollHandler}
-                        data={searchProducts}
+                        data={categoryProducts}
                         keyExtractor={(item) => item.id}
                         spacing={20}
                         renderItem={(itemData) => (
@@ -302,7 +298,7 @@ const SearchResultScreen = (props) => {
                      <FlatList
                         ref={ref}
                         onScroll={scrollHandler}
-                        data={searchProducts}
+                        data={categoryProducts}
                         keyExtractor={(item) => item.id}
                         spacing={20}
                         renderItem={(itemData) => (
@@ -418,4 +414,4 @@ const styles = StyleSheet.create({
       justifyContent: "flex-start",
    },
 });
-export default SearchResultScreen;
+export default CategoryProducts;

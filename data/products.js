@@ -26,7 +26,8 @@ const PRODUCTS = [
       true,
       15,
       4
-   ),new Product(
+   ),
+   new Product(
       131,
       "google-pixel-5",
       "Мобільний телефое Google pixel 5 5G 8/128 green",
@@ -51,7 +52,8 @@ const PRODUCTS = [
       true,
       15,
       4
-   ),new Product(
+   ),
+   new Product(
       22,
       "google-pixel-5",
       "Мобільний телефое Google pixel 5 5G 8/128 green",
@@ -76,7 +78,8 @@ const PRODUCTS = [
       true,
       15,
       4
-   ),new Product(
+   ),
+   new Product(
       23,
       "google-pixel-5",
       "Мобільний телефое Google pixel 5 5G 8/128 green",
@@ -101,7 +104,8 @@ const PRODUCTS = [
       true,
       15,
       4
-   ),new Product(
+   ),
+   new Product(
       2421,
       "google-pixel-5",
       "Мобільний телефое Google pixel 5 5G 8/128 green",
@@ -126,7 +130,8 @@ const PRODUCTS = [
       true,
       15,
       4
-   ),new Product(
+   ),
+   new Product(
       312,
       "google-pixel-5",
       "Мобільний телефое Google pixel 5 5G 8/128 green",
@@ -193,7 +198,7 @@ const PRODUCTS = [
       "2022-07-04T09:53:28.312235Z",
       "none",
       2,
-      27000,
+      2700,
       true,
       1,
       5

@@ -41,6 +41,7 @@ const productReducer = (state = initialState, action) => {
             searchProducts: productSorting[action.orderMethod](
                state.searchProducts
             ),
+            products: productSorting[action.orderMethod](state.products),
          };
    }
    return state;

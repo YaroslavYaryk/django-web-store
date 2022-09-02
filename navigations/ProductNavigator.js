@@ -21,12 +21,13 @@ import ProductReviewsList from "../screens/Product/Reviews/ProductReviewsList";
 import ReviewReply from "../screens/Product/Reviews/ReviewReply";
 import { screenOptions as prDetalsScreenOptions } from "../screens/Product/ProductDetails";
 import { screenOptions as cartScreenOptions } from "../screens/Product/Cart";
-import { screenOptions as categoriesScreenOptions } from "../screens/Product/Categories";
+import { screenOptions as categoriesScreenOptions } from "../screens/Product/Category/Categories";
 import { screenOptions as authScreenOptions } from "../screens/Auth/AuthScreen";
 import { screenOptions as loginScreenOptions } from "../screens/Auth/Login";
 import { screenOptions as productListScreenOptions } from "../screens/Product/ProductsList";
 import Colors from "../constants/Colors";
-import Categories from "../screens/Product/Categories";
+import Categories from "../screens/Product/Category/Categories";
+import CategoryProducts from "../screens/Product/Category/CategoryProducts";
 import Cart from "../screens/Product/Cart";
 import Icon, { Icons } from "../components/Icon";
 import Login from "../screens/Auth/Login";
@@ -42,6 +43,7 @@ import PaymentMethodsScreen from "../screens/Product/Orders/PaymentMethodsScreen
 import ChangeUserOrderInfo from "../screens/Product/Orders/ChangeUserOrderInfo";
 import SearchInputScreen from "../screens/Product/Search/SearchInputScreen";
 import SearchResultScreen from "../screens/Product/Search/SearchResultScreen";
+
 import { screenOptions as searchResultScreenOptions } from "../screens/Product/Search/SearchResultScreen";
 
 const defaultNavOptions = {
@@ -238,6 +240,11 @@ export const CategoryNavigator = () => {
             name="CategoriesScreen"
             component={Categories}
             options={categoriesScreenOptions}
+         />
+         <CategoryStackNavigator.Screen
+            name="CategoryProducts"
+            component={CategoryProducts}
+            // options={productsOverviewScreenOptions}
          />
          <CategoryStackNavigator.Screen
             name="Product"

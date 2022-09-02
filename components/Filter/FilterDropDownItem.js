@@ -21,16 +21,6 @@ import { FontAwesome } from "@expo/vector-icons";
 import Colors from "../../constants/Colors";
 import FilterItem from "./FIlterItem";
 
-const a = [
-   { name: 1 },
-   { name: 2 },
-   { name: 3 },
-   { name: 4 },
-   { name: 5 },
-   { name: 6 },
-   { name: 8 },
-];
-
 const FilterDropDownItem = (props) => {
    const [showContent, setShowContent] = useState(true);
 

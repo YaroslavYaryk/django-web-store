@@ -43,7 +43,12 @@ const ProductItem = (props) => {
          <View style={styles.touchable}>
             <TouchableCmp onPress={props.onSelect} useForeground>
                <View style={{ alignItems: "center" }}>
-                  <View style={[styles.imageContainer, ,]}>
+                  <View
+                     style={[
+                        styles.imageContainer,
+                        { paddingBottom: 10, marginBottom: 3 },
+                     ]}
+                  >
                      <Image
                         style={styles.image}
                         source={{
@@ -158,6 +163,7 @@ const styles = StyleSheet.create({
    touchable: {
       borderRadius: 10,
       overflow: "hidden",
+      height: "100%",
    },
    imageContainer: {
       // borderWidth: 3,

@@ -45,12 +45,16 @@ const FilterItem = (props) => {
          />
 
          <View style={{ padding: 5 }} key={el.id}>
-            <Text style={{}}>{el.name }{el.type=="hardDrive"?" Гб":""}</Text>
+            <Text style={{}}>
+               {el.name}
+               {el.type == "hardDrive" ? " Гб" : ""}
+               {el.type == "videoMemories" ? " Гб" : ""}
+            </Text>
          </View>
          <FontAwesome
             name="info-circle"
             size={20}
-            color={el.info?"black":"transparent"}
+            color={el.info ? "black" : "transparent"}
             onPress={() => {
                setShowInfo(!showInfo);
             }}
@@ -68,11 +72,11 @@ const styles = StyleSheet.create({
    infoBlock: {
       position: "absolute",
       // height: 50,
-      width: 130,
+      width: 180,
       backgroundColor: "white",
-      top: 23,
+      top: -5,
       right: 23,
-      zIndex: 5,
+      zIndex: 1115,
       padding: 5,
       borderWidth: 1,
       borderTopLeftRadius: 15,
@@ -80,7 +84,7 @@ const styles = StyleSheet.create({
       borderBottomRightRadius: 15,
    },
    infoBlockText: {
-      fontSize: 10,
+      fontSize: 9,
    },
 });
 

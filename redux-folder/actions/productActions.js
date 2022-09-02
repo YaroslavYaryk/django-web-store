@@ -34,6 +34,7 @@ export const SearchProducts = (word) => {
 export const sortProducts = (orderMethod, array) => {
    try {
       return async (dispatch, getState) => {
+         console.log("here");
          dispatch({
             type: SORT_PRODUCTS,
             orderMethod: orderMethod,
