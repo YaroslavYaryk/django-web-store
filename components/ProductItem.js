@@ -31,6 +31,7 @@ const ProductItem = (props) => {
    };
    return (
       <View
+         key={props.item.id}
          style={[
             styles.product,
             {

@@ -41,23 +41,31 @@ const ProductReviewsList = (props) => {
       (state) => state.productReviews.productReviews
    );
 
+   const loadReviews = useCallback(async () => {
+      setError(null);
+      setIsLoading(true);
+      try {
+         await dispatch(reviewActions.fetchReviews(productId));
+      } catch (err) {
+         setError(err.message);
+      }
+      setIsLoading(false);
+   }, [dispatch, setError, setIsLoading]);
+
+   useEffect(() => {
+      const onFocusSub = props.navigation.addListener("focus", loadReviews);
+
+      return () => {
+         onFocusSub;
+      };
+   }, [loadReviews]);
+
+   useEffect(() => {
+      loadReviews();
+   }, [dispatch, loadReviews]);
+
    const { commentId, openReplies } = props.route.params;
    const dispatch = useDispatch();
-
-   // const fetchReviews = useCallback(async () => {
-   //    setError(null);
-   //    setIsLoading(true);
-   //    try {
-   //       await dispatch(reviewActions.fetchReviews());
-   //    } catch (err) {
-   //       setError(err.message);
-   //    }
-   //    setIsLoading(false);
-   // }, [dispatch, setError, setIsLoading]);
-
-   // useEffect(() => {
-   //    fetchReviews();
-   // }, [dispatch, fetchReviews]);
 
    const sortReviews = useCallback(async () => {
       setError(null);
@@ -86,6 +94,19 @@ const ProductReviewsList = (props) => {
    const close = () => {
       setIsShow(false);
    };
+
+   if (error) {
+      return (
+         <View style={styles.centered}>
+            <Text>An error occured</Text>
+            <Button
+               title="Try Again"
+               onPress={loadReviews}
+               color={Colors.primaryColor}
+            />
+         </View>
+      );
+   }
 
    if (isLoading) {
       return (
@@ -118,85 +139,87 @@ const ProductReviewsList = (props) => {
    if (!isLoading && productReViews.length === 0) {
       return (
          <View style={styles.centered}>
-            <Text>There is no any product, please add some!</Text>
+            <Text>There is no any reviews, please add some!</Text>
          </View>
       );
    }
 
    return (
-      <View style={{ flex: 1 }}>
-         {productReViews && (
-            <FlatList
-               data={productReViews}
-               renderItem={(itemData) => (
-                  <View
-                     style={{
-                        borderWidth: 0,
-                        shadowColor: "grey",
-                        shadowOpacity: 0.26,
-                        shadowOffset: { width: 2, height: 2 },
-                        shadowRadius: 8,
-                        elevation: 5,
-                     }}
-                  >
-                     <ReviewItem
-                        item={itemData.item}
-                        replyToReview={replyToReview}
-                        commentId={commentId}
-                        openReplies={openReplies}
-                     ></ReviewItem>
-                  </View>
-               )}
-               keyExtractor={(item) => Math.random()}
-               onScroll={(e) => {
-                  if (e.nativeEvent.contentOffset.y > 0) {
-                     scrollY.setValue(e.nativeEvent.contentOffset.y);
-                  }
-               }}
-            />
-         )}
-         <Animated.View
+      <View style={styles.container}>
+         <View style={{ marginBottom: 50 }}>
+            {productReViews && (
+               <FlatList
+                  data={productReViews}
+                  renderItem={(itemData) => (
+                     <View
+                        style={{
+                           borderWidth: 0,
+                           shadowColor: "grey",
+                           shadowOpacity: 0.26,
+                           shadowOffset: { width: 2, height: 2 },
+                           shadowRadius: 8,
+                           elevation: 5,
+                        }}
+                     >
+                        <ReviewItem
+                           item={itemData.item}
+                           replyToReview={replyToReview}
+                           commentId={commentId}
+                           openReplies={openReplies}
+                        ></ReviewItem>
+                     </View>
+                  )}
+                  keyExtractor={(item) => Math.random()}
+                  onScroll={(e) => {
+                     if (e.nativeEvent.contentOffset.y > 0) {
+                        scrollY.setValue(e.nativeEvent.contentOffset.y);
+                     }
+                  }}
+               />
+            )}
+         </View>
+         {/* <Animated.View
             style={{
                transform: [{ translateY: translateY }],
                elevation: 10,
                zIndex: 100,
             }}
-         >
-            <View style={styles.stickyBottomBlock}>
-               <View style={styles.stickyBottomOrderBlock}>
-                  <TouchableOpacity style={{}} onPress={() => setIsShow(true)}>
-                     <View style={styles.stickyBottomOrderBlockInner}>
-                        <FontAwesome
-                           name="unsorted"
-                           size={24}
-                           color={Colors.primaryColor}
-                        />
-                        <View style={styles.stickyBottomOrderBlockInnerText}>
-                           <Text style={styles.stickyBottomOrderText}>
-                              Сортувати
-                           </Text>
-                           <Text style={styles.stickyBottomOrderTextSortMethod}>
-                              {sortMethod.name}
-                           </Text>
-                        </View>
+         > */}
+         <View style={styles.stickyBottomBlock}>
+            <View style={styles.stickyBottomOrderBlock}>
+               <TouchableOpacity style={{}} onPress={() => setIsShow(true)}>
+                  <View style={styles.stickyBottomOrderBlockInner}>
+                     <FontAwesome
+                        name="unsorted"
+                        size={24}
+                        color={Colors.primaryColor}
+                     />
+                     <View style={styles.stickyBottomOrderBlockInnerText}>
+                        <Text style={styles.stickyBottomOrderText}>
+                           Сортувати
+                        </Text>
+                        <Text style={styles.stickyBottomOrderTextSortMethod}>
+                           {sortMethod.name}
+                        </Text>
                      </View>
-                  </TouchableOpacity>
-               </View>
-               <View style={styles.stickyBottomWriteReviewBlock}>
-                  <TouchableOpacity
-                     onPress={() => {
-                        props.navigation.navigate("ProductReview", {
-                           productId: productId,
-                        });
-                     }}
-                  >
-                     <Text style={styles.stickyBottomWriteReviewText}>
-                        НАПИСАТИ ВІДГУК
-                     </Text>
-                  </TouchableOpacity>
-               </View>
+                  </View>
+               </TouchableOpacity>
             </View>
-         </Animated.View>
+            <View style={styles.stickyBottomWriteReviewBlock}>
+               <TouchableOpacity
+                  onPress={() => {
+                     props.navigation.navigate("ProductReview", {
+                        productId: productId,
+                     });
+                  }}
+               >
+                  <Text style={styles.stickyBottomWriteReviewText}>
+                     НАПИСАТИ ВІДГУК
+                  </Text>
+               </TouchableOpacity>
+            </View>
+         </View>
+         {/* </Animated.View> */}
          <SafeAreaView style={{ flex: 1 }}>
             <BottomPopup
                show={isShow}
@@ -215,8 +238,11 @@ const ProductReviewsList = (props) => {
 const styles = StyleSheet.create({
    container: {
       flex: 1,
+      // borderWidth: 5,
    },
    stickyBottomBlock: {
+      position: "absolute",
+      bottom: 0,
       flexDirection: "row",
       justifyContent: "space-between",
       height: 40,

@@ -64,9 +64,17 @@ const ReplyItem = (props) => {
    const [commentLikes, setCommentLikes] = useState(props.item.likesCount);
 
    const getPrettyDate = (date) => {
-      const day = date.getDay();
-      const month = monthDict[date.getMonth()];
-      const year = date.getFullYear();
+      const newDate =
+         date.getFullYear() +
+         "-" +
+         (date.getMonth() + 1) +
+         "-" +
+         date.getDate();
+      var splittedData = newDate.split("-");
+
+      const day = splittedData[2];
+      const month = monthDict[splittedData[1]];
+      const year = splittedData[0];
       return `${day} ${month} ${year}`;
    };
 
@@ -77,7 +85,7 @@ const ReplyItem = (props) => {
                <View style={styles.headerTop}>
                   <View style={styles.headerNameDate}>
                      <Text style={styles.userName}>
-                        {props.item.user.firstName}
+                        {props.item.user.firstName} {props.item.user.lastName}
                      </Text>
                      <Text style={styles.reviewDate}>
                         {getPrettyDate(new Date(props.item.date))}

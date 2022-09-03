@@ -16,26 +16,53 @@ import Colors from "../../constants/Colors";
 import { FlatGrid } from "react-native-super-grid";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import CustomHeaderButton from "../../components/CustomHeaderButton";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import * as cartActions from "../../redux-folder/actions/cart";
 import CartPopup from "../../components/wrappers/CartPopup";
 import { TextInput } from "react-native-paper";
 import { Ionicons } from "@expo/vector-icons";
 import * as productActions from "../../redux-folder/actions/productActions";
-import { Feather } from '@expo/vector-icons'; 
+import { Feather } from "@expo/vector-icons";
 import ButtonScrollToTop from "../../components/Filter/ButtonScrollToTop";
 
 const ProductsList = (props) => {
    const products = useSelector((state) => state.products.products);
+
+   const [error, setError] = useState(false);
    const [isLoading, setIsLoading] = useState(false);
    const [fetch, setArr] = useState(0);
    const [visible, setVisible] = useState(false);
    const [searchValue, setSearchValue] = useState("");
-   const [buttonToTopVisible, setButtonToTopVisible] = useState(false)
+   const [buttonToTopVisible, setButtonToTopVisible] = useState(false);
 
-   const fadeAnim = useRef(new Animated.Value(0)).current
+   const dispatch = useDispatch();
 
-   const ref = useRef()
+   const loadProducts = useCallback(async () => {
+      setError(null);
+      setIsLoading(true);
+      try {
+         await dispatch(productActions.fetchProducts());
+      } catch (err) {
+         setError(err.message);
+      }
+      setIsLoading(false);
+   }, [dispatch, setError, setIsLoading]);
+
+   useEffect(() => {
+      const onFocusSub = props.navigation.addListener("focus", loadProducts);
+
+      return () => {
+         onFocusSub;
+      };
+   }, [loadProducts]);
+
+   useEffect(() => {
+      loadProducts();
+   }, [dispatch, loadProducts]);
+
+   const fadeAnim = useRef(new Animated.Value(0)).current;
+
+   const ref = useRef();
 
    useEffect(() => {
       props.navigation.setParams({
@@ -52,7 +79,6 @@ const ProductsList = (props) => {
          },
       });
    };
-   const dispatch = useDispatch();
    const orders = useSelector((state) => state.orders.orders);
 
    const addProductToCart = (productId, fullName, image, price) => {
@@ -63,9 +89,22 @@ const ProductsList = (props) => {
       } catch (err) {}
    };
 
+   if (error) {
+      return (
+         <View style={styles.centered}>
+            <Text>An error occured</Text>
+            <Button
+               title="Try Again"
+               onPress={loadProducts}
+               color={Colors.primaryColor}
+            />
+         </View>
+      );
+   }
+
    if (isLoading) {
       return (
-         <View style={styles.center}>
+         <View style={styles.centered}>
             <ActivityIndicator size="large" color={Colors.primaryColor} />
          </View>
       );
@@ -80,22 +119,22 @@ const ProductsList = (props) => {
       );
    }
 
-   const scrollToTop = () =>{
-      ref.current.scrollToOffset({ offset: 0, animated: true })
-   }
+   const scrollToTop = () => {
+      ref.current.scrollToOffset({ offset: 0, animated: true });
+   };
 
-   const scrollHandler = (e) =>{
-      if (e.nativeEvent.contentOffset.y > 300){
-         setButtonToTopVisible(true)
-      }else{
-         setButtonToTopVisible(false)
+   const scrollHandler = (e) => {
+      if (e.nativeEvent.contentOffset.y > 300) {
+         setButtonToTopVisible(true);
+      } else {
+         setButtonToTopVisible(false);
       }
       Animated.timing(fadeAnim, {
-         toValue: buttonToTopVisible?1:0, // Animate to opacity: 1 (opaque)
+         toValue: buttonToTopVisible ? 1 : 0, // Animate to opacity: 1 (opaque)
          duration: 200, // Make it take a while
-         useNativeDriver: true
-     }).start();
-   }
+         useNativeDriver: true,
+      }).start();
+   };
 
    return (
       <View style={styles.wrapper}>
@@ -146,9 +185,7 @@ const ProductsList = (props) => {
             </View> */}
          </View>
          <FlatGrid
-            onScroll={
-               scrollHandler
-            }
+            onScroll={scrollHandler}
             ref={ref}
             data={products}
             keyExtractor={(item) => item.id}
@@ -168,7 +205,7 @@ const ProductsList = (props) => {
             )}
          />
          <CartPopup visible={visible} setVisible={setVisible} />
-         <ButtonScrollToTop fadeAnim={fadeAnim} scrollToTop={scrollToTop}  />
+         <ButtonScrollToTop fadeAnim={fadeAnim} scrollToTop={scrollToTop} />
       </View>
    );
 };
@@ -191,16 +228,16 @@ export const screenOptions = (navData) => {
 };
 
 const styles = StyleSheet.create({
+   centered: { flex: 1, justifyContent: "center", alignItems: "center" },
    wrapper: {
       width: "100%",
-      marginBottom:70
+      marginBottom: 70,
    },
    center: {
       flex: 1,
       justifyContent: "center",
       alignItems: "center",
    },
-
 });
 
 export default ProductsList;

@@ -4,7 +4,7 @@ import {
    //   UPDATE_PRODUCT,
    //   DELETE_PRODUCT,
    READ_CHARACTERISTIC,
-} from "../actions/productActions";
+} from "../actions/productCharacteristicActions";
 
 const initialState = {
    characteristics: PRODUCT_CHARACTERISTIC,

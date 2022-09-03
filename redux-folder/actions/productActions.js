@@ -1,3 +1,5 @@
+import { HOST, PORT } from "../../constants/server";
+import Product from "../../models/Product";
 export const DELETE_PRODUCT = "DELETE_PRODUCT";
 export const CREATE_PRODUCT = "CREATE_PRODUCT";
 export const SEARCH_PRODUCTS = "SEARCH_PRODUCTS";
@@ -7,9 +9,46 @@ export const SORT_PRODUCTS = "SORT_PRODUCTS";
 export const fetchProducts = () => {
    try {
       return async (dispatch, getState) => {
+         const userId = getState();
+
+         const response = await fetch(`${HOST}:${PORT}/api/get_products/`);
+
+         if (!response.ok) {
+            throw new Error("Something went wrong!");
+         }
+
+         const resData = await response.json();
+         const loadedProducts = [];
+         for (const key in resData) {
+            loadedProducts.push(
+               new Product(
+                  resData[key].id,
+                  resData[key].slug,
+                  resData[key].name,
+                  resData[key].only_name,
+                  resData[key].brand_name,
+                  resData[key].product_type,
+                  resData[key].country_made,
+                  resData[key].country_brand,
+                  resData[key].photo,
+                  resData[key].photos,
+                  resData[key].videos,
+                  resData[key].description,
+                  resData[key].short_description,
+                  resData[key].creation_date,
+                  resData[key].video,
+                  resData[key].warranty,
+                  resData[key].price,
+                  resData[key].is_available,
+                  resData[key].comment_count,
+                  resData[key].rating
+               )
+            );
+         }
+
          dispatch({
             type: READ_PRODUCT,
-            products: [],
+            products: loadedProducts,
          });
       };
    } catch (err) {
@@ -34,7 +73,6 @@ export const SearchProducts = (word) => {
 export const sortProducts = (orderMethod, array) => {
    try {
       return async (dispatch, getState) => {
-         console.log("here");
          dispatch({
             type: SORT_PRODUCTS,
             orderMethod: orderMethod,

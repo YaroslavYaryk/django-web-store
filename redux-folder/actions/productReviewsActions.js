@@ -1,55 +1,81 @@
 import sortingDict from "../../constants/productsReviewsSort";
 import PRODUCT_REVIEWS from "../../data/productReviews";
+import { HOST, PORT } from "../../constants/server";
+import User from "../../models/User";
+import ProductReview from "../../models/ProductReview";
+import ProductReply from "../../models/ProductReply";
 
 export const DELETE_PRODUCT = "DELETE_PRODUCT";
 export const CREATE_PRODUCT_REVIEWS = "CREATE_PRODUCT_REVIEWS";
 export const CREATE_REVIEW_REPLY = "CREATE_REVIEW_REPLY";
 export const READ_PRODUCT_REVIEWS = "READ_PRODUCT_REVIEWS";
 
-export const fetchReviews = () => {
+export const fetchReviews = (productId) => {
    try {
       return async (dispatch, getState) => {
          // const token = getState().auth.token;
 
-         // const a = "http://192.168.0.109:8000/event/api/list/";
+         const link = `api/product/${productId}/get_comments/`;
+         const response = await fetch(`${HOST}:${PORT}/${link}`);
 
-         // const response = await fetch(`${HOST}:${PORT}/event/api/list/`, {
-         //     method: "GET",
-         //     headers: {
-         //         "Content-Type": "application/json",
-         //         "Access-Control-Allow-Origin": "*",
-         //         Authorization: `Token ${token}`,
-         //     },
-         // });
-         // if (!response.ok) {
-         //     throw new Error("Something went wrong!");
-         // }
-         // const resData = await response.json();
-         // const loadedEvents = [];
-         // for (const key in resData) {
-         //     loadedEvents.push(
-         //         new Event(
-         //             resData[key].id,
-         //             resData[key].company,
-         //             resData[key].customer,
-         //             resData[key].artist,
-         //             resData[key].venue,
-         //             resData[key].price,
-         //             resData[key].payment_methods,
-         //             resData[key].date,
-         //             resData[key].comment,
-         //             resData[key].visible,
-         //             resData[key].signed,
-         //             resData[key].aditional_staff,
-         //             resData[key].contract_pdf_url,
-         //             resData[key].venue_image
-         //         )
-         //     );
-         // }
+         if (!response.ok) {
+            throw new Error("Something went wrong!");
+         }
+
+         const resData = await response.json();
+         const productReviews = [];
+         for (const key in resData) {
+            productReviews.push(
+               new ProductReview(
+                  resData[key].id,
+                  resData[key].product,
+                  new User(
+                     resData[key]["user"].id,
+                     resData[key]["user"].email,
+                     resData[key]["user"].username,
+                     resData[key]["user"].first_name,
+                     resData[key]["user"].last_name,
+                     resData[key]["user"].middle_name,
+                     resData[key]["user"].living_place,
+                     resData[key]["user"].ware_house,
+                     resData[key]["user"].delivery_type,
+                     resData[key]["user"].phone
+                  ),
+                  resData[key].photos,
+                  resData[key].comment,
+                  resData[key].pros,
+                  resData[key].cons,
+                  resData[key].rating,
+                  resData[key].creation_date,
+                  resData[key].comment_likes,
+                  resData[key]["replies"].map(
+                     (el) =>
+                        new ProductReply(
+                           el.id,
+                           el.comment_id,
+                           el.comment,
+                           new User(
+                              el["user"].id,
+                              resData[key]["user"].email,
+                              el["user"].username,
+                              el["user"].first_name,
+                              el["user"].last_name,
+                              el["user"].middle_name,
+                              el["user"].living_place,
+                              el["user"].ware_house,
+                              el["user"].delivery_type,
+                              el["user"].phone
+                           ),
+                           el.date
+                        )
+                  )
+               )
+            );
+         }
 
          dispatch({
             type: READ_PRODUCT_REVIEWS,
-            productReviews: PRODUCT_REVIEWS,
+            productReviews: productReviews,
          });
       };
    } catch (err) {

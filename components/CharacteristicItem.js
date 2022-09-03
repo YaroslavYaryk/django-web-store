@@ -9,6 +9,7 @@ import {
    ActivityIndicator,
    FlatList,
 } from "react-native";
+import Colors from "../constants/Colors";
 
 const CharacteristicItem = (props) => {
    return (
@@ -22,11 +23,29 @@ const CharacteristicItem = (props) => {
             <View style={styles.labelBlock}>
                <Text style={styles.label}>{props.item.label}</Text>
             </View>
-            <Text style={styles.characteristicText}>
-               {props.item.characteristic !== null
-                  ? props.item.characteristic
-                  : "none"}
-            </Text>
+            {props.item.slug ? (
+               <View>
+                  <TouchableOpacity
+                     onPress={() => {
+                        console.log(
+                           `${props.item.charactType} - ${props.item.slug}`
+                        );
+                     }}
+                  >
+                     <Text style={styles.characteristicLinkText}>
+                        {props.item.characteristic !== null
+                           ? props.item.characteristic
+                           : "none"}
+                     </Text>
+                  </TouchableOpacity>
+               </View>
+            ) : (
+               <Text style={styles.characteristicText}>
+                  {props.item.characteristic !== null
+                     ? props.item.characteristic
+                     : "none"}
+               </Text>
+            )}
          </View>
       </View>
    );
@@ -54,6 +73,9 @@ const styles = StyleSheet.create({
    characteristicText: {
       width: "50%",
       fontSize: 15,
+   },
+   characteristicLinkText: {
+      color: Colors.primaryColor,
    },
 });
 

@@ -8,7 +8,7 @@ import ProductReview from "../../models/ProductReview";
 import ProductReply from "../../models/ProductReply";
 import User from "../../models/User";
 const initialState = {
-   productReviews: PRODUCT_REVIEWS,
+   productReviews: [],
 };
 // import Product from "../../models/Product";
 
