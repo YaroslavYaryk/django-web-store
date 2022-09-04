@@ -2,7 +2,6 @@ import PRODUCT_CHARACTERISTIC from "../../data/productCharacteristic";
 import {
    //   CREATE_PRODUCT,
    //   UPDATE_PRODUCT,
-   //   DELETE_PRODUCT,
    READ_CHARACTERISTIC,
 } from "../actions/productCharacteristicActions";
 
@@ -15,6 +14,7 @@ const productCharacteristicReducer = (state = initialState, action) => {
    switch (action.type) {
       case READ_CHARACTERISTIC:
          return {
+            ...state,
             characteristics: action.characteristic,
          };
    }

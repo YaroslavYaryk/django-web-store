@@ -98,6 +98,7 @@ const ProductCharacteristic = (props) => {
                <CharacteristicItem
                   key={item.label + Math.random()}
                   item={item}
+                  navigation={props.navigation}
                ></CharacteristicItem>
             ))}
             <View style={styles.fullInfo}>

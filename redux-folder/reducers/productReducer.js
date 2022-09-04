@@ -2,7 +2,7 @@ import PRODUCTS from "../../data/products";
 import {
    //   CREATE_PRODUCT_REVIEWS,
    //   UPDATE_PRODUCT,
-   //   DELETE_PRODUCT,
+   READ_CHARACTERISTIC_PRODUCT,
    READ_PRODUCT,
    SEARCH_PRODUCTS,
    SORT_PRODUCTS,
@@ -12,6 +12,7 @@ import productSorting from "../../constants/productSorting";
 const initialState = {
    products: PRODUCTS,
    searchProducts: [],
+   characteristicProducts: [],
 };
 // import Product from "../../models/Product";
 
@@ -21,6 +22,11 @@ const productReducer = (state = initialState, action) => {
          return {
             ...state,
             products: action.products,
+         };
+      case READ_CHARACTERISTIC_PRODUCT:
+         return {
+            ...state,
+            characteristicProducts: action.characteristicProducts,
          };
       case SEARCH_PRODUCTS:
          if (action.word == "all") {

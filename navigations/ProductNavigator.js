@@ -43,6 +43,7 @@ import PaymentMethodsScreen from "../screens/Product/Orders/PaymentMethodsScreen
 import ChangeUserOrderInfo from "../screens/Product/Orders/ChangeUserOrderInfo";
 import SearchInputScreen from "../screens/Product/Search/SearchInputScreen";
 import SearchResultScreen from "../screens/Product/Search/SearchResultScreen";
+import CharacteristicProducts from "../screens/Product/Category/CharacteristicProducts";
 
 import { screenOptions as searchResultScreenOptions } from "../screens/Product/Search/SearchResultScreen";
 
@@ -489,6 +490,11 @@ export default ProductsNavigator = () => {
             name="ProductDetailsNavigator"
             component={ProductTopTabNavigator}
             options={prDetalsScreenOptions}
+         />
+         <ProductsStackNavigator.Screen
+            name="CharacteristicProducts"
+            component={CharacteristicProducts}
+            // options={prDetalsScreenOptions}
          />
          <ProductsStackNavigator.Screen
             name="ProductDescription"

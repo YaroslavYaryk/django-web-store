@@ -12,6 +12,13 @@ import {
 import Colors from "../constants/Colors";
 
 const CharacteristicItem = (props) => {
+   const navigateCharacteristicProducts = (type, slug) => {
+      props.navigation.navigate("CharacteristicProducts", {
+         type: type,
+         slug: slug,
+      });
+   };
+
    return (
       <View style={styles.container}>
          <View
@@ -27,8 +34,12 @@ const CharacteristicItem = (props) => {
                <View>
                   <TouchableOpacity
                      onPress={() => {
-                        console.log(
-                           `${props.item.charactType} - ${props.item.slug}`
+                        // console.log(
+                        //    `${props.item.charactType} - ${props.item.slug}`
+                        // );
+                        navigateCharacteristicProducts(
+                           props.item.charactType,
+                           props.item.slug
                         );
                      }}
                   >
