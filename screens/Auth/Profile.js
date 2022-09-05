@@ -15,18 +15,18 @@ import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import Colors from "../../constants/Colors";
 import { useSelector, useDispatch } from "react-redux";
 import * as userActions from "../../redux-folder/actions/userActions";
+import * as authActions from "../../redux-folder/actions/authActions";
 import UserInfoItem from "../../components/User/userInfoItem";
 import { useIsFocused } from "@react-navigation/native";
+import { Feather } from "@expo/vector-icons";
 
-const AuthScreen = (props) => {
+const Profile = (props) => {
    const [error, setError] = useState(null);
    const [isLoading, setIsLoading] = useState(false);
 
-   const auth = useSelector((state) => state.auth);
    const user = useSelector((state) => state.user.user);
-
+   const auth = useSelector((state) => state.auth);
    const dispatch = useDispatch();
-
    const isFocused = useIsFocused();
 
    const loadUser = useCallback(async () => {
@@ -50,7 +50,28 @@ const AuthScreen = (props) => {
       }
    }, [dispatch, loadUser, isFocused]);
 
-   var isAuth = auth.token;
+   const logoutHandle = async () => {
+      setError(null);
+      setIsLoading(true);
+      try {
+         await dispatch(authActions.logout());
+      } catch (err) {
+         console.log(err.message);
+         setError(err.message);
+      }
+      setIsLoading(false);
+   };
+
+   const getUser = () => {
+      if (!auth.token) {
+         props.navigation.navigate("Account");
+      }
+   };
+
+   useEffect(() => {
+      getUser();
+   }, [auth]);
+
    if (error) {
       return (
          <View style={styles.centered}>
@@ -71,98 +92,65 @@ const AuthScreen = (props) => {
          </View>
       );
    }
+
    return (
-      <View style={styles.container}>
-         {!isAuth ? (
-            <View style={styles.logRegBlock}>
-               <View style={styles.logRegBlockInner}>
-                  <TouchableOpacity
-                     onPress={() => {
-                        props.navigation.navigate("TopTabNavigator", {
-                           screen: "Login",
-                        });
-                     }}
-                  >
-                     <Text style={styles.logRegBlockText}>Вхід</Text>
-                  </TouchableOpacity>
-                  <Text style={styles.logRegBlockText}>|</Text>
-                  <TouchableOpacity
-                     onPress={() => {
-                        props.navigation.navigate("TopTabNavigator", {
-                           screen: "Registration",
-                        });
-                     }}
-                  >
-                     <Text style={styles.logRegBlockText}>Реєстрація</Text>
-                  </TouchableOpacity>
-               </View>
+      <View>
+         <ScrollView style={{ height: "100%" }}>
+            <View style={{ marginBottom: 10 }}>
+               <UserInfoItem label="Ім'я" value={user.firstName} />
+               <UserInfoItem label="прізвище" value={user.lastName} />
+               <UserInfoItem label="По-батькові" value={user.middleName} />
+               <UserInfoItem label="Пошта" value={user.email} />
+               <UserInfoItem label="Мобільний телефон" value={user.phone} />
             </View>
-         ) : (
-            <View style={styles.userBlockWrapper}>
-               <View style={styles.userBlock}>
-                  <Text style={styles.userBlockText}>
-                     {user.firstName} {user.lastName}
-                  </Text>
-               </View>
-               <View
-                  style={{
-                     borderWidth: 0.2,
-                     padding: 18,
-                     borderRadius: 5,
-                     backgroundColor: "#F0F0F0",
+
+            <View
+               style={{
+                  borderWidth: 3,
+                  padding: 10,
+                  borderColor: "#CCCCCC",
+                  borderRadius: 10,
+               }}
+            >
+               <TouchableOpacity
+                  onPress={() => {
+                     logoutHandle();
                   }}
                >
-                  <TouchableOpacity
-                     onPress={() => {
-                        props.navigation.navigate("ProfileNavigator", {
-                           screen: "ProfileNavigator",
-                        });
-                     }}
-                  >
-                     <View
+                  <View style={{ alignItems: "center" }}>
+                     <Text
                         style={{
-                           flexDirection: "row",
+                           fontSize: 18,
+                           fontWeight: "500",
+                           color: Colors.primaryColor,
                         }}
                      >
-                        <View>
-                           <FontAwesome5
-                              name="user-circle"
-                              size={24}
-                              color="black"
-                           />
-                        </View>
-                        <View style={{ marginLeft: 10 }}>
-                           <Text style={{ fontSize: 16, fontWeight: "500" }}>
-                              {user.firstName} {user.lastName}
-                           </Text>
-                        </View>
-                     </View>
-                  </TouchableOpacity>
-               </View>
+                        Вийти з акаунту
+                     </Text>
+                  </View>
+               </TouchableOpacity>
             </View>
-         )}
+         </ScrollView>
       </View>
    );
 };
 
 export const screenOptions = (navData) => {
    return {
-      headerTitle: "Electron",
-      headerLeft: () => (
-         <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
-            <Item title="electron" color={"white"} iconName="logo-electron" />
-         </HeaderButtons>
-      ),
+      headerTitle: "Особистий кабінет",
+
       headerRight: () => (
-         <View style={styles.buttonRightContainer}>
-            <Text
-               style={[styles.buttonRightItem, styles.buttonRightItemActive]}
-            >
-               UA
-            </Text>
-            <Text style={styles.buttonRightItem}>|</Text>
-            <Text style={styles.buttonRightItem}>EN</Text>
-         </View>
+         <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+            <Item
+               title="edit"
+               color={"white"}
+               iconName="edit"
+               icon={Feather}
+               onPress={() => {
+                  navData.navigation.navigate("EditProfile");
+               }}
+            />
+         </HeaderButtons>
       ),
    };
 };
@@ -226,4 +214,4 @@ const styles = StyleSheet.create({
    },
 });
 
-export default AuthScreen;
+export default Profile;

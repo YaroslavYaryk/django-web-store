@@ -40,6 +40,7 @@ const ProductReviewsList = (props) => {
    var productReViews = useSelector(
       (state) => state.productReviews.productReviews
    );
+   const auth = useSelector((state) => state.auth);
 
    const loadReviews = useCallback(async () => {
       setError(null);
@@ -95,6 +96,26 @@ const ProductReviewsList = (props) => {
       setIsShow(false);
    };
 
+   const handleWriteComment = async () => {
+      if (!auth.token) {
+         AsyncStorage.setItem(
+            "redirect",
+            JSON.stringify({
+               redirectUrl: "ProductReview",
+               productId: productId,
+            })
+         );
+
+         props.navigation.navigate("AuthNavigator", {
+            screen: "TopTabNavigator",
+         });
+      } else {
+         props.navigation.navigate("ProductReview", {
+            productId: productId,
+         });
+      }
+   };
+
    if (error) {
       return (
          <View style={styles.centered}>
@@ -123,61 +144,46 @@ const ProductReviewsList = (props) => {
       });
    };
 
-   // if (error) {
-   //    return (
-   //       <View style={styles.centered}>
-   //          <Text>An error occured</Text>
-   //          <Button
-   //             title="Try Again"
-   //             onPress={loadProducts}
-   //             color={Colors.primaryColor}
-   //          />
-   //       </View>
-   //    );
-   // }
-
-   if (!isLoading && productReViews.length === 0) {
-      return (
-         <View style={styles.centered}>
-            <Text>There is no any reviews, please add some!</Text>
-         </View>
-      );
-   }
-
    return (
       <View style={styles.container}>
-         <View style={{ marginBottom: 50 }}>
-            {productReViews && (
-               <FlatList
-                  data={productReViews}
-                  renderItem={(itemData) => (
-                     <View
-                        style={{
-                           borderWidth: 0,
-                           shadowColor: "grey",
-                           shadowOpacity: 0.26,
-                           shadowOffset: { width: 2, height: 2 },
-                           shadowRadius: 8,
-                           elevation: 5,
-                        }}
-                     >
-                        <ReviewItem
-                           item={itemData.item}
-                           replyToReview={replyToReview}
-                           commentId={commentId}
-                           openReplies={openReplies}
-                        ></ReviewItem>
-                     </View>
-                  )}
-                  keyExtractor={(item) => Math.random()}
-                  onScroll={(e) => {
-                     if (e.nativeEvent.contentOffset.y > 0) {
-                        scrollY.setValue(e.nativeEvent.contentOffset.y);
-                     }
-                  }}
-               />
-            )}
-         </View>
+         {productReViews.length ? (
+            <View style={{ marginBottom: 50 }}>
+               {productReViews && (
+                  <FlatList
+                     data={productReViews}
+                     renderItem={(itemData) => (
+                        <View
+                           style={{
+                              borderWidth: 0,
+                              shadowColor: "grey",
+                              shadowOpacity: 0.26,
+                              shadowOffset: { width: 2, height: 2 },
+                              shadowRadius: 8,
+                              elevation: 5,
+                           }}
+                        >
+                           <ReviewItem
+                              item={itemData.item}
+                              replyToReview={replyToReview}
+                              commentId={commentId}
+                              openReplies={openReplies}
+                           ></ReviewItem>
+                        </View>
+                     )}
+                     keyExtractor={(item) => Math.random()}
+                     onScroll={(e) => {
+                        if (e.nativeEvent.contentOffset.y > 0) {
+                           scrollY.setValue(e.nativeEvent.contentOffset.y);
+                        }
+                     }}
+                  />
+               )}
+            </View>
+         ) : (
+            <View style={styles.centered}>
+               <Text>There is no any reviews, please add some!</Text>
+            </View>
+         )}
          {/* <Animated.View
             style={{
                transform: [{ translateY: translateY }],
@@ -206,13 +212,7 @@ const ProductReviewsList = (props) => {
                </TouchableOpacity>
             </View>
             <View style={styles.stickyBottomWriteReviewBlock}>
-               <TouchableOpacity
-                  onPress={() => {
-                     props.navigation.navigate("ProductReview", {
-                        productId: productId,
-                     });
-                  }}
-               >
+               <TouchableOpacity onPress={() => handleWriteComment()}>
                   <Text style={styles.stickyBottomWriteReviewText}>
                      НАПИСАТИ ВІДГУК
                   </Text>

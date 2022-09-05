@@ -11,7 +11,9 @@ import {
 } from "react-native";
 import Input from "../../components/Input";
 import Colors from "../../constants/Colors";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import * as authActions from "../../redux-folder/actions/authActions";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const FORM_INPUT_UPDATE = "FORM_INPUT_UPDATE";
 
@@ -42,11 +44,42 @@ const Registration = (props) => {
    const [isLoading, setIsLoading] = useState(false);
    const [error, setError] = useState();
    const [diabledButton, setDisabledButton] = useState(true);
+   const [dontMatchError, setDontMatchError] = useState(null);
+   const [redirect, setRedirect] = useState();
 
    const dispatch = useDispatch();
 
+   const retrieveData = useCallback(async () => {
+      try {
+         const value = await AsyncStorage.getItem("redirect");
+         setRedirect(JSON.parse(value));
+      } catch (error) {
+         // Error retrieving data
+      }
+      AsyncStorage.removeItem("redirect");
+   });
+
    useEffect(() => {
-      console.log(error);
+      retrieveData();
+   }, []);
+   var user = useSelector((state) => state.auth);
+   const getUser = () => {
+      if (user.token) {
+         if (redirect) {
+            props.navigation.navigate(redirect.redirectUrl, {
+               productId: redirect.productId,
+            });
+         } else {
+            props.navigation.navigate("Account");
+         }
+      }
+   };
+
+   useEffect(() => {
+      getUser();
+   }, [redirect, user]);
+
+   useEffect(() => {
       if (error) {
          Alert.alert("An Error Occured", error, [
             { text: "Okay", onPress: setError(null) },
@@ -55,11 +88,16 @@ const Registration = (props) => {
    }, [error]);
 
    useEffect(() => {
-      if (formState.formIsValid) {
-         console.log("here");
+      if (
+         formState.formIsValid &&
+         formState.inputValues.password ===
+            formState.inputValues.confirmPassword
+      ) {
          setDisabledButton(false);
+         setDontMatchError(null);
       } else {
          setDisabledButton(true);
+         setDontMatchError("passwords don't match.");
       }
    });
 
@@ -67,8 +105,10 @@ const Registration = (props) => {
       setError(null);
       let action;
 
-      action = authActions.login(
+      action = authActions.signUp(
          formState.inputValues.email,
+         formState.inputValues.firstName,
+         formState.inputValues.lastName,
          formState.inputValues.password
       );
       setIsLoading(true);
@@ -84,11 +124,17 @@ const Registration = (props) => {
    const [formState, dispatchFormState] = useReducer(formReducer, {
       inputValues: {
          email: "",
+         firstName: "",
+         lastName: "",
          password: "",
+         confirmPassword: "",
       },
       inputValidities: {
          email: false,
+         firstName: false,
+         lastName: false,
          password: false,
+         confirmPassword: false,
       },
       formIsValid: false,
    });
@@ -123,43 +169,6 @@ const Registration = (props) => {
          <View style={styles.inputWrapper}>
             <ScrollView style={styles.inputBlock}>
                <Input
-                  id="firstName"
-                  label="First Name"
-                  keyboardType="email-address"
-                  secureTextEntry={false}
-                  required
-                  firstName
-                  autoCapitalize="none"
-                  // errorText="Please enter a valid first name address."
-                  onInputChange={inputChangeHandler}
-                  initialValue=""
-                  placeholder="Прізвище"
-               />
-               <Input
-                  id="lastName"
-                  label="Last Name"
-                  keyboardType="email-address"
-                  secureTextEntry={false}
-                  required
-                  lastName
-                  autoCapitalize="none"
-                  onInputChange={inputChangeHandler}
-                  initialValue=""
-                  placeholder="Ім'я"
-               />
-               <Input
-                  id="phone"
-                  label="Phone"
-                  keyboardType="numeric"
-                  secureTextEntry={false}
-                  required
-                  lastName
-                  autoCapitalize="none"
-                  onInputChange={inputChangeHandler}
-                  initialValue=""
-                  placeholder="Phone"
-               />
-               <Input
                   id="email"
                   label="E-Mail"
                   keyboardType="email-address"
@@ -172,6 +181,36 @@ const Registration = (props) => {
                   initialValue=""
                   login={true}
                   placeholder="Електронна пошта"
+               />
+               <Input
+                  id="firstName"
+                  label="FirstNmae"
+                  keyboardType="default"
+                  secureTextEntry={false}
+                  required
+                  password
+                  minLength={8}
+                  autoCapitalize="none"
+                  errorText="Please enter a valid name."
+                  onInputChange={inputChangeHandler}
+                  initialValue=""
+                  login={true}
+                  placeholder="Ім'я"
+               />
+               <Input
+                  id="lastName"
+                  label="LastName"
+                  keyboardType="default"
+                  secureTextEntry={false}
+                  required
+                  password
+                  minLength={8}
+                  autoCapitalize="none"
+                  errorText="Please enter a valid surname."
+                  onInputChange={inputChangeHandler}
+                  initialValue=""
+                  login={true}
+                  placeholder="Прізвище"
                />
                <Input
                   id="password"
@@ -187,6 +226,21 @@ const Registration = (props) => {
                   initialValue=""
                   login={true}
                   placeholder="Пароль"
+               />
+               <Input
+                  id="confirmPassword"
+                  label="ConfirmPassword"
+                  keyboardType="default"
+                  secureTextEntry={true}
+                  required
+                  confirmPassword
+                  minLength={8}
+                  autoCapitalize="none"
+                  dontMatchError={dontMatchError}
+                  onInputChange={inputChangeHandler}
+                  initialValue=""
+                  login={true}
+                  placeholder="Повторіть пароль"
                />
                <View style={styles.passwordRequirementsBlock}>
                   <Text style={styles.passwordRequirementsText}>

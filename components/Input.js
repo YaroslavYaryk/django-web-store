@@ -71,6 +71,7 @@ const Input = (props) => {
             isValid = false;
          }
       }
+      console.log(text.length);
 
       dispatch({ type: INPUT_CHANGE, value: text, isValid: isValid });
    };
@@ -99,7 +100,7 @@ const Input = (props) => {
             onBlur={lostFocusHandler}
             placeholder={props.placeholder}
          />
-         {id === "password" && (
+         {["password", "confirmPassword"].includes(id) && (
             <TouchableOpacity
                style={styles.inputPasswordSee}
                onPress={reveal1Password}
@@ -107,14 +108,22 @@ const Input = (props) => {
                <Ionicons name={hideUnhideTextIcon} size={24} color="grey" />
             </TouchableOpacity>
          )}
+         {props.dontMatchError && inputState.touched && (
+            <View style={styles.errorContainer}>
+               <Text style={styles.errorText}>{props.dontMatchError}</Text>
+            </View>
+         )}
          {!inputState.isValid && inputState.touched && error && (
             <View style={styles.errorContainer}>
                <Text style={styles.errorText}>{error}</Text>
             </View>
          )}
-         {!inputState.isValid && inputState.touched && !error && (
-            <View style={styles.errorContainerLine}></View>
-         )}
+         {!inputState.isValid &&
+            inputState.touched &&
+            !error &&
+            !props.dontMatchError && (
+               <View style={styles.errorContainerLine}></View>
+            )}
       </View>
    );
 };

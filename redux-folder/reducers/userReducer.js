@@ -4,14 +4,12 @@ import {
    CHANGE_USER_LIVING_PLACE,
    CHANGE_USER_WARE_HOUSE,
    CHANGE_USER_DELIVERY_TYPE,
+   EDIT_USER_BASE_INFO,
 } from "../actions/userActions";
 import User from "../../models/User";
 
 const initialState = {
    user: {},
-   token: null,
-   userId: 1,
-   didTryToLogin: false,
 };
 
 export default (state = initialState, action) => {
@@ -42,6 +40,17 @@ export default (state = initialState, action) => {
          return {
             ...state,
             user: usss,
+         };
+      case EDIT_USER_BASE_INFO:
+         const usses = state.user;
+         usses.firstName = action.firstName;
+         usses.lastName = action.lastName;
+         usses.middleName = action.middleName;
+         usses.phone = action.phone;
+         usses.email = action.email;
+         return {
+            ...state,
+            user: usses,
          };
       case CHANGE_USER_LIVING_PLACE:
          const ussss = state.user;

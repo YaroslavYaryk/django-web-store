@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { createStackNavigator } from "@react-navigation/stack";
+import {
+   createStackNavigator,
+   HeaderBackButton,
+} from "@react-navigation/stack";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 
 import {
@@ -44,6 +47,10 @@ import ChangeUserOrderInfo from "../screens/Product/Orders/ChangeUserOrderInfo";
 import SearchInputScreen from "../screens/Product/Search/SearchInputScreen";
 import SearchResultScreen from "../screens/Product/Search/SearchResultScreen";
 import CharacteristicProducts from "../screens/Product/Category/CharacteristicProducts";
+import Profile from "../screens/Auth/Profile";
+import EditProfile from "../screens/Auth/EditProdile";
+import { screenOptions as profileScreenOptions } from "../screens/Auth/Profile";
+import { screenOptions as editProfileScreenOptions } from "../screens/Auth/EditProdile";
 
 import { screenOptions as searchResultScreenOptions } from "../screens/Product/Search/SearchResultScreen";
 
@@ -207,7 +214,9 @@ export const AuthNavigator = () => {
          <AuthStackNavigator.Screen
             name="TopTabNavigator"
             component={TopTabNavigator}
-            options={{ headerTitle: "Авторизація" }}
+            options={{
+               headerTitle: "Авторизація",
+            }}
          />
       </AuthStackNavigator.Navigator>
    );
@@ -474,6 +483,25 @@ export const OrderNavigator = () => {
    );
 };
 
+const ProfileStackNavigator = createStackNavigator();
+
+export const ProfileNavigator = () => {
+   return (
+      <ProfileStackNavigator.Navigator screenOptions={defaultNavOptions}>
+         <ProfileStackNavigator.Screen
+            name="ProfileScreen"
+            component={Profile}
+            options={profileScreenOptions}
+         />
+         <ProfileStackNavigator.Screen
+            name="EditProfile"
+            component={EditProfile}
+            options={editProfileScreenOptions}
+         />
+      </ProfileStackNavigator.Navigator>
+   );
+};
+
 const ProductsStackNavigator = createStackNavigator();
 
 export default ProductsNavigator = () => {
@@ -490,6 +518,16 @@ export default ProductsNavigator = () => {
             name="ProductDetailsNavigator"
             component={ProductTopTabNavigator}
             options={prDetalsScreenOptions}
+         />
+         <ProductsStackNavigator.Screen
+            name="ProfileNavigator"
+            component={ProfileNavigator}
+            options={{ headerShown: false }}
+         />
+         <ProductsStackNavigator.Screen
+            name="AuthNavigator"
+            component={AuthNavigator}
+            options={{ headerShown: false }}
          />
          <ProductsStackNavigator.Screen
             name="CharacteristicProducts"
