@@ -77,7 +77,6 @@ const ReplyItem = (props) => {
       const year = splittedData[0];
       return `${day} ${month} ${year}`;
    };
-
    return (
       <View style={styles.container}>
          <View style={styles.containerInner}>
@@ -93,7 +92,13 @@ const ReplyItem = (props) => {
                   </View>
                </View>
                <View style={styles.HeaderBottom}>
-                  <View style={styles.sellerRating}></View>
+                  <View style={styles.sellerRating}>
+                     <RatingItem
+                        stars={props.item.rating}
+                        nonSpace={true}
+                        hideReview={true}
+                     />
+                  </View>
                </View>
             </View>
             <View style={styles.bodyBlock}>
@@ -105,6 +110,70 @@ const ReplyItem = (props) => {
                   </View>
                </View>
             </View>
+            {props.item.photos && (
+               <View style={styles.commentImages}>
+                  <ScrollView scrollEnabled horizontal>
+                     {props.item.photos.map((elem) => (
+                        <View key={elem.id}>
+                           <TouchableOpacity
+                              onPress={() => {
+                                 setVisible(true);
+                                 {
+                                    setImagePreview(elem.url);
+                                 }
+                              }}
+                           >
+                              <Image
+                                 key={elem.id}
+                                 style={styles.image}
+                                 source={{
+                                    uri: elem.url,
+                                 }}
+                              />
+                           </TouchableOpacity>
+                           <View
+                              style={{
+                                 flex: 1,
+                                 justifyContent: "center",
+                                 alignItems: "center",
+                              }}
+                           >
+                              {visible && (
+                                 <ModalPoup visible={visible}>
+                                    <View style={{ alignItems: "center" }}>
+                                       <View style={styles.header}>
+                                          <TouchableOpacity
+                                             onPress={() => {
+                                                setVisible(false);
+                                                setImagePreview(null);
+                                             }}
+                                          >
+                                             <AntDesign
+                                                name="closecircle"
+                                                size={30}
+                                                color="red"
+                                             />
+                                          </TouchableOpacity>
+                                       </View>
+                                    </View>
+                                    <View style={{ alignItems: "center" }}>
+                                       <Image
+                                          source={{ uri: imagePreview }}
+                                          style={{
+                                             height: 250,
+                                             width: 250,
+                                             marginVertical: 10,
+                                          }}
+                                       />
+                                    </View>
+                                 </ModalPoup>
+                              )}
+                           </View>
+                        </View>
+                     ))}
+                  </ScrollView>
+               </View>
+            )}
          </View>
       </View>
    );
@@ -211,6 +280,7 @@ const styles = StyleSheet.create({
       height: 40,
       alignItems: "flex-end",
       justifyContent: "center",
+      marginTop: -20,
    },
    repliesBlock: {
       marginTop: 14,

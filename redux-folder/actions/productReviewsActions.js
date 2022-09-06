@@ -66,6 +66,8 @@ export const fetchReviews = (productId) => {
                               el["user"].delivery_type,
                               el["user"].phone
                            ),
+                           el.photos,
+                           el.rating,
                            el.date
                         )
                   )
@@ -102,22 +104,89 @@ export const createReviewToProduct = (
    comment,
    pros,
    cons,
-   fullName,
-   email
+   image
 ) => {
    try {
       return async (dispatch, getState) => {
+         const token = getState().auth.token;
+
+         let formdata = new FormData();
+
+         formdata.append("comment", comment);
+         formdata.append("pros", pros);
+         formdata.append("cons", cons);
+         formdata.append("rating", rating);
+         formdata.append("photo", {
+            uri: image,
+            name: "image.jpg",
+            type: "image/jpeg",
+         });
+
+         const response = await fetch(
+            `${HOST}:${PORT}/api/product/${productId}/add_comment/`,
+            {
+               method: "POST",
+               headers: {
+                  "Content-Type": "multipart/form-data",
+                  "Access-Control-Allow-Origin": "*",
+                  Authorization: `Token ${token}`,
+               },
+               body: formdata,
+            }
+         );
+
+         if (!response.ok) {
+            throw new Error("Something went wrong!");
+         }
+
+         const resData = await response.json();
+
+         const response2 = await fetch(
+            `${HOST}:${PORT}/users/api/user_profile/`,
+            {
+               headers: {
+                  "Content-Type": "application/json",
+                  "Access-Control-Allow-Origin": "*",
+                  Authorization: `Token ${token}`,
+               },
+            }
+         );
+
+         if (!response2.ok) {
+            throw new Error("Something went wrong!");
+         }
+
+         const resData2 = await response2.json();
+         var user = new User(
+            resData2.id,
+            resData2.email,
+            resData2.username,
+            resData2.first_name,
+            resData2.last_name,
+            resData2.middle_name,
+            resData2.living_place,
+            resData2.ware_house,
+            resData2.delivery_type,
+            resData2.phone
+         );
+
+         const newComment = new ProductReview(
+            resData.id,
+            resData.product,
+            user,
+            resData.photos,
+            resData.comment,
+            resData.pros,
+            resData.cons,
+            resData.rating,
+            resData.creation_date,
+            0,
+            []
+         );
+
          dispatch({
             type: CREATE_PRODUCT_REVIEWS,
-            productData: {
-               productId,
-               rating,
-               comment,
-               pros,
-               cons,
-               fullName,
-               email,
-            },
+            newComment: newComment,
          });
       };
    } catch (err) {
@@ -129,20 +198,87 @@ export const createReviewReply = (
    productId,
    commentId,
    comment,
-   fullName,
-   email
+   image,
+   rating
 ) => {
    try {
       return async (dispatch, getState) => {
+         const token = getState().auth.token;
+
+         let formdata = new FormData();
+         console.log(comment, "here");
+         formdata.append("comment", comment);
+         formdata.append("pros", "");
+         formdata.append("cons", "");
+         formdata.append("parent", commentId);
+         formdata.append("rating", rating);
+         formdata.append("photo", {
+            uri: image,
+            name: "image.jpg",
+            type: "image/jpeg",
+         });
+         const response = await fetch(
+            `${HOST}:${PORT}/api/product/${productId}/add_comment/`,
+            {
+               method: "POST",
+               headers: {
+                  "Content-Type": "multipart/form-data",
+                  "Access-Control-Allow-Origin": "*",
+                  Authorization: `Token ${token}`,
+               },
+               body: formdata,
+            }
+         );
+
+         if (!response.ok) {
+            throw new Error("Something went wrong!");
+         }
+
+         const resData = await response.json();
+
+         const response2 = await fetch(
+            `${HOST}:${PORT}/users/api/user_profile/`,
+            {
+               headers: {
+                  "Content-Type": "application/json",
+                  "Access-Control-Allow-Origin": "*",
+                  Authorization: `Token ${token}`,
+               },
+            }
+         );
+
+         if (!response2.ok) {
+            throw new Error("Something went wrong!");
+         }
+
+         const resData2 = await response2.json();
+         var user = new User(
+            resData2.id,
+            resData2.email,
+            resData2.username,
+            resData2.first_name,
+            resData2.last_name,
+            resData2.middle_name,
+            resData2.living_place,
+            resData2.ware_house,
+            resData2.delivery_type,
+            resData2.phone
+         );
+
+         var newReply = new ProductReply(
+            resData.id,
+            commentId,
+            comment,
+            user,
+            resData.photos,
+            rating,
+            resData.creation_date
+         );
+
          dispatch({
             type: CREATE_REVIEW_REPLY,
-            productData: {
-               productId,
-               commentId,
-               comment,
-               fullName,
-               email,
-            },
+            newReply: newReply,
+            commentId: commentId,
          });
       };
    } catch (err) {

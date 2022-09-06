@@ -65,12 +65,19 @@ const ProductItem = (props) => {
                      >
                         <TouchableOpacity
                            onPress={() => {
-                              likeProduct();
+                              props.likeProduct(props.item.id);
                            }}
                         >
                            <View>
                               <AntDesign
-                                 name={likeImage}
+                                 name={
+                                    props.likes.length &&
+                                    props.likes.find(
+                                       (elem) => elem.post === props.item.id
+                                    )
+                                       ? "heart"
+                                       : "hearto"
+                                 }
                                  size={24}
                                  color="red"
                               />

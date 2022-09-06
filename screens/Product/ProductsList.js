@@ -22,20 +22,27 @@ import CartPopup from "../../components/wrappers/CartPopup";
 import { TextInput } from "react-native-paper";
 import { Ionicons } from "@expo/vector-icons";
 import * as productActions from "../../redux-folder/actions/productActions";
+import * as likeActions from "../../redux-folder/actions/likeActions";
 import { Feather } from "@expo/vector-icons";
 import ButtonScrollToTop from "../../components/Filter/ButtonScrollToTop";
+import { useIsFocused } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ProductsList = (props) => {
    const products = useSelector((state) => state.products.products);
-
    const [error, setError] = useState(false);
    const [isLoading, setIsLoading] = useState(false);
-   const [fetch, setArr] = useState(0);
+   const [fetch, setFetch] = useState(0);
    const [visible, setVisible] = useState(false);
    const [searchValue, setSearchValue] = useState("");
    const [buttonToTopVisible, setButtonToTopVisible] = useState(false);
 
+   const auth = useSelector((state) => state.auth);
+   const likes = useSelector((state) => state.likes.productLikes);
+
    const dispatch = useDispatch();
+
+   const isFocused = useIsFocused();
 
    const loadProducts = useCallback(async () => {
       setError(null);
@@ -58,7 +65,24 @@ const ProductsList = (props) => {
 
    useEffect(() => {
       loadProducts();
-   }, [dispatch, loadProducts]);
+   }, [dispatch, loadProducts, isFocused]);
+
+   const loadLikes = useCallback(async () => {
+      setError(null);
+      setIsLoading(true);
+      try {
+         await dispatch(likeActions.fetchLikes());
+      } catch (err) {
+         setError(err.message);
+      }
+      setIsLoading(false);
+   }, [dispatch, setError, setIsLoading]);
+
+   useEffect(() => {
+      if (auth.token) {
+         loadLikes();
+      }
+   }, [dispatch, loadLikes, isFocused, fetch]);
 
    const fadeAnim = useRef(new Animated.Value(0)).current;
 
@@ -89,6 +113,55 @@ const ProductsList = (props) => {
       } catch (err) {}
    };
 
+   const scrollToTop = () => {
+      ref.current.scrollToOffset({ offset: 0, animated: true });
+   };
+
+   const scrollHandler = (e) => {
+      if (e.nativeEvent.contentOffset.y > 300) {
+         setButtonToTopVisible(true);
+      } else {
+         setButtonToTopVisible(false);
+      }
+      Animated.timing(fadeAnim, {
+         toValue: buttonToTopVisible ? 1 : 0, // Animate to opacity: 1 (opaque)
+         duration: 200, // Make it take a while
+         useNativeDriver: true,
+      }).start();
+   };
+
+   const likeProductHandle = useCallback(async (productId) => {
+      if (!auth.token) {
+         AsyncStorage.setItem(
+            "redirect",
+            JSON.stringify({
+               redirectUrl: "BaseFullNavigator",
+               productId: "",
+            })
+         );
+
+         props.navigation.navigate("AuthNavigator", {
+            screen: "TopTabNavigator",
+         });
+      } else {
+         setError(null);
+         setIsLoading(true);
+         try {
+            if (likes && likes.find((elem) => elem.post === productId)) {
+               var likeId = likes.find((elem) => elem.post === productId).id;
+               await dispatch(likeActions.deleteLike(productId, likeId));
+            } else {
+               await dispatch(likeActions.addLike(productId));
+            }
+         } catch (err) {
+            console.log(err.message);
+            setError(err.message);
+         }
+         setIsLoading(false);
+         setFetch(Math.random());
+      }
+   });
+
    if (error) {
       return (
          <View style={styles.centered}>
@@ -118,23 +191,6 @@ const ProductsList = (props) => {
          </View>
       );
    }
-
-   const scrollToTop = () => {
-      ref.current.scrollToOffset({ offset: 0, animated: true });
-   };
-
-   const scrollHandler = (e) => {
-      if (e.nativeEvent.contentOffset.y > 300) {
-         setButtonToTopVisible(true);
-      } else {
-         setButtonToTopVisible(false);
-      }
-      Animated.timing(fadeAnim, {
-         toValue: buttonToTopVisible ? 1 : 0, // Animate to opacity: 1 (opaque)
-         duration: 200, // Make it take a while
-         useNativeDriver: true,
-      }).start();
-   };
 
    return (
       <View style={styles.wrapper}>
@@ -195,6 +251,8 @@ const ProductsList = (props) => {
                   item={itemData.item}
                   addProductToCart={addProductToCart}
                   setVisible={setVisible}
+                  likes={likes}
+                  likeProduct={likeProductHandle}
                   onSelect={() => {
                      getProductDetails(
                         itemData.item.id,

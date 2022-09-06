@@ -27,7 +27,6 @@ const ProductReviews = (props) => {
    const [wordCountComment, setWordComment] = useState(0);
    const [wordCountPros, setWordPros] = useState(0);
    const [wordCountCons, setWordCons] = useState(0);
-   const [fullName, setFullName] = useState("Ярослав Диханов");
    const [comment, setComment] = useState("");
    const [pros, setPros] = useState("");
    const [cons, setCons] = useState("");
@@ -41,8 +40,6 @@ const ProductReviews = (props) => {
 
    const { width } = useWindowDimensions();
 
-   const email = "duhanov2003@gmail.com";
-
    useEffect(() => {
       if (ratingStars == 0) {
          setRatingMark("Оцініть товар");
@@ -51,25 +48,28 @@ const ProductReviews = (props) => {
       }
    }, [ratingStars]);
 
-   const handleAddReview = () => {
+   const handleAddReview = useCallback(async () => {
       setIsLoading(true);
 
-      dispatch(
-         reviewActions.createReviewToProduct(
-            productId,
-            ratingStars,
-            comment,
-            pros,
-            cons,
-            fullName,
-            email
-         )
-      );
+      try {
+         await dispatch(
+            reviewActions.createReviewToProduct(
+               productId,
+               ratingStars,
+               comment,
+               pros,
+               cons,
+               pickedImage
+            )
+         );
+      } catch (err) {
+         console.log(err);
+      }
       setIsLoading(false);
       props.navigation.navigate("ProductReviewsList", {
-         productId: id,
+         productId: productId,
       });
-   };
+   });
 
    if (isLoading) {
       return (
@@ -96,10 +96,9 @@ const ProductReviews = (props) => {
                   comment
                   alignTop
                   minLength={8}
-                  autoCapitalize="none"
+                  // autoCapitalize="none"
                   errorText="Please enter a valid comment."
                   initialValue=""
-                  login={true}
                   height={80}
                   placeholder="Коментар"
                   setWordsCount={setWordComment}
@@ -117,9 +116,8 @@ const ProductReviews = (props) => {
                   keyboardType="default"
                   minLength={8}
                   alignTop
-                  required
+                  // required
                   autoCapitalize="none"
-                  errorText="Будь ласка введіть переваги"
                   initialValue=""
                   login={true}
                   height={50}
@@ -139,9 +137,8 @@ const ProductReviews = (props) => {
                   keyboardType="default"
                   minLength={8}
                   alignTop
-                  required
+                  // required
                   autoCapitalize="none"
-                  errorText="Будь ласка введіть недоліки"
                   initialValue=""
                   login={true}
                   height={50}
@@ -154,51 +151,11 @@ const ProductReviews = (props) => {
                   <Text>{wordCountCons}/200</Text>
                </View>
             </View>
-            <View style={styles.imagePicker}></View>
-            <ImgPicker
-               onImageTaken={onImageTakeHandler}
-               imageUri={pickedImage}
-            />
-            <View
-               style={[styles.TextFieldCommentLabelOnBorder, { marginTop: 10 }]}
-            >
-               <InputRating
-                  id="fullName"
-                  label="Full Name"
-                  keyboardType="default"
-                  minLength={8}
-                  required
-                  autoCapitalize="none"
-                  errorText="Будь ласка введіть Ім'я та прізвище"
-                  initialValue={fullName}
-                  login={true}
-                  height={50}
-                  setText={setFullName}
+            <View style={[styles.imagePicker, { marginBottom: 15 }]}>
+               <ImgPicker
+                  onImageTaken={onImageTakeHandler}
+                  imageUri={pickedImage}
                />
-               <View style={styles.TextFieldCommentLabelOnBorderText}>
-                  <Text style={styles.labelOnBorder}>Ім'я та прізвище</Text>
-               </View>
-            </View>
-            <View
-               style={[styles.TextFieldCommentLabelOnBorder, { marginTop: 10 }]}
-            >
-               <InputRating
-                  id="email"
-                  label="Email"
-                  keyboardType="default"
-                  minLength={8}
-                  pros
-                  required
-                  autoCapitalize="none"
-                  errorText="Будь ласка введіть Email"
-                  initialValue={email}
-                  disabled={true}
-                  login={true}
-                  height={50}
-               />
-               <View style={styles.TextFieldCommentLabelOnBorderText}>
-                  <Text style={styles.labelOnBorder}>Email</Text>
-               </View>
             </View>
             <View
                style={[

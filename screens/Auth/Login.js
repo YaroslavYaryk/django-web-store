@@ -68,6 +68,7 @@ const Login = (props) => {
          if (redirect) {
             props.navigation.navigate(redirect.redirectUrl, {
                productId: redirect.productId,
+               commentId: redirect.commentId ? redirect.commentId : null,
             });
          } else {
             props.navigation.navigate("Account");

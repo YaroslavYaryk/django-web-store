@@ -106,22 +106,6 @@ const CategoryProducts = (props) => {
       outputRange: [0, -45],
    });
 
-   if (isLoading) {
-      return (
-         <View style={styles.centered}>
-            <ActivityIndicator size="large" color={Colors.primaryColor} />
-         </View>
-      );
-   }
-
-   if (!isLoading && categoryProducts.length === 0) {
-      return (
-         <View style={styles.centered}>
-            <Text>There is no any product!</Text>
-         </View>
-      );
-   }
-
    const HandleSortProducts = async (sortAction) => {
       await dispatch(productActions.sortProducts(sortAction, categoryProducts));
    };
@@ -137,6 +121,22 @@ const CategoryProducts = (props) => {
    };
 
    const offsetValue = useRef(new Animated.Value(0)).current;
+
+   if (isLoading) {
+      return (
+         <View style={styles.centered}>
+            <ActivityIndicator size="large" color={Colors.primaryColor} />
+         </View>
+      );
+   }
+
+   if (!isLoading && categoryProducts.length === 0) {
+      return (
+         <View style={styles.centered}>
+            <Text>There is no any product!</Text>
+         </View>
+      );
+   }
    return (
       <View style={{ flex: 1 }}>
          <SafeAreaView style={[styles.container]}>
@@ -346,15 +346,10 @@ const CategoryProducts = (props) => {
 
 export const screenOptions = (navData) => {
    const props = navData.navigation.getState();
-
-   // if (props.routes[0].params) {
-   //    dispatch = props.routes[0].params.dispatch;
-   //    setdeleteAll = props.routes[0].params.setdeleteAll;
-   //    deleteAll = props.routes[0].params.deleteAll;
-   // }
-
+   const productName = navData.route.params.productName;
+   console.log(productName);
    return {
-      headerTitle: "Search",
+      headerTitle: productName.charAt(0).toUpperCase() + productName.slice(1),
    };
 };
 

@@ -119,22 +119,20 @@ const InputRating = (props) => {
                <Text style={styles.errorText}>{error}</Text>
             </View>
          )}
-         {!inputState.isValid && inputState.touched && !error && (
-            <View
-               style={[
-                  styles.errorContainerLine,
-                  {
-                     marginLeft: props.ml ? props.ml : 0,
-                     width: props.wdt ? props.wdt : "100%",
-                  },
-               ]}
-            ></View>
-         )}
-         {!inputState.isValid && error && !inputState.touched && (
-            <View style={styles.errorContainer}>
-               <Text style={styles.errorText}>{error}</Text>
-            </View>
-         )}
+         {!inputState.isValid &&
+            inputState.touched &&
+            !error &&
+            props.required && (
+               <View
+                  style={[
+                     styles.errorContainerLine,
+                     {
+                        marginLeft: props.ml ? props.ml : 0,
+                        width: props.wdt ? props.wdt : "100%",
+                     },
+                  ]}
+               ></View>
+            )}
       </View>
    );
 };

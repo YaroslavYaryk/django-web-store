@@ -138,10 +138,25 @@ const ProductReviewsList = (props) => {
    }
 
    const replyToReview = (productId, commentId) => {
-      props.navigation.navigate("ReviewReply", {
-         productId: productId,
-         commentId: commentId,
-      });
+      if (!auth.token) {
+         AsyncStorage.setItem(
+            "redirect",
+            JSON.stringify({
+               redirectUrl: "ReviewReply",
+               productId: productId,
+               commentId: commentId,
+            })
+         );
+
+         props.navigation.navigate("AuthNavigator", {
+            screen: "TopTabNavigator",
+         });
+      } else {
+         props.navigation.navigate("ReviewReply", {
+            productId: productId,
+            commentId: commentId,
+         });
+      }
    };
 
    return (

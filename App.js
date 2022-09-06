@@ -17,6 +17,7 @@ import couponReducer from "./redux-folder/reducers/couponReducer";
 import filterReducer from "./redux-folder/reducers/filterReducer";
 import categoryReducer from "./redux-folder/reducers/categoryReducer";
 import authReducer from "./redux-folder/reducers/authReducer";
+import likeReducer from "./redux-folder/reducers/likeReducer";
 import { NavigationContainer } from "@react-navigation/native";
 import { LogBox } from "react-native";
 
@@ -32,6 +33,7 @@ const rootReducer = combineReducers({
    filter: filterReducer,
    categories: categoryReducer,
    auth: authReducer,
+   likes: likeReducer,
 });
 
 const store = configureStore(

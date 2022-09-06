@@ -31,6 +31,7 @@ import { screenOptions as productListScreenOptions } from "../screens/Product/Pr
 import Colors from "../constants/Colors";
 import Categories from "../screens/Product/Category/Categories";
 import CategoryProducts from "../screens/Product/Category/CategoryProducts";
+import { screenOptions as categoryProductsScreenOptions } from "../screens/Product/Category/CategoryProducts";
 import Cart from "../screens/Product/Cart";
 import Icon, { Icons } from "../components/Icon";
 import Login from "../screens/Auth/Login";
@@ -254,7 +255,7 @@ export const CategoryNavigator = () => {
          <CategoryStackNavigator.Screen
             name="CategoryProducts"
             component={CategoryProducts}
-            // options={productsOverviewScreenOptions}
+            options={categoryProductsScreenOptions}
          />
          <CategoryStackNavigator.Screen
             name="Product"

@@ -23,33 +23,53 @@ const FORM_INPUT_UPDATE = "FORM_INPUT_UPDATE";
 
 const ReviewReply = (props) => {
    const [wordCountComment, setWordComment] = useState(0);
-   const [fullName, setFullName] = useState("Ярослав Диханов");
    const [comment, setComment] = useState("");
    const { width } = useWindowDimensions();
    const { commentId, productId } = props.route.params;
    const dispatch = useDispatch();
-   const email = "duhanov2003@gmail.com";
    const [isLoading, setIsLoading] = useState(false);
+   const [error, setError] = useState(null);
+   const [pickedImage, setPickedImage] = useState();
 
-   const handleAddReply = () => {
+   const onImageTakeHandler = (imageUri) => {
+      setPickedImage(imageUri);
+   };
+
+   const [ratingStars, setRatingStars] = useState(0);
+   const [ratingMark, setRatingMark] = useState("Оцініть товар");
+
+   const handleAddReply = useCallback(async () => {
+      setError(null);
       setIsLoading(true);
-
-      dispatch(
-         reviewActions.createReviewReply(
-            productId,
-            commentId,
-            comment,
-            fullName,
-            email
-         )
-      );
+      try {
+         await dispatch(
+            reviewActions.createReviewReply(
+               productId,
+               commentId,
+               comment,
+               pickedImage,
+               ratingStars
+            )
+         );
+      } catch (error) {
+         console.log(error.message);
+         setError(error.message);
+      }
       setIsLoading(false);
       props.navigation.navigate("ProductReviewsList", {
          productId: productId,
          commentId: commentId,
          openReplies: true,
       });
-   };
+   });
+
+   useEffect(() => {
+      if (ratingStars == 0) {
+         setRatingMark("Оцініть товар");
+      } else {
+         setRatingMark(RATING_MARKS[ratingStars]);
+      }
+   }, [ratingStars]);
 
    if (isLoading) {
       return (
@@ -59,9 +79,28 @@ const ReviewReply = (props) => {
       );
    }
 
+   if (error) {
+      return (
+         <View style={styles.centered}>
+            <Text>An error occured</Text>
+            <Button
+               title="Try Again"
+               onPress={handleAddReply}
+               color={Colors.primaryColor}
+            />
+         </View>
+      );
+   }
+
    return (
       <View style={styles.container}>
          <ScrollView>
+            <View style={styles.ratingBlock}>
+               <RatingStars setRatingStars={setRatingStars} />
+               <View style={styles.ratingTitle}>
+                  <Text style={styles.ratingTitleText}>{ratingMark}</Text>
+               </View>
+            </View>
             <View style={styles.TextFieldComment}>
                <InputRating
                   id="comment"
@@ -78,57 +117,20 @@ const ReviewReply = (props) => {
                   height={80}
                   placeholder="Коментар"
                   setWordsCount={setWordComment}
-                  setComment={setComment}
+                  setText={setComment}
                   maxLength={2000}
                />
                <View style={styles.wordCount}>
                   <Text>{wordCountComment}/2000</Text>
                </View>
             </View>
+            <View style={[styles.imagePicker, { marginBottom: 15 }]}>
+               <ImgPicker
+                  onImageTaken={onImageTakeHandler}
+                  imageUri={pickedImage}
+               />
+            </View>
 
-            <View
-               style={[styles.TextFieldCommentLabelOnBorder, { marginTop: 40 }]}
-            >
-               <InputRating
-                  id="fullName"
-                  label="Full Name"
-                  keyboardType="default"
-                  minLength={8}
-                  pros
-                  required
-                  autoCapitalize="none"
-                  errorText="Будь ласка введіть Ім'я та прізвище"
-                  //   onInputChange={inputChangeHandler}
-                  initialValue={fullName}
-                  setFullName={setFullName}
-                  login={true}
-                  height={50}
-               />
-               <View style={styles.TextFieldCommentLabelOnBorderText}>
-                  <Text style={styles.labelOnBorder}>Ім'я та прізвище</Text>
-               </View>
-            </View>
-            <View
-               style={[styles.TextFieldCommentLabelOnBorder, { marginTop: 10 }]}
-            >
-               <InputRating
-                  id="email"
-                  label="Email"
-                  keyboardType="default"
-                  minLength={8}
-                  pros
-                  required
-                  autoCapitalize="none"
-                  errorText="Будь ласка введіть Email"
-                  initialValue={email}
-                  disabled={true}
-                  login={true}
-                  height={50}
-               />
-               <View style={styles.TextFieldCommentLabelOnBorderText}>
-                  <Text style={styles.labelOnBorder}>Email</Text>
-               </View>
-            </View>
             <View
                style={[
                   styles.saveCommentBlock,
@@ -188,6 +190,7 @@ const styles = StyleSheet.create({
    TextFieldComment: {
       position: "relative",
       marginTop: 10,
+      marginBottom: 50,
    },
    TextFieldCommentLittle: {
       position: "relative",

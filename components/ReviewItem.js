@@ -427,6 +427,7 @@ const styles = StyleSheet.create({
       height: 40,
       alignItems: "flex-end",
       justifyContent: "center",
+      marginTop: -20,
    },
    repliesBlock: {
       marginTop: 5,

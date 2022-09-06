@@ -162,6 +162,7 @@ const EditProfile = (props) => {
                   //   value={user.email}
                   login={true}
                   placeholder="Електронна пошта"
+                  initiallyValid={formState.inputValidities.email}
                />
                <Input
                   id="firstName"
@@ -176,6 +177,7 @@ const EditProfile = (props) => {
                   initialValue={user.firstName}
                   login={true}
                   placeholder="Ім'я"
+                  initiallyValid={formState.inputValidities.firstName}
                />
                <Input
                   id="lastName"
@@ -190,6 +192,7 @@ const EditProfile = (props) => {
                   initialValue={user.lastName}
                   login={true}
                   placeholder="Прізвище"
+                  initiallyValid={formState.inputValidities.lastName}
                />
                <Input
                   id="middleName"
@@ -204,6 +207,7 @@ const EditProfile = (props) => {
                   initialValue={user.middleName}
                   login={true}
                   placeholder="По-батькові"
+                  initiallyValid={formState.inputValidities.middleName}
                />
                <Input
                   id="phone"
@@ -218,6 +222,7 @@ const EditProfile = (props) => {
                   initialValue={user.phone}
                   login={true}
                   placeholder="Номер телефону"
+                  initiallyValid={formState.inputValidities.phone}
                />
             </View>
             <View

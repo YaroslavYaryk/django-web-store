@@ -71,7 +71,6 @@ const Input = (props) => {
             isValid = false;
          }
       }
-      console.log(text.length);
 
       dispatch({ type: INPUT_CHANGE, value: text, isValid: isValid });
    };

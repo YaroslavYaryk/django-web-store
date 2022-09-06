@@ -9,17 +9,19 @@ import {
    ActivityIndicator,
    Animated,
 } from "react-native";
-import { useState, useRef } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { FlatGrid } from "react-native-super-grid";
 import CategoryItem from "../../../components/CategoryItem";
 import Colors from "../../../constants/Colors";
 import ButtonScrollToTop from "../../../components/Filter/ButtonScrollToTop";
+import * as categoryAction from "../../../redux-folder/actions/categoryActions";
 
 const Categories = (props) => {
    const categories = useSelector((state) => state.categories.categories);
-
    const [isLoading, setIsLoading] = useState(false);
+   const [error, setError] = useState(false);
+
    const [visible, setVisible] = useState(false);
    const [buttonToTopVisible, setButtonToTopVisible] = useState(false);
 
@@ -27,22 +29,22 @@ const Categories = (props) => {
 
    const ref = useRef();
 
-   if (isLoading) {
-      return (
-         <View style={styles.center}>
-            <ActivityIndicator size="large" color={Colors.primaryColor} />
-         </View>
-      );
-   }
-   if (!categories) {
-      return (
-         <View
-            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
-         >
-            <Text>There are no category</Text>
-         </View>
-      );
-   }
+   const dispatch = useDispatch();
+
+   const loadCategories = useCallback(async () => {
+      setError(null);
+      setIsLoading(true);
+      try {
+         await dispatch(categoryAction.fetchCategories());
+      } catch (err) {
+         setError(err.message);
+      }
+      setIsLoading(false);
+   }, [dispatch, setError, setIsLoading]);
+
+   useEffect(() => {
+      loadCategories();
+   }, [dispatch, loadCategories]);
 
    const scrollToTop = () => {
       ref.current.scrollToOffset({ offset: 0, animated: true });
@@ -61,11 +63,42 @@ const Categories = (props) => {
       }).start();
    };
 
-   const getCategoryProducts = (productType) => {
+   const getCategoryProducts = (productType, name) => {
       props.navigation.navigate("CategoryProducts", {
          productType: productType,
+         productName: name,
       });
    };
+
+   if (isLoading) {
+      return (
+         <View style={styles.center}>
+            <ActivityIndicator size="large" color={Colors.primaryColor} />
+         </View>
+      );
+   }
+   if (!categories) {
+      return (
+         <View
+            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+         >
+            <Text>There are no category</Text>
+         </View>
+      );
+   }
+
+   if (error) {
+      return (
+         <View style={styles.centered}>
+            <Text>An error occured</Text>
+            <Button
+               title="Try Again"
+               onPress={loadCategories}
+               color={Colors.primaryColor}
+            />
+         </View>
+      );
+   }
 
    return (
       <View style={styles.wrapper}>
@@ -87,7 +120,10 @@ const Categories = (props) => {
                <CategoryItem
                   item={itemData.item}
                   onSelect={() => {
-                     getCategoryProducts(itemData.item.name);
+                     getCategoryProducts(
+                        itemData.item.slug,
+                        itemData.item.name
+                     );
                   }}
                ></CategoryItem>
             )}
