@@ -56,14 +56,6 @@ const ProductsList = (props) => {
    }, [dispatch, setError, setIsLoading]);
 
    useEffect(() => {
-      const onFocusSub = props.navigation.addListener("focus", loadProducts);
-
-      return () => {
-         onFocusSub;
-      };
-   }, [loadProducts]);
-
-   useEffect(() => {
       loadProducts();
    }, [dispatch, loadProducts, isFocused]);
 

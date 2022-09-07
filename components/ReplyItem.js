@@ -59,9 +59,6 @@ const ModalPoup = ({ visible, children }) => {
 const ReplyItem = (props) => {
    const [visible, setVisible] = React.useState(false);
    const [imagePreview, setImagePreview] = useState(null);
-   const [repliesVisible, setRepliesVisible] = useState(false);
-   const [likeImage, setLikeImage] = useState("hearto");
-   const [commentLikes, setCommentLikes] = useState(props.item.likesCount);
 
    const getPrettyDate = (date) => {
       const newDate =
@@ -174,6 +171,32 @@ const ReplyItem = (props) => {
                   </ScrollView>
                </View>
             )}
+            <View style={styles.likeBlock}>
+               <TouchableOpacity
+                  onPress={() => {
+                     props.likeCommentHandle(props.item.id);
+                  }}
+               >
+                  <View style={{ flexDirection: "row" }}>
+                     <AntDesign
+                        name={
+                           props.commentLikes &&
+                           props.commentLikes.length &&
+                           props.commentLikes.find(
+                              (elem) => elem.post_comment == props.item.id
+                           )
+                              ? "heart"
+                              : "hearto"
+                        }
+                        size={24}
+                        color="red"
+                     />
+                     <Text style={{ marginLeft: 5 }}>
+                        {props.item.likesCount}
+                     </Text>
+                  </View>
+               </TouchableOpacity>
+            </View>
          </View>
       </View>
    );
@@ -295,6 +318,11 @@ const styles = StyleSheet.create({
    repliesLabelText: {
       fontSize: 15,
       fontWeight: "700",
+   },
+   likeBlock: {
+      position: "absolute",
+      bottom: 0,
+      right: 5,
    },
 });
 

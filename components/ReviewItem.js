@@ -66,8 +66,6 @@ const ReviewItem = (props) => {
    const [repliesVisible, setRepliesVisible] = useState(
       properComment && props.openReplies ? true : false
    );
-   const [likeImage, setLikeImage] = useState("hearto");
-   const [commentLikes, setCommentLikes] = useState(props.item.likesCount);
 
    const getPrettyDate = (date) => {
       const newDate =
@@ -82,16 +80,6 @@ const ReviewItem = (props) => {
       const month = monthDict[splittedData[1]];
       const year = splittedData[0];
       return `${day} ${month} ${year}`;
-   };
-
-   const likeProduct = () => {
-      if (likeImage == "hearto") {
-         setLikeImage("heart");
-         setCommentLikes(commentLikes + 1);
-      } else {
-         setLikeImage("hearto");
-         setCommentLikes(commentLikes - 1);
-      }
    };
 
    return (
@@ -246,12 +234,27 @@ const ReviewItem = (props) => {
                   </TouchableOpacity>
                   <TouchableOpacity
                      onPress={() => {
-                        likeProduct();
+                        props.likeCommentHandle(props.item.id);
                      }}
                   >
                      <View style={{ flexDirection: "row" }}>
-                        <AntDesign name={likeImage} size={24} color="red" />
-                        <Text style={{ marginLeft: 5 }}>{commentLikes}</Text>
+                        <AntDesign
+                           name={
+                              props.isAuth &&
+                              props.commentLikes &&
+                              props.commentLikes.length &&
+                              props.commentLikes.find(
+                                 (elem) => elem.post_comment == props.item.id
+                              )
+                                 ? "heart"
+                                 : "hearto"
+                           }
+                           size={24}
+                           color="red"
+                        />
+                        <Text style={{ marginLeft: 5 }}>
+                           {props.item.likesCount}
+                        </Text>
                      </View>
                   </TouchableOpacity>
                </View>
@@ -294,7 +297,12 @@ const ReviewItem = (props) => {
                                     elevation: 5,
                                  }}
                               >
-                                 <ReplyItem item={itemData.item} />
+                                 <ReplyItem
+                                    item={itemData.item}
+                                    isAuth={props.isAuth}
+                                    commentLikes={props.commentLikes}
+                                    likeCommentHandle={props.likeCommentHandle}
+                                 />
                               </View>
                            )}
                            keyExtractor={(item) => Math.random()}

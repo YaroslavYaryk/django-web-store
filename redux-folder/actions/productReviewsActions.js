@@ -68,6 +68,7 @@ export const fetchReviews = (productId) => {
                            ),
                            el.photos,
                            el.rating,
+                           el.comment_likes,
                            el.date
                         )
                   )
@@ -206,7 +207,6 @@ export const createReviewReply = (
          const token = getState().auth.token;
 
          let formdata = new FormData();
-         console.log(comment, "here");
          formdata.append("comment", comment);
          formdata.append("pros", "");
          formdata.append("cons", "");

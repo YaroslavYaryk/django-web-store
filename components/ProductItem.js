@@ -71,6 +71,7 @@ const ProductItem = (props) => {
                            <View>
                               <AntDesign
                                  name={
+                                    props.likes &&
                                     props.likes.length &&
                                     props.likes.find(
                                        (elem) => elem.post === props.item.id

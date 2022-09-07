@@ -69,6 +69,7 @@ const FilterPriceBlock = (props) => {
          selectedOptions.push({
             id: "priceBlock",
             name: `від ${props.price[0]} до ${props.price[1]}`,
+            slug: `${props.price[0]}-${props.price[1]}`,
             type: "priceBlock",
          });
       } else {
@@ -150,17 +151,19 @@ const FilterPriceBlock = (props) => {
                                  height: 40,
                                  fontSize: 15,
                               }}
-                              defaultValue={props.price[0].toString()}
+                              defaultValue={String(props.price[0])}
                               mode="outlined"
-                              value={props.price[0].toString()}
+                              value={String(props.price[0])}
                               onChangeText={(value) => {
                                  try {
-                                    if (value) {
+                                    if (parseInt(value)) {
+                                       console.log("here", value);
                                        props.setPrice(
                                           ...[parseInt(value), props.price[1]]
                                        );
                                        addNewOption();
                                     } else {
+                                       console.log("not here");
                                        props.setPrice(...[0, props.price[1]]);
                                     }
                                  } catch (er) {
@@ -184,12 +187,12 @@ const FilterPriceBlock = (props) => {
                               label={"До"}
                               keyboardType="numeric"
                               style={{ height: 40, fontSize: 15 }}
-                              defaultValue={props.price[1].toString()}
+                              defaultValue={String(props.price[1])}
                               mode="outlined"
-                              value={props.price[1].toString()}
+                              value={String(props.price[1])}
                               onChangeText={(value) => {
                                  try {
-                                    if (value) {
+                                    if (parseInt(value)) {
                                        props.setPrice(
                                           ...[props.price[0], parseInt(value)]
                                        );

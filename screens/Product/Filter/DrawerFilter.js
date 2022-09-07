@@ -17,57 +17,108 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import FilterDropDownItem from "../../../components/Filter/FilterDropDownItem";
 import { useSelector, useDispatch } from "react-redux";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { getValue } from "../../../constants/dictMethods";
 import FilterPriceBlock from "../../../components/Filter/FilterPriceBlock";
 import { Dimensions } from "react-native";
 import Colors from "../../../constants/Colors";
+import { useIsFocused } from "@react-navigation/native";
+import * as filterActions from "../../../redux-folder/actions/filterActions";
 
 const DrawerFilter = (props) => {
+   const [error, setError] = useState(false);
+   const [isLoading, setIsLoading] = useState(false);
+   const dispatch = useDispatch();
+   const isFocused = useIsFocused;
+
+   const loadActions = useCallback(async () => {
+      setError(null);
+      setIsLoading(true);
+      try {
+         await dispatch(filterActions.fetchBrands());
+         await dispatch(filterActions.fetchHardDrive());
+         await dispatch(filterActions.fetchMemorySlots());
+         await dispatch(filterActions.fetchMemoryType());
+         await dispatch(filterActions.fetchRam());
+         await dispatch(filterActions.fetchOperSystem());
+         await dispatch(filterActions.fetchProcessors());
+         await dispatch(filterActions.fetchScreenDiagonals());
+         await dispatch(filterActions.fetchScreenTypes());
+         await dispatch(filterActions.fetchVideoCard());
+         await dispatch(filterActions.fetchVideoMemory());
+      } catch (err) {
+         console.log(error);
+         setError(err.message);
+      }
+      setIsLoading(false);
+   }, [dispatch, setError, setIsLoading]);
+
+   useEffect(() => {
+      loadActions();
+   }, [dispatch, loadActions, isFocused]);
+
    const filterOptions = useSelector((state) => state.filter);
    const [selectedBrands, setSelectedBrands] = useState(
       filterOptions.brands.map((elem) => ({
          id: elem.id,
          name: elem.name,
-         selected: 0,
-         type: "brand",
+         slug: elem.slug,
+         selected: props.selectedOptions.find((el) => el.slug == elem.slug)
+            ? 1
+            : 0,
+         type: "product__brand",
          info: elem.info,
       }))
    );
+
+   console.log(props.selectedOptions);
+
    const [selectedProcessors, setSelectedProcessors] = useState(
       filterOptions.processors.map((elem) => ({
          id: elem.id,
+         slug: elem.slug,
          name: elem.name,
-         selected: 0,
-         type: "processor",
+         selected: props.selectedOptions.find((el) => el.slug == elem.slug)
+            ? 1
+            : 0,
+         type: "processor_name",
          info: elem.info,
       }))
    );
    const [selectedRams, setSelectedRams] = useState(
       filterOptions.rams.map((elem) => ({
          id: elem.id,
+         slug: elem.slug,
          name: elem.name,
-         selected: 0,
-         type: "ram",
+         selected: props.selectedOptions.find((el) => el.slug == elem.slug)
+            ? 1
+            : 0,
+         type: "memory_capacity",
          info: elem.info,
       }))
    );
 
    const [selectedHardDrive, setSelectedHardDrive] = useState(
-      filterOptions.handDrives.map((elem) => ({
+      filterOptions.hardDrives.map((elem) => ({
          id: elem.id,
+         slug: elem.slug,
          name: elem.name,
-         selected: 0,
-         type: "hardDrive",
+         selected: props.selectedOptions.find((el) => el.slug == elem.slug)
+            ? 1
+            : 0,
+         type: "data_storage",
          info: elem.info,
       }))
    );
    const [selectedMemortTypes, setSelectedMemoryTypes] = useState(
       filterOptions.memoryTypes.map((elem) => ({
          id: elem.id,
+         slug: elem.slug,
          name: elem.name,
-         selected: 0,
-         type: "memoryType",
+         selected: props.selectedOptions.find((el) => el.slug == elem.slug)
+            ? 1
+            : 0,
+         type: "memory_type",
          info: elem.info,
       }))
    );
@@ -75,9 +126,12 @@ const DrawerFilter = (props) => {
    const [selectedMemortSlots, setSelectedMemorySlots] = useState(
       filterOptions.memorySlots.map((elem) => ({
          id: elem.id,
+         slug: elem.slug,
          name: elem.name,
-         selected: 0,
-         type: "memorySlots",
+         selected: props.selectedOptions.find((el) => el.slug == elem.slug)
+            ? 1
+            : 0,
+         type: "memory_slots",
          info: elem.info,
       }))
    );
@@ -85,9 +139,12 @@ const DrawerFilter = (props) => {
    const [selectedOperSystem, setSelectedOperSystem] = useState(
       filterOptions.operatSystems.map((elem) => ({
          id: elem.id,
+         slug: elem.slug,
          name: elem.name,
-         selected: 0,
-         type: "operatSystems",
+         selected: props.selectedOptions.find((el) => el.slug == elem.slug)
+            ? 1
+            : 0,
+         type: "operation_system",
          info: elem.info,
       }))
    );
@@ -95,9 +152,12 @@ const DrawerFilter = (props) => {
    const [selectedScreenDiagonal, setSelectedScreenDiagonal] = useState(
       filterOptions.screenDiagonals.map((elem) => ({
          id: elem.id,
+         slug: elem.slug,
          name: elem.name,
-         selected: 0,
-         type: "screenDiagonals",
+         selected: props.selectedOptions.find((el) => el.slug == elem.slug)
+            ? 1
+            : 0,
+         type: "diagonal_screen",
          info: elem.info,
       }))
    );
@@ -105,9 +165,12 @@ const DrawerFilter = (props) => {
    const [selectedScreenTypes, setSelectedScreenTypes] = useState(
       filterOptions.screenTypes.map((elem) => ({
          id: elem.id,
+         slug: elem.slug,
          name: elem.name,
-         selected: 0,
-         type: "screenTypes",
+         selected: props.selectedOptions.find((el) => el.slug == elem.slug)
+            ? 1
+            : 0,
+         type: "screen_type",
          info: elem.info,
       }))
    );
@@ -115,9 +178,12 @@ const DrawerFilter = (props) => {
    const [selectedVideoCards, setSelectedVideoCards] = useState(
       filterOptions.videoCards.map((elem) => ({
          id: elem.id,
+         slug: elem.slug,
          name: elem.name,
-         selected: 0,
-         type: "videoCards",
+         selected: props.selectedOptions.find((el) => el.slug == elem.slug)
+            ? 1
+            : 0,
+         type: "video_card",
          info: elem.info,
       }))
    );
@@ -125,9 +191,12 @@ const DrawerFilter = (props) => {
    const [selectedVideoMemories, setSelectedVideoMemories] = useState(
       filterOptions.videoMemories.map((elem) => ({
          id: elem.id,
+         slug: elem.slug,
          name: elem.name,
-         selected: 0,
-         type: "videoMemories",
+         selected: props.selectedOptions.find((el) => el.slug == elem.slug)
+            ? 1
+            : 0,
+         type: "video_card_memory",
          info: elem.info,
       }))
    );
@@ -135,54 +204,53 @@ const DrawerFilter = (props) => {
    const minValue = 2700;
    const maxValue = 99999;
 
-   const [selectedOptions, setSelectedOptions] = useState([]);
    const [price, setPrice] = useState([minValue, maxValue]);
 
    const optionDict = [
-      { type: "brand", value: selectedBrands, set: setSelectedBrands },
+      { type: "product__brand", value: selectedBrands, set: setSelectedBrands },
       {
-         type: "processor",
+         type: "processor_name",
          value: selectedProcessors,
          set: setSelectedProcessors,
       },
-      { type: "ram", value: selectedRams, set: setSelectedRams },
+      { type: "memory_capacity", value: selectedRams, set: setSelectedRams },
       {
-         type: "hardDrive",
+         type: "data_storage",
          value: selectedHardDrive,
          set: setSelectedHardDrive,
       },
       {
-         type: "memoryType",
+         type: "memory_type",
          value: selectedMemortTypes,
          set: setSelectedMemoryTypes,
       },
       {
-         type: "memorySlots",
+         type: "memory_slots",
          value: selectedMemortSlots,
          set: setSelectedMemorySlots,
       },
       {
-         type: "operatSystems",
+         type: "operation_system",
          value: selectedOperSystem,
          set: setSelectedOperSystem,
       },
       {
-         type: "screenDiagonals",
+         type: "diagonal_screen",
          value: selectedScreenDiagonal,
          set: setSelectedScreenDiagonal,
       },
       {
-         type: "screenTypes",
+         type: "screen_type",
          value: selectedScreenTypes,
          set: setSelectedScreenTypes,
       },
       {
-         type: "videoCards",
+         type: "video_card",
          value: selectedVideoCards,
          set: setSelectedVideoCards,
       },
       {
-         type: "videoMemories",
+         type: "video_card_memory",
          value: selectedVideoMemories,
          set: setSelectedVideoMemories,
       },
@@ -191,10 +259,10 @@ const DrawerFilter = (props) => {
    useEffect(() => {
       // console.log(selectedOptions);
       return () => {};
-   }, [selectedBrands, selectedOptions, selectFilterOption]);
+   }, [selectedBrands, props.selectedOptions, selectFilterOption]);
 
    const selectFilterOption = (elements) => {
-      setSelectedOptions([...elements]);
+      props.setSelectedOptions([...elements]);
    };
 
    const setBrandsOptions = (elements) => {
@@ -255,10 +323,12 @@ const DrawerFilter = (props) => {
 
    const cancelFilterOption = (id, type, superNode = false) => {
       if (!superNode) {
-         const newSelectedOptions = selectedOptions.filter(
-            (el) => el.type == type && el.id != id
+         const index = props.selectedOptions.findIndex(
+            (el) => el.type == type && el.id == id
          );
-         setSelectedOptions([...newSelectedOptions]);
+         const newSelectedOptions = props.selectedOptions;
+         newSelectedOptions.splice(index, 1);
+         props.setSelectedOptions([...newSelectedOptions]);
       }
 
       if (type == "priceBlock") {
@@ -269,15 +339,45 @@ const DrawerFilter = (props) => {
    };
 
    const cancelAllOptions = () => {
-      for (let index = 0; index < selectedOptions.length; index++) {
+      for (let index = 0; index < props.selectedOptions.length; index++) {
          cancelFilterOption(
-            selectedOptions[index].id,
-            selectedOptions[index].type,
+            props.selectedOptions[index].id,
+            props.selectedOptions[index].type,
             true
          );
-         setSelectedOptions([]);
+         props.setSelectedOptions([]);
       }
    };
+
+   if (error) {
+      return (
+         <View style={styles.centered}>
+            <Text>An error occured</Text>
+            <Button
+               title="Try Again"
+               onPress={loadActions}
+               color={Colors.primaryColor}
+            />
+         </View>
+      );
+   }
+
+   if (isLoading) {
+      return (
+         <View style={styles.right}>
+            <ActivityIndicator size="large" color={Colors.primaryColor} />
+         </View>
+      );
+   }
+   if (!filterOptions) {
+      return (
+         <View
+            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+         >
+            <Text>There are no products</Text>
+         </View>
+      );
+   }
 
    return (
       <View
@@ -290,7 +390,7 @@ const DrawerFilter = (props) => {
             overflow: "hidden",
          }}
       >
-         <View style={{ width: 250 }}>
+         <View style={{ width: 250, marginBottom: 50 }}>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
                <View>
                   <Ionicons
@@ -319,7 +419,7 @@ const DrawerFilter = (props) => {
                   marginTop: 5,
                }}
             >
-               {selectedOptions.map((el) => (
+               {props.selectedOptions.map((el) => (
                   <View
                      key={el.id}
                      style={{
@@ -360,13 +460,13 @@ const DrawerFilter = (props) => {
                      title={"Бренд:"}
                      query={selectedBrands}
                      setOptions={setBrandsOptions}
-                     selectedOptions={selectedOptions}
+                     selectedOptions={props.selectedOptions}
                      setSelectedOptions={selectFilterOption}
                   />
 
                   <FilterPriceBlock
                      title={"Ціна:"}
-                     selectedOptions={selectedOptions}
+                     selectedOptions={props.selectedOptions}
                      setSelectedOptions={selectFilterOption}
                      price={price}
                      setPrice={setPrice}
@@ -375,70 +475,70 @@ const DrawerFilter = (props) => {
                      title={"Процесор:"}
                      query={selectedProcessors}
                      setOptions={setProcessorsOptions}
-                     selectedOptions={selectedOptions}
+                     selectedOptions={props.selectedOptions}
                      setSelectedOptions={selectFilterOption}
                   />
                   <FilterDropDownItem
                      title={"Оперативна пам'ять:"}
                      query={selectedRams}
                      setOptions={setRamOptions}
-                     selectedOptions={selectedOptions}
+                     selectedOptions={props.selectedOptions}
                      setSelectedOptions={selectFilterOption}
                   />
                   <FilterDropDownItem
                      title={"Кількість слотів оперативної пам'яті:"}
                      query={selectedMemortSlots}
                      setOptions={setMemorySlotsOptions}
-                     selectedOptions={selectedOptions}
+                     selectedOptions={props.selectedOptions}
                      setSelectedOptions={selectFilterOption}
                   />
                   <FilterDropDownItem
                      title={"Постійна пам'ять:"}
                      query={selectedHardDrive}
                      setOptions={setHardDriveOptions}
-                     selectedOptions={selectedOptions}
+                     selectedOptions={props.selectedOptions}
                      setSelectedOptions={selectFilterOption}
                   />
                   <FilterDropDownItem
                      title={"Тип пам'яті:"}
                      query={selectedMemortTypes}
                      setOptions={setMemoryTypeOptions}
-                     selectedOptions={selectedOptions}
+                     selectedOptions={props.selectedOptions}
                      setSelectedOptions={selectFilterOption}
                   />
                   <FilterDropDownItem
                      title={"Операційна система:"}
                      query={selectedOperSystem}
                      setOptions={setOperSystemOptions}
-                     selectedOptions={selectedOptions}
+                     selectedOptions={props.selectedOptions}
                      setSelectedOptions={selectFilterOption}
                   />
                   <FilterDropDownItem
                      title={"Діагональ екрану:"}
                      query={selectedScreenDiagonal}
                      setOptions={setScreenDiagonalOptions}
-                     selectedOptions={selectedOptions}
+                     selectedOptions={props.selectedOptions}
                      setSelectedOptions={selectFilterOption}
                   />
                   <FilterDropDownItem
                      title={"Тип екрану:"}
                      query={selectedScreenTypes}
                      setOptions={setScreenTypesOptions}
-                     selectedOptions={selectedOptions}
+                     selectedOptions={props.selectedOptions}
                      setSelectedOptions={selectFilterOption}
                   />
                   <FilterDropDownItem
                      title={"Відео карта:"}
                      query={selectedVideoCards}
                      setOptions={setVideoCardsOptions}
-                     selectedOptions={selectedOptions}
+                     selectedOptions={props.selectedOptions}
                      setSelectedOptions={selectFilterOption}
                   />
                   <FilterDropDownItem
                      title={"Відео пам'ять:"}
                      query={selectedVideoMemories}
                      setOptions={setVideoMemoryOptions}
-                     selectedOptions={selectedOptions}
+                     selectedOptions={props.selectedOptions}
                      setSelectedOptions={selectFilterOption}
                   />
                   <View style={{ height: 40 }}></View>
@@ -446,7 +546,7 @@ const DrawerFilter = (props) => {
                </View>
             </ScrollView>
          </View>
-         {/* <View
+         <View
             style={[
                {
                   zIndex: 100,
@@ -473,16 +573,28 @@ const DrawerFilter = (props) => {
             </View>
             <Text>|</Text>
             <View style={styles.bottomButtonBlock}>
-               <TouchableOpacity>
+               <TouchableOpacity
+                  onPress={() => {
+                     props.handleFilter();
+                  }}
+               >
                   <Text style={styles.bottomButtonText}>Застосувати</Text>
                </TouchableOpacity>
             </View>
-         </View> */}
+         </View>
       </View>
    );
 };
 
 const styles = StyleSheet.create({
+   right: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "flex-end",
+
+      height: 300,
+      width: 270,
+   },
    HeaderFilterText: {
       fontSize: 16,
       fontWeight: "600",
@@ -497,6 +609,7 @@ const styles = StyleSheet.create({
       height: 50,
       bottom: 0,
       zIndex: 100,
+      marginTop: 50,
    },
    bottomButtonBlock: {},
    bottomButtonText: {

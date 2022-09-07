@@ -29,12 +29,17 @@ const productReducer = (state = initialState, action) => {
             characteristicProducts: action.characteristicProducts,
          };
       case SEARCH_PRODUCTS:
-         if (action.word == "all") {
-            var new_prods = state.products;
+         var new_prods;
+         if (action.loadedProducts) {
+            new_prods = action.loadedProducts;
          } else {
-            var new_prods = state.products.filter((elem) =>
-               elem.name.toLowerCase().includes(action.word.toLowerCase())
-            );
+            if (action.word == "all") {
+               new_prods = state.products;
+            } else {
+               new_prods = state.products.filter((elem) =>
+                  elem.name.toLowerCase().includes(action.word.toLowerCase())
+               );
+            }
          }
          return {
             ...state,

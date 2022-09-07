@@ -136,3 +136,62 @@ export const sortProducts = (orderMethod, array) => {
       throw err;
    }
 };
+
+export const filterProducts = (pattern, filterOptions) => {
+   try {
+      return async (dispatch, getState) => {
+         const response = await fetch(`${HOST}:${PORT}/api/product_search/`, {
+            method: "POST",
+            headers: {
+               "Content-Type": "application/json",
+               "Access-Control-Allow-Origin": "*",
+            },
+            body: JSON.stringify({
+               pattern: pattern,
+               filter: filterOptions,
+            }),
+         });
+
+         if (!response.ok) {
+            console.log("error");
+            throw new Error("Something went wrong!");
+         }
+
+         const resData = await response.json();
+         const loadedProducts = [];
+         for (const key in resData) {
+            loadedProducts.push(
+               new Product(
+                  resData[key].id,
+                  resData[key].slug,
+                  resData[key].name,
+                  resData[key].only_name,
+                  resData[key]["brand"].name,
+                  resData[key]["type_of_product"].slug,
+                  resData[key]["country_made"].name,
+                  resData[key]["country_brand"].name,
+                  resData[key].photo,
+                  resData[key].photos,
+                  resData[key].videos,
+                  resData[key].description,
+                  resData[key].short_description,
+                  resData[key].creation_date,
+                  resData[key].video,
+                  resData[key].warranty,
+                  resData[key].price,
+                  resData[key].is_available,
+                  resData[key].comment_count,
+                  resData[key].rating
+               )
+            );
+         }
+
+         dispatch({
+            type: SEARCH_PRODUCTS,
+            loadedProducts: loadedProducts,
+         });
+      };
+   } catch (err) {
+      throw err;
+   }
+};

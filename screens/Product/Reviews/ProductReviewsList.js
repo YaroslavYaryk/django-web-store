@@ -20,6 +20,7 @@ import BottomPopup from "../../../components/BottomPopup";
 import sortingDict from "../../../constants/productsReviewsSort";
 import * as reviewActions from "../../../redux-folder/actions/productReviewsActions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as likeActions from "../../../redux-folder/actions/likeActions";
 
 const popupList = [
    { id: 0, name: "За датою", action: "date" },
@@ -31,6 +32,7 @@ const ProductReviewsList = (props) => {
    const [isShow, setIsShow] = useState(false);
    const [isLoading, setIsLoading] = useState(false);
    const [error, setError] = useState(false);
+   const [fetch, setFetch] = useState(0);
 
    const [sortMethod, setSortMethod] = useState({
       action: "date",
@@ -41,6 +43,7 @@ const ProductReviewsList = (props) => {
       (state) => state.productReviews.productReviews
    );
    const auth = useSelector((state) => state.auth);
+   const commentLikes = useSelector((state) => state.likes.commentLikes);
 
    const loadReviews = useCallback(async () => {
       setError(null);
@@ -63,7 +66,24 @@ const ProductReviewsList = (props) => {
 
    useEffect(() => {
       loadReviews();
-   }, [dispatch, loadReviews]);
+   }, [dispatch, loadReviews, fetch]);
+
+   const loadLikes = useCallback(async () => {
+      setError(null);
+      setIsLoading(true);
+      try {
+         await dispatch(likeActions.fetchUserCommentLikes());
+      } catch (err) {
+         setError(err.message);
+      }
+      setIsLoading(false);
+   }, [dispatch, setError, setIsLoading]);
+
+   useEffect(() => {
+      if (auth.token) {
+         loadLikes();
+      }
+   }, [dispatch, loadLikes, fetch]);
 
    const { commentId, openReplies } = props.route.params;
    const dispatch = useDispatch();
@@ -116,6 +136,64 @@ const ProductReviewsList = (props) => {
       }
    };
 
+   const replyToReview = (productId, commentId) => {
+      if (!auth.token) {
+         AsyncStorage.setItem(
+            "redirect",
+            JSON.stringify({
+               redirectUrl: "ReviewReply",
+               productId: productId,
+               commentId: commentId,
+            })
+         );
+
+         props.navigation.navigate("AuthNavigator", {
+            screen: "TopTabNavigator",
+         });
+      } else {
+         props.navigation.navigate("ProductReview", {
+            productId: productId,
+         });
+      }
+   };
+
+   const likeCommentHandle = useCallback(async (commentId) => {
+      if (!auth.token) {
+         AsyncStorage.setItem(
+            "redirect",
+            JSON.stringify({
+               redirectUrl: "ProductReviewsList",
+               productId: productId,
+            })
+         );
+
+         props.navigation.navigate("AuthNavigator", {
+            screen: "TopTabNavigator",
+         });
+      } else {
+         setError(null);
+         setIsLoading(true);
+         try {
+            if (
+               commentLikes &&
+               commentLikes.find((elem) => elem.post_comment === commentId)
+            ) {
+               var likeId = commentLikes.find(
+                  (elem) => elem.post_comment === commentId
+               ).id;
+               await dispatch(likeActions.deleteCommentLike(commentId, likeId));
+            } else {
+               await dispatch(likeActions.addCommentLike(commentId));
+            }
+         } catch (err) {
+            console.log(err.message);
+            setError(err.message);
+         }
+         setIsLoading(false);
+         setFetch(Math.random());
+      }
+   });
+
    if (error) {
       return (
          <View style={styles.centered}>
@@ -136,28 +214,6 @@ const ProductReviewsList = (props) => {
          </View>
       );
    }
-
-   const replyToReview = (productId, commentId) => {
-      if (!auth.token) {
-         AsyncStorage.setItem(
-            "redirect",
-            JSON.stringify({
-               redirectUrl: "ReviewReply",
-               productId: productId,
-               commentId: commentId,
-            })
-         );
-
-         props.navigation.navigate("AuthNavigator", {
-            screen: "TopTabNavigator",
-         });
-      } else {
-         props.navigation.navigate("ReviewReply", {
-            productId: productId,
-            commentId: commentId,
-         });
-      }
-   };
 
    return (
       <View style={styles.container}>
@@ -182,6 +238,9 @@ const ProductReviewsList = (props) => {
                               replyToReview={replyToReview}
                               commentId={commentId}
                               openReplies={openReplies}
+                              commentLikes={commentLikes}
+                              likeCommentHandle={likeCommentHandle}
+                              isAuth={auth.token}
                            ></ReviewItem>
                         </View>
                      )}

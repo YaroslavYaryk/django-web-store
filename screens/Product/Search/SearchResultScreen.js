@@ -42,6 +42,8 @@ const SearchResultScreen = (props) => {
    const [visible, setVisible] = useState(false);
    const [showMethod, setShowMethod] = useState(2);
 
+   const [selectedOptions, setSelectedOptions] = useState([]);
+
    const [currentTab, setCurrentTab] = useState("Home");
    // To get the curretn Status of menu ...
    const [showMenu, setShowMenu] = useState(false);
@@ -99,8 +101,21 @@ const SearchResultScreen = (props) => {
 
    const searchValue = props.route.params.searchValue;
 
-   useEffect(() => {
-      dispatch(productActions.SearchProducts(searchValue));
+   const filterProducts = useCallback(async () => {
+      setError(null);
+      setIsLoading(true);
+      try {
+         await dispatch(productActions.filterProducts(searchValue, []));
+      } catch (err) {
+         setError(err.message);
+      }
+      setIsLoading(false);
+   });
+
+   useEffect(async () => {
+      setIsLoading(true);
+      await dispatch(productActions.SearchProducts(searchValue));
+      setIsLoading(false);
    }, [searchValue]);
 
    const scrollY = new Animated.Value(0);
@@ -108,6 +123,42 @@ const SearchResultScreen = (props) => {
    const translateY = diffClamp.interpolate({
       inputRange: [0, 45],
       outputRange: [0, -45],
+   });
+
+   const HandleSortProducts = async (sortAction) => {
+      await dispatch(productActions.sortProducts(sortAction, searchProducts));
+   };
+
+   const closeSideBar = () => {
+      Animated.timing(offsetValue, {
+         // YOur Random Value...
+         toValue: showMenu ? 0 : -280,
+         duration: 300,
+         useNativeDriver: true,
+      }).start();
+      setShowMenu(!showMenu);
+   };
+
+   const offsetValue = useRef(new Animated.Value(0)).current;
+
+   const handleFilter = useCallback(async () => {
+      setError(null);
+      setIsLoading(true);
+
+      try {
+         var newOptions = selectedOptions.map((el) => ({
+            name: el.type,
+            value: el.slug,
+         }));
+         await dispatch(productActions.filterProducts(searchValue, newOptions));
+         console.log("done");
+      } catch (error) {
+         console.log(error.message, error);
+         setError(error.message);
+      }
+      setIsLoading(false);
+
+      closeSideBar();
    });
 
    if (isLoading) {
@@ -125,22 +176,6 @@ const SearchResultScreen = (props) => {
          </View>
       );
    }
-
-   const HandleSortProducts = async (sortAction) => {
-      await dispatch(productActions.sortProducts(sortAction, searchProducts));
-   };
-
-   const closeSideBar = () => {
-      Animated.timing(offsetValue, {
-         // YOur Random Value...
-         toValue: showMenu ? 0 : -280,
-         duration: 300,
-         useNativeDriver: true,
-      }).start();
-      setShowMenu(!showMenu);
-   };
-
-   const offsetValue = useRef(new Animated.Value(0)).current;
    return (
       <View style={{ flex: 1 }}>
          <SafeAreaView style={[styles.container]}>
@@ -148,6 +183,9 @@ const SearchResultScreen = (props) => {
                width={width}
                closeSideBar={closeSideBar}
                resultCount={searchProducts.length}
+               selectedOptions={selectedOptions}
+               setSelectedOptions={setSelectedOptions}
+               handleFilter={handleFilter}
             />
 
             <Animated.View

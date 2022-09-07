@@ -63,12 +63,13 @@ export const login = (email, password) => {
          }),
       });
       if (!response.ok) {
-         const errorResData = await response.json();
-         let message = "Something went wrong!";
-         if (errorResData.non_field_errors) {
-            message = errorResData.non_field_errors[0];
+         var message;
+         try {
+            const errorResData = await response.text();
+            message = JSON.parse(errorResData).message;
+         } catch (error) {
+            message = "Something went wrong!";
          }
-
          throw new Error(message);
       }
       const resData = await response.json();

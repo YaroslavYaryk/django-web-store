@@ -2,6 +2,11 @@ import { HOST, PORT } from "../../constants/server";
 import CategoryItem from "../../models/CategoryItem";
 export const READ_LIKES = "READ_LIKES";
 export const ADD_LIKE = "ADD_LIKE";
+export const DELETE_LIKE = "DELETE_LIKE";
+
+export const READ_COMMENT_LIKES = "READ_COMMENT_LIKES";
+export const ADD_COMMENT_LIKE = "ADD_COMMENT_LIKE";
+export const DELETE_COMMENT_LIKE = "DELETE_COMMENT_LIKE";
 
 export const fetchLikes = () => {
    try {
@@ -92,12 +97,111 @@ export const deleteLike = (productId, likeId) => {
             throw new Error("Something went wrong!");
          }
 
-         //   const resData = await response.json();
+         dispatch({
+            type: DELETE_LIKE,
+            likeId: likeId,
+         });
+      };
+   } catch (err) {
+      throw err;
+   }
+};
 
-         //   dispatch({
-         //      type: ADD_LIKE,
-         //      like: resData,
-         //   });
+export const fetchUserCommentLikes = () => {
+   try {
+      return async (dispatch, getState) => {
+         var token = getState().auth.token;
+         const response = await fetch(
+            `${HOST}:${PORT}/api/comment/user_likes/`,
+            {
+               headers: {
+                  "Content-Type": "application/json",
+                  "Access-Control-Allow-Origin": "*",
+                  Authorization: `Token ${token}`,
+               },
+            }
+         );
+
+         if (!response.ok) {
+            throw new Error("Something went wrong!");
+         }
+
+         const resData = await response.json();
+         const loadedLikes = [];
+         for (const key in resData) {
+            loadedLikes.push({
+               ...resData[key],
+            });
+         }
+
+         dispatch({
+            type: READ_COMMENT_LIKES,
+            loadedLikes: loadedLikes,
+         });
+      };
+   } catch (err) {
+      throw err;
+   }
+};
+
+export const addCommentLike = (commentId) => {
+   try {
+      return async (dispatch, getState) => {
+         const userId = getState();
+         var token = getState().auth.token;
+         const response = await fetch(
+            `${HOST}:${PORT}/api/comment/${commentId}/add_like/`,
+            {
+               method: "POST",
+               headers: {
+                  "Content-Type": "application/json",
+                  "Access-Control-Allow-Origin": "*",
+                  Authorization: `Token ${token}`,
+               },
+            }
+         );
+
+         if (!response.ok) {
+            throw new Error("Something went wrong!");
+         }
+
+         const resData = await response.json();
+
+         dispatch({
+            type: ADD_COMMENT_LIKE,
+            like: resData,
+         });
+      };
+   } catch (err) {
+      throw err;
+   }
+};
+
+export const deleteCommentLike = (commentId, likeId) => {
+   try {
+      return async (dispatch, getState) => {
+         const userId = getState();
+         var token = getState().auth.token;
+         const response = await fetch(
+            `${HOST}:${PORT}/api/comment/${commentId}/delete_like/${likeId}/`,
+            {
+               method: "DELETE",
+               headers: {
+                  "Content-Type": "application/json",
+                  "Access-Control-Allow-Origin": "*",
+                  Authorization: `Token ${token}`,
+               },
+            }
+         );
+
+         if (!response.ok) {
+            throw new Error("Something went wrong!");
+         }
+
+         dispatch({
+            type: DELETE_COMMENT_LIKE,
+            likeId: likeId,
+         });
       };
    } catch (err) {
       throw err;
