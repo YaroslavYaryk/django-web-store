@@ -60,7 +60,7 @@ const FilterPriceBlock = (props) => {
       addNewOption();
    };
 
-   const addNewOption = () => {
+   const addNewOption = (prices) => {
       var selectedOptions = props.selectedOptions;
       const existedElemIndex = selectedOptions.findIndex(
          (el) => el.id == "priceBlock"
@@ -68,15 +68,17 @@ const FilterPriceBlock = (props) => {
       if (existedElemIndex == -1) {
          selectedOptions.push({
             id: "priceBlock",
-            name: `від ${props.price[0]} до ${props.price[1]}`,
-            slug: `${props.price[0]}-${props.price[1]}`,
+            name: `від ${prices[0]} до ${prices[1]}`,
+            slug: `${prices[0] - 1}-${prices[1] + 1}`,
             type: "priceBlock",
          });
       } else {
          var newElem = selectedOptions[existedElemIndex];
-         (newElem.name = `від ${props.price[0]} до ${props.price[1]}`),
-            (selectedOptions[existedElemIndex] = newElem);
+         newElem.name = `від ${prices[0]} до ${prices[1]}`;
+         newElem.slug = `${prices[0] - 1}-${prices[1] + 1}`;
+         selectedOptions[existedElemIndex] = newElem;
       }
+      props.setPrice(prices);
       props.setSelectedOptions([...selectedOptions]);
    };
 
@@ -157,15 +159,42 @@ const FilterPriceBlock = (props) => {
                               onChangeText={(value) => {
                                  try {
                                     if (parseInt(value)) {
-                                       console.log("here", value);
-                                       props.setPrice(
-                                          ...[parseInt(value), props.price[1]]
-                                       );
-                                       addNewOption();
+                                       var prices = [];
+                                       if (parseInt(value) > props.price[1]) {
+                                          if (parseInt(value) > maxValue) {
+                                             props.setPrice([
+                                                props.price[1],
+                                                maxValue,
+                                             ]);
+                                             prices = [
+                                                props.price[1],
+                                                maxValue,
+                                             ];
+                                          } else {
+                                             props.setPrice([
+                                                props.price[1],
+                                                parseInt(value),
+                                             ]);
+                                             prices = [
+                                                props.price[1],
+                                                parseInt(value),
+                                             ];
+                                          }
+                                       } else {
+                                          props.setPrice([
+                                             parseInt(value),
+                                             props.price[1],
+                                          ]);
+                                          prices = [
+                                             parseInt(value),
+                                             props.price[1],
+                                          ];
+                                       }
                                     } else {
-                                       console.log("not here");
-                                       props.setPrice(...[0, props.price[1]]);
+                                       props.setPrice([0, props.price[1]]);
+                                       prices = [0, props.price[1]];
                                     }
+                                    addNewOption(prices);
                                  } catch (er) {
                                     console.log(er);
                                  }
@@ -192,14 +221,21 @@ const FilterPriceBlock = (props) => {
                               value={String(props.price[1])}
                               onChangeText={(value) => {
                                  try {
+                                    var prices = [];
                                     if (parseInt(value)) {
-                                       props.setPrice(
-                                          ...[props.price[0], parseInt(value)]
-                                       );
-                                       addNewOption();
+                                       props.setPrice([
+                                          props.price[0],
+                                          parseInt(value),
+                                       ]);
+                                       prices = [
+                                          props.price[0],
+                                          parseInt(value),
+                                       ];
                                     } else {
-                                       props.setPrice(...[props.price[0], 0]);
+                                       props.setPrice([props.price[0], 0]);
+                                       prices = [props.price[0], 0];
                                     }
+                                    addNewOption(prices);
                                  } catch (error) {
                                     console.log(error);
                                  }

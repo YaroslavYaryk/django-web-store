@@ -23,6 +23,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useWindowDimensions } from "react-native";
 import DrawerFilter from "../Filter/DrawerFilter";
 import ButtonScrollToTop from "../../../components/Filter/ButtonScrollToTop";
+import getScreenOptions from "../../../static/screenOptonsHandle";
 
 const popupList = [
    { id: 0, name: "За датою", action: "date" },
@@ -91,6 +92,15 @@ const SearchResultScreen = (props) => {
       });
    };
 
+   const minValue = 2700;
+   const maxValue = 99999;
+
+   const [price, setPrice] = useState([minValue, maxValue]);
+
+   const setDefaultPrice = () => {
+      setPrice([minValue, maxValue]);
+   };
+
    const addProductToCart = (productId, fullName, image, price) => {
       try {
          dispatch(
@@ -112,11 +122,20 @@ const SearchResultScreen = (props) => {
       setIsLoading(false);
    });
 
-   useEffect(async () => {
+   const fetchSearchedProducts = useCallback(async () => {
+      setError(null);
       setIsLoading(true);
-      await dispatch(productActions.SearchProducts(searchValue));
+      try {
+         await dispatch(productActions.SearchProducts(searchValue));
+      } catch (error) {
+         setError(error.message);
+      }
       setIsLoading(false);
-   }, [searchValue]);
+   }, [dispatch, setError, setIsLoading]);
+
+   useEffect(() => {
+      fetchSearchedProducts();
+   }, [dispatch]);
 
    const scrollY = new Animated.Value(0);
    const diffClamp = Animated.diffClamp(scrollY, -5, 55);
@@ -140,18 +159,13 @@ const SearchResultScreen = (props) => {
    };
 
    const offsetValue = useRef(new Animated.Value(0)).current;
-
    const handleFilter = useCallback(async () => {
       setError(null);
       setIsLoading(true);
 
       try {
-         var newOptions = selectedOptions.map((el) => ({
-            name: el.type,
-            value: el.slug,
-         }));
+         var newOptions = getScreenOptions(selectedOptions);
          await dispatch(productActions.filterProducts(searchValue, newOptions));
-         console.log("done");
       } catch (error) {
          console.log(error.message, error);
          setError(error.message);
@@ -186,6 +200,9 @@ const SearchResultScreen = (props) => {
                selectedOptions={selectedOptions}
                setSelectedOptions={setSelectedOptions}
                handleFilter={handleFilter}
+               setDefaultPrice={setDefaultPrice}
+               price={price}
+               setPrice={setPrice}
             />
 
             <Animated.View

@@ -6,6 +6,7 @@ import {
    READ_PRODUCT,
    SEARCH_PRODUCTS,
    SORT_PRODUCTS,
+   SEARCH_QUERY,
 } from "../actions/productActions";
 import productSorting from "../../constants/productSorting";
 
@@ -13,6 +14,7 @@ const initialState = {
    products: PRODUCTS,
    searchProducts: [],
    characteristicProducts: [],
+   searchQuery: [],
 };
 // import Product from "../../models/Product";
 
@@ -44,6 +46,11 @@ const productReducer = (state = initialState, action) => {
          return {
             ...state,
             searchProducts: new_prods,
+         };
+      case SEARCH_QUERY:
+         return {
+            ...state,
+            searchQuery: action.query,
          };
 
       case SORT_PRODUCTS:

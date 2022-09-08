@@ -23,6 +23,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useWindowDimensions } from "react-native";
 import DrawerFilter from "../Filter/DrawerFilter";
 import ButtonScrollToTop from "../../../components/Filter/ButtonScrollToTop";
+import getScreenOptions from "../../../static/screenOptonsHandle";
 
 const popupList = [
    { id: 0, name: "За датою", action: "date" },
@@ -45,10 +46,39 @@ const CharacteristicProducts = (props) => {
 
    const { width } = useWindowDimensions();
 
-   const { type, slug } = props.route.params;
+   const { type, slug, name, id, selected } = props.route.params;
+   console.log(type, slug);
    const products = useSelector(
       (state) => state.products.characteristicProducts
    );
+
+   const [selectedOptions, setSelectedOptions] = useState([]);
+   const minValue = 2700;
+   const maxValue = 99999;
+   console.log(selectedOptions);
+   const [price, setPrice] = useState([minValue, maxValue]);
+
+   const setDefaultPrice = () => {
+      setPrice([minValue, maxValue]);
+   };
+
+   var setDefaultOptions = useCallback(() => {
+      var oldOptions = selectedOptions;
+      var obj = {
+         type,
+         slug,
+         name,
+         id,
+         selected,
+      };
+      oldOptions.push(obj);
+      setSelectedOptions([...oldOptions]);
+   });
+
+   useEffect(() => {
+      setDefaultOptions();
+      return () => {};
+   }, []);
 
    const dispatch = useDispatch();
 
@@ -136,6 +166,26 @@ const CharacteristicProducts = (props) => {
 
    const offsetValue = useRef(new Animated.Value(0)).current;
 
+   const handleFilter = useCallback(async () => {
+      setError(null);
+      setIsLoading(true);
+
+      try {
+         var newOptions = getScreenOptions(selectedOptions);
+         const pattern = { name: type, value: slug };
+         await dispatch(
+            productActions.filterCharacteristicProducts(pattern, newOptions)
+         );
+         console.log("done");
+      } catch (error) {
+         console.log(error.message, error);
+         setError(error.message);
+      }
+      setIsLoading(false);
+
+      closeSideBar();
+   });
+
    if (isLoading) {
       return (
          <View style={styles.centered}>
@@ -172,6 +222,12 @@ const CharacteristicProducts = (props) => {
                   width={width}
                   closeSideBar={closeSideBar}
                   resultCount={products.length}
+                  selectedOptions={selectedOptions}
+                  setSelectedOptions={setSelectedOptions}
+                  handleFilter={handleFilter}
+                  setDefaultPrice={setDefaultPrice}
+                  price={price}
+                  setPrice={setPrice}
                />
 
                <Animated.View

@@ -1,5 +1,6 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { useState, useCallback } from "react";
+import { StyleSheet, Text, View, TextInput } from "react-native";
 import "react-native-gesture-handler";
 import ReduxThunk from "redux-thunk";
 import { configureStore } from "@reduxjs/toolkit";
@@ -20,6 +21,8 @@ import authReducer from "./redux-folder/reducers/authReducer";
 import likeReducer from "./redux-folder/reducers/likeReducer";
 import { NavigationContainer } from "@react-navigation/native";
 import { LogBox } from "react-native";
+import MultiSlider from "@ptomasroos/react-native-multi-slider";
+import { AntDesign } from "@expo/vector-icons";
 
 const rootReducer = combineReducers({
    products: productReducer,
@@ -52,19 +55,126 @@ export default function App() {
    LogBox.ignoreLogs(["Warning: ..."]); // Ignore log notification by message
    LogBox.ignoreAllLogs(); //Ignore all log notifications
 
+   const minValue = 5;
+   const maxValue = 25;
+
+   const [price, setPrice] = useState([5, 25]);
+   const multiSliderValuesChange = (values) => {
+      setPrice(values);
+   };
+
    return (
       <Provider store={store}>
          <NavigationContainer>
             <ProductsNavigator />
          </NavigationContainer>
       </Provider>
+      // <View style={styles.container}>
+      //    <View style={{ width: "90%", height: "90%", marginTop: 200 }}>
+      //       <View
+      //          style={{
+      //             flexDirection: "row",
+      //             width: 300,
+      //             justifyContent: "space-between",
+      //          }}
+      //       >
+      //          <TextInput
+      //             label={"До"}
+      //             keyboardType="numeric"
+      //             style={{
+      //                height: 40,
+      //                fontSize: 15,
+      //                width: 100,
+      //                backgroundColor: "red",
+      //             }}
+      //             defaultValue={String(price[0])}
+      //             mode="outlined"
+      //             value={String(price[0])}
+      //             onChangeText={(value) => {
+      //                try {
+      //                   if (parseInt(value)) {
+      //                      if (parseInt(value) > price[1]) {
+      //                         if (parseInt(value) > maxValue) {
+      //                            console.log("hereNow");
+      //                            setPrice([price[1], maxValue]);
+      //                         } else {
+      //                            setPrice([price[1], parseInt(value)]);
+      //                         }
+      //                      } else {
+      //                         setPrice([parseInt(value), price[1]]);
+      //                      }
+      //                   } else {
+      //                      setPrice([0, price[1]]);
+      //                   }
+      //                } catch (error) {
+      //                   console.log(error);
+      //                }
+      //             }}
+      //             // label={"Search"}
+      //             // underlineColor="#F2F2F2"
+      //             activeOutlineColor="green"
+      //             // color="red"
+      //             // activeUnderlineColor="#F3F5F6"
+      //             selectionColor="black"
+      //             maxLength={5}
+      //          />
+      //          <TextInput
+      //             label={"До"}
+      //             keyboardType="numeric"
+      //             style={{
+      //                height: 40,
+      //                width: 100,
+      //                fontSize: 15,
+      //                backgroundColor: "red",
+      //             }}
+      //             defaultValue={String(price[1])}
+      //             mode="outlined"
+      //             value={String(price[1])}
+      //             onChangeText={(value) => {
+      //                try {
+      //                   if (parseInt(value)) {
+      //                      if (parseInt(value) > maxValue) {
+      //                         setPrice([price[0], maxValue]);
+      //                      } else {
+      //                         setPrice([price[0], parseInt(value)]);
+      //                      }
+      //                   } else {
+      //                      setPrice([price[0], 0]);
+      //                   }
+      //                } catch (error) {
+      //                   console.log(error);
+      //                }
+      //             }}
+      //             // label={"Search"}
+      //             // underlineColor="#F2F2F2"
+      //             activeOutlineColor="green"
+      //             // color="red"
+      //             // activeUnderlineColor="#F3F5F6"
+      //             selectionColor="black"
+      //             maxLength={5}
+      //          />
+      //       </View>
+      //       <View style={{ marginTop: 0, marginLeft: 20 }}>
+      //          <MultiSlider
+      //             values={price}
+      //             sliderLength={150}
+      //             onValuesChange={multiSliderValuesChange}
+      //             min={minValue}
+      //             max={maxValue}
+      //             step={1}
+      //          />
+      //       </View>
+      //       <Text>{price[0]}</Text>
+      //       <Text>{price[1]}</Text>
+      //    </View>
+      // </View>
    );
 }
 
 const styles = StyleSheet.create({
    container: {
       flex: 1,
-      backgroundColor: "#fff",
+      backgroundColor: "pink",
       alignItems: "center",
       justifyContent: "center",
    },

@@ -55,6 +55,7 @@ const DrawerFilter = (props) => {
 
    useEffect(() => {
       loadActions();
+      return () => {};
    }, [dispatch, loadActions, isFocused]);
 
    const filterOptions = useSelector((state) => state.filter);
@@ -70,8 +71,6 @@ const DrawerFilter = (props) => {
          info: elem.info,
       }))
    );
-
-   console.log(props.selectedOptions);
 
    const [selectedProcessors, setSelectedProcessors] = useState(
       filterOptions.processors.map((elem) => ({
@@ -201,11 +200,6 @@ const DrawerFilter = (props) => {
       }))
    );
 
-   const minValue = 2700;
-   const maxValue = 99999;
-
-   const [price, setPrice] = useState([minValue, maxValue]);
-
    const optionDict = [
       { type: "product__brand", value: selectedBrands, set: setSelectedBrands },
       {
@@ -317,10 +311,6 @@ const DrawerFilter = (props) => {
       selection.set([...selection.value]);
    };
 
-   const setDefaultPrice = () => {
-      setPrice([minValue, maxValue]);
-   };
-
    const cancelFilterOption = (id, type, superNode = false) => {
       if (!superNode) {
          const index = props.selectedOptions.findIndex(
@@ -332,7 +322,7 @@ const DrawerFilter = (props) => {
       }
 
       if (type == "priceBlock") {
-         setDefaultPrice();
+         props.setDefaultPrice();
       } else {
          unSelectOption(id, type);
       }
@@ -468,8 +458,8 @@ const DrawerFilter = (props) => {
                      title={"Ціна:"}
                      selectedOptions={props.selectedOptions}
                      setSelectedOptions={selectFilterOption}
-                     price={price}
-                     setPrice={setPrice}
+                     price={props.price}
+                     setPrice={props.setPrice}
                   />
                   <FilterDropDownItem
                      title={"Процесор:"}

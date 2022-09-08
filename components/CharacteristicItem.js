@@ -12,10 +12,14 @@ import {
 import Colors from "../constants/Colors";
 
 const CharacteristicItem = (props) => {
-   const navigateCharacteristicProducts = (type, slug) => {
+   const navigateCharacteristicProducts = (type, slug, item) => {
+      console.log(item);
       props.navigation.navigate("CharacteristicProducts", {
-         type: type,
-         slug: slug,
+         type: item.charactType,
+         slug: item.slug,
+         name: item.characteristic,
+         id: item.id,
+         selected: 1,
       });
    };
 
@@ -39,7 +43,8 @@ const CharacteristicItem = (props) => {
                         // );
                         navigateCharacteristicProducts(
                            props.item.charactType,
-                           props.item.slug
+                           props.item.slug,
+                           props.item
                         );
                      }}
                   >

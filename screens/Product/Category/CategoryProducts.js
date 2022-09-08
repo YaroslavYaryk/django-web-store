@@ -23,6 +23,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useWindowDimensions } from "react-native";
 import DrawerFilter from "../Filter/DrawerFilter";
 import ButtonScrollToTop from "../../../components/Filter/ButtonScrollToTop";
+import getScreenOptions from "../../../static/screenOptonsHandle";
 
 const popupList = [
    { id: 0, name: "За датою", action: "date" },
@@ -75,9 +76,21 @@ const CategoryProducts = (props) => {
       }).start();
    };
    const productType = props.route.params.productType;
+   // var categoryProducts = [];
+   // if (useSelector((state) => state.products.products)) {
    const categoryProducts = useSelector((state) =>
       state.products.products.filter((el) => el.productType === productType)
    );
+   // }
+   const [selectedOptions, setSelectedOptions] = useState([]);
+   const minValue = 2700;
+   const maxValue = 99999;
+
+   const [price, setPrice] = useState([minValue, maxValue]);
+
+   const setDefaultPrice = () => {
+      setPrice([minValue, maxValue]);
+   };
 
    const dispatch = useDispatch();
 
@@ -122,6 +135,25 @@ const CategoryProducts = (props) => {
 
    const offsetValue = useRef(new Animated.Value(0)).current;
 
+   const handleFilter = useCallback(async () => {
+      setError(null);
+      setIsLoading(true);
+
+      try {
+         var newOptions = getScreenOptions(selectedOptions);
+         await dispatch(
+            productActions.filterCategoryProducts(productType, newOptions)
+         );
+         console.log("done");
+      } catch (error) {
+         console.log(error.message, error);
+         setError(error.message);
+      }
+      setIsLoading(false);
+
+      closeSideBar();
+   });
+
    if (isLoading) {
       return (
          <View style={styles.centered}>
@@ -144,6 +176,12 @@ const CategoryProducts = (props) => {
                width={width}
                closeSideBar={closeSideBar}
                resultCount={categoryProducts.length}
+               selectedOptions={selectedOptions}
+               setSelectedOptions={setSelectedOptions}
+               handleFilter={handleFilter}
+               setDefaultPrice={setDefaultPrice}
+               price={price}
+               setPrice={setPrice}
             />
 
             <Animated.View
@@ -347,7 +385,6 @@ const CategoryProducts = (props) => {
 export const screenOptions = (navData) => {
    const props = navData.navigation.getState();
    const productName = navData.route.params.productName;
-   console.log(productName);
    return {
       headerTitle: productName.charAt(0).toUpperCase() + productName.slice(1),
    };

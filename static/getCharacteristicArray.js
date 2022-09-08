@@ -6,6 +6,7 @@ const getCharacteristicArray = (item, product) => {
          slug: item.diagonalScreen.slug,
          charactType: "diagonal_screen",
          type: 1,
+         id: item.diagonalScreen.id,
       },
       {
          label: "Тип матриці",
@@ -13,6 +14,7 @@ const getCharacteristicArray = (item, product) => {
          slug: item.screenType.slug,
          charactType: "screen_type",
          type: 2,
+         id: item.screenType.id,
       },
       {
          label: "Частота оновлення екрана",
@@ -20,6 +22,7 @@ const getCharacteristicArray = (item, product) => {
          slug: item.screenFrequency.slug,
          charactType: "screen_frequency",
          type: 1,
+         id: item.screenFrequency.id,
       },
       {
          label: "Оперативна пам'ять",
@@ -27,6 +30,7 @@ const getCharacteristicArray = (item, product) => {
          slug: item.memoryCapacity.slug,
          charactType: "memory_capacity",
          type: 2,
+         id: item.memoryCapacity.id,
       },
       {
          label: "Вбудована пам'ять",
@@ -34,6 +38,7 @@ const getCharacteristicArray = (item, product) => {
          slug: item.hardDriveCapacity.slug,
          charactType: "data_storage",
          type: 1,
+         id: item.hardDriveCapacity.id,
       },
       {
          label: "Тип вбудованої пам'яті",
@@ -41,6 +46,7 @@ const getCharacteristicArray = (item, product) => {
          slug: item.hardDriveType.slug,
          charactType: "memory_type",
          type: 2,
+         id: item.hardDriveType.is,
       },
       {
          label: "Операційна система",
@@ -48,6 +54,7 @@ const getCharacteristicArray = (item, product) => {
          slug: item.operationSystem.slug,
          charactType: "operation_system",
          type: 1,
+         id: item.operationSystem.id,
       },
       {
          label: "Процесор",
@@ -55,6 +62,7 @@ const getCharacteristicArray = (item, product) => {
          slug: item.processor.slug,
          charactType: "processor_name",
          type: 2,
+         id: item.processor.id,
       },
       {
          label: "Кількість слотів оперативної пам'яті",
@@ -62,6 +70,7 @@ const getCharacteristicArray = (item, product) => {
          slug: item.memorySlots.slug,
          charactType: "memory_slots",
          type: 1,
+         id: item.memorySlots.id,
       },
       {
          label: "Відеокарта",
@@ -69,6 +78,7 @@ const getCharacteristicArray = (item, product) => {
          slug: item.videoCard.slug,
          charactType: "video_card",
          type: 2,
+         id: item.videoCard.id,
       },
       {
          label: "Обсяг памяті відеокарти",
@@ -76,6 +86,7 @@ const getCharacteristicArray = (item, product) => {
          slug: item.videoCardCapacity.slug,
          charactType: "video_card_memory",
          type: 1,
+         id: item.videoCardCapacity.id,
       },
       {
          label: "Стандарти зв'язку",
