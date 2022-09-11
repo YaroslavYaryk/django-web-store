@@ -95,6 +95,29 @@ const ReplyItem = (props) => {
                         nonSpace={true}
                         hideReview={true}
                      />
+                     {props.userReviews &&
+                        props.userReviews.find(
+                           (elem) => elem.id == props.item.id
+                        ) && (
+                           <View style={{}}>
+                              <TouchableOpacity
+                                 onPress={() => {
+                                    props.editReply(
+                                       props.item.commentId,
+                                       props.item.id
+                                    );
+                                 }}
+                                 style={{
+                                    borderWidth: 0.5,
+                                    paddingHorizontal: 15,
+                                    paddingVertical: 3,
+                                    borderRadius: 10,
+                                 }}
+                              >
+                                 <Text style={{ fontWeight: "500" }}>edit</Text>
+                              </TouchableOpacity>
+                           </View>
+                        )}
                   </View>
                </View>
             </View>

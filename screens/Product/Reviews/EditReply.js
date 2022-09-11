@@ -8,6 +8,7 @@ import {
    TouchableOpacity,
    ActivityIndicator,
    TextInput,
+   Alert,
 } from "react-native";
 import React, { useState, useEffect, useCallback, useReducer } from "react";
 import RATING_MARKS from "../../../constants/ratingMark";
@@ -21,34 +22,49 @@ import * as reviewActions from "../../../redux-folder/actions/productReviewsActi
 
 const FORM_INPUT_UPDATE = "FORM_INPUT_UPDATE";
 
-const ReviewReply = (props) => {
-   const [wordCountComment, setWordComment] = useState(0);
-   const [comment, setComment] = useState("");
+const EditReply = (props) => {
+   const { commentId, replyId } = props.route.params;
+   const productReview = useSelector((state) =>
+      state.productReviews.productReviews.find((elem) => elem.id == commentId)
+   );
+
+   const productId = productReview.productId;
+   const reply = productReview.replies.find((elem) => elem.id == replyId);
+
+   const [wordCountComment, setWordComment] = useState(
+      reply && reply.comment ? reply.comment.length : 0
+   );
+   const [comment, setComment] = useState(
+      reply && reply.comment ? reply.comment : ""
+   );
    const { width } = useWindowDimensions();
-   const { commentId, productId } = props.route.params;
    const dispatch = useDispatch();
    const [isLoading, setIsLoading] = useState(false);
    const [error, setError] = useState(null);
-   const [pickedImage, setPickedImage] = useState();
+   const [pickedImage, setPickedImage] = useState(
+      reply && reply.photos && reply.photos.length ? reply.photos[0].url : null
+   );
 
    const onImageTakeHandler = (imageUri) => {
       setPickedImage(imageUri);
    };
 
-   const [ratingStars, setRatingStars] = useState(0);
+   const [ratingStars, setRatingStars] = useState(reply.rating);
    const [ratingMark, setRatingMark] = useState("Оцініть товар");
 
-   const handleAddReply = useCallback(async () => {
+   const handleEditReply = useCallback(async () => {
       setError(null);
       setIsLoading(true);
       try {
          await dispatch(
-            reviewActions.createReviewReply(
+            reviewActions.editProductReview(
                productId,
-               commentId,
+               replyId,
+               ratingStars,
                comment,
-               pickedImage,
-               ratingStars
+               null,
+               null,
+               pickedImage
             )
          );
       } catch (error) {
@@ -71,6 +87,33 @@ const ReviewReply = (props) => {
       }
    }, [ratingStars]);
 
+   const handleDeleteReply = useCallback(() => {
+      try {
+         // Alert.alert(
+         //    "Are you sure?",
+         //    "Do you really want to delete this comment?",
+         //    [
+         //       { text: "No", style: "negative" },
+         //       {
+         //          text: "Yes",
+         //          style: "positive",
+         //          onPress: (e) => {
+         //             dispatch(
+         //                reviewActions.deleteProductReview(productId, replyId)
+         //             );
+         //          },
+         //       },
+         //    ]
+         // );
+         dispatch(reviewActions.deleteProductReview(productId, replyId));
+         console.log("redirect start");
+         props.navigation.pop();
+         console.log("redirect finish");
+      } catch (err) {
+         console.log(err);
+      }
+   });
+
    if (isLoading) {
       return (
          <View style={styles.centered}>
@@ -85,7 +128,7 @@ const ReviewReply = (props) => {
             <Text>An error occured</Text>
             <Button
                title="Try Again"
-               onPress={handleAddReply}
+               onPress={handleEditReply}
                color={Colors.primaryColor}
             />
          </View>
@@ -96,7 +139,10 @@ const ReviewReply = (props) => {
       <View style={styles.container}>
          <ScrollView>
             <View style={styles.ratingBlock}>
-               <RatingStars setRatingStars={setRatingStars} />
+               <RatingStars
+                  setRatingStars={setRatingStars}
+                  defaultStar={reply.rating}
+               />
                <View style={styles.ratingTitle}>
                   <Text style={styles.ratingTitleText}>{ratingMark}</Text>
                </View>
@@ -112,7 +158,7 @@ const ReviewReply = (props) => {
                   autoCapitalize="none"
                   errorText="Please enter a valid comment."
                   //   onChangeText={(value) => setComment(value)}
-                  initialValue=""
+                  initialValue={reply && reply.comment ? reply.comment : ""}
                   login={true}
                   height={80}
                   placeholder="Коментар"
@@ -146,7 +192,7 @@ const ReviewReply = (props) => {
                   <TouchableOpacity
                      onPress={() => {
                         props.navigation.navigate("ProductReviewsList", {
-                           productId: productId,
+                           productId: id,
                         });
                      }}
                   >
@@ -156,10 +202,24 @@ const ReviewReply = (props) => {
                <View style={styles.buttonStyle}>
                   <TouchableOpacity
                      onPress={() => {
-                        handleAddReply();
+                        handleEditReply();
                      }}
                   >
                      <Text style={styles.saveCommentText}>Відправити</Text>
+                  </TouchableOpacity>
+               </View>
+               <View
+                  style={[
+                     styles.buttonStyle,
+                     { backgroundColor: Colors.danger },
+                  ]}
+               >
+                  <TouchableOpacity
+                     onPress={() => {
+                        handleDeleteReply();
+                     }}
+                  >
+                     <Text style={styles.saveCommentText}>Видалити</Text>
                   </TouchableOpacity>
                </View>
             </View>
@@ -236,10 +296,10 @@ const styles = StyleSheet.create({
    buttonStyle: {
       alignItems: "center",
       backgroundColor: Colors.primaryColor,
-      width: "49%",
+      width: "32%",
       paddingVertical: 10,
       borderRadius: 15,
    },
 });
 
-export default ReviewReply;
+export default EditReply;

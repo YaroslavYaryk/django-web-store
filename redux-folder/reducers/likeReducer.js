@@ -45,7 +45,7 @@ export default (state = initialState, action) => {
 
       case ADD_COMMENT_LIKE:
          var likes = state.commentLikes;
-         var newLikes = likes.push(action.like);
+         var newLikes = likes.concat(action.like);
 
          return {
             ...state,

@@ -34,6 +34,12 @@ const RatingStars = (props) => {
       props.setRatingStars(index + 1);
    };
 
+   useState(() => {
+      if (props.defaultStar) {
+         handlePressStar(props.defaultStar - 1);
+      }
+   }, []);
+
    return (
       <View style={styles.container}>
          <View style={styles.product}>

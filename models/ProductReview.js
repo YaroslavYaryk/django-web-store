@@ -10,7 +10,8 @@ class ProductReview {
       rating,
       date,
       likesCount,
-      replies
+      replies,
+      parent = null
    ) {
       this.id = id;
       this.productId = productId;
@@ -23,6 +24,7 @@ class ProductReview {
       this.date = date;
       this.likesCount = likesCount;
       this.replies = replies;
+      this.parent = parent;
    }
 }
 export default ProductReview;

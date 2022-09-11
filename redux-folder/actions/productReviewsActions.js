@@ -9,6 +9,9 @@ export const DELETE_PRODUCT = "DELETE_PRODUCT";
 export const CREATE_PRODUCT_REVIEWS = "CREATE_PRODUCT_REVIEWS";
 export const CREATE_REVIEW_REPLY = "CREATE_REVIEW_REPLY";
 export const READ_PRODUCT_REVIEWS = "READ_PRODUCT_REVIEWS";
+export const READ_USER_COMMENTS = "READ_USER_COMMENTS";
+export const EDIT_COMMENT = "EDIT_COMMENT";
+export const DELETE_COMMENT = "DELETE_COMMENT";
 
 export const fetchReviews = (productId) => {
    try {
@@ -71,7 +74,8 @@ export const fetchReviews = (productId) => {
                            el.comment_likes,
                            el.date
                         )
-                  )
+                  ),
+                  resData[key].parent
                )
             );
          }
@@ -117,11 +121,13 @@ export const createReviewToProduct = (
          formdata.append("pros", pros);
          formdata.append("cons", cons);
          formdata.append("rating", rating);
-         formdata.append("photo", {
-            uri: image,
-            name: "image.jpg",
-            type: "image/jpeg",
-         });
+         if (image) {
+            formdata.append("photo", {
+               uri: image,
+               name: "image.jpg",
+               type: "image/jpeg",
+            });
+         }
 
          const response = await fetch(
             `${HOST}:${PORT}/api/product/${productId}/add_comment/`,
@@ -195,6 +201,103 @@ export const createReviewToProduct = (
    }
 };
 
+export const editProductReview = (
+   productId,
+   commentId,
+   rating,
+   comment,
+   pros,
+   cons,
+   image
+) => {
+   try {
+      return async (dispatch, getState) => {
+         const token = getState().auth.token;
+
+         let formdata = new FormData();
+
+         formdata.append("comment", comment);
+         formdata.append("pros", pros);
+         formdata.append("cons", cons);
+         formdata.append("rating", rating);
+         if (image) {
+            formdata.append("photo", {
+               uri: image,
+               name: "image.jpg",
+               type: "image/jpeg",
+            });
+         }
+
+         const response = await fetch(
+            `${HOST}:${PORT}/api/product/${productId}/update_comment/${commentId}/`,
+            {
+               method: "PUT",
+               headers: {
+                  "Content-Type": "multipart/form-data",
+                  "Access-Control-Allow-Origin": "*",
+                  Authorization: `Token ${token}`,
+               },
+               body: formdata,
+            }
+         );
+
+         if (!response.ok) {
+            throw new Error("Something went wrong!");
+         }
+
+         const resData = await response.json();
+
+         dispatch({
+            type: EDIT_COMMENT,
+            productId,
+            commentId,
+            rating,
+            comment,
+            pros,
+            cons,
+            phtos: resData.photos,
+            parent: resData.parent,
+         });
+      };
+   } catch (err) {
+      throw err;
+   }
+};
+
+export const deleteProductReview = (productId, commentId) => {
+   try {
+      return async (dispatch, getState) => {
+         const token = getState().auth.token;
+
+         const response = await fetch(
+            `${HOST}:${PORT}/api/product/${productId}/delete_comment/${commentId}/`,
+            {
+               method: "DELETE",
+               headers: {
+                  "Content-Type": "multipart/form-data",
+                  "Access-Control-Allow-Origin": "*",
+                  Authorization: `Token ${token}`,
+               },
+            }
+         );
+
+         if (!response.ok) {
+            throw new Error("Something went wrong!");
+         }
+
+         const resData = await response.json();
+
+         dispatch({
+            type: DELETE_COMMENT,
+            commentId,
+            parent: resData.parent,
+         });
+      };
+   } catch (err) {
+      throw err;
+   }
+};
+
 export const createReviewReply = (
    productId,
    commentId,
@@ -212,11 +315,13 @@ export const createReviewReply = (
          formdata.append("cons", "");
          formdata.append("parent", commentId);
          formdata.append("rating", rating);
-         formdata.append("photo", {
-            uri: image,
-            name: "image.jpg",
-            type: "image/jpeg",
-         });
+         if (image) {
+            formdata.append("photo", {
+               uri: image,
+               name: "image.jpg",
+               type: "image/jpeg",
+            });
+         }
          const response = await fetch(
             `${HOST}:${PORT}/api/product/${productId}/add_comment/`,
             {
@@ -279,6 +384,35 @@ export const createReviewReply = (
             type: CREATE_REVIEW_REPLY,
             newReply: newReply,
             commentId: commentId,
+         });
+      };
+   } catch (err) {
+      throw err;
+   }
+};
+
+export const fetchUserReviews = () => {
+   try {
+      return async (dispatch, getState) => {
+         var token = getState().auth.token;
+
+         const response = await fetch(`${HOST}:${PORT}/api/user_comments/`, {
+            headers: {
+               "Content-Type": "application/json",
+               "Access-Control-Allow-Origin": "*",
+               Authorization: `Token ${token}`,
+            },
+         });
+
+         if (!response.ok) {
+            throw new Error("Something went wrong!");
+         }
+
+         const resDara = await response.json();
+
+         dispatch({
+            type: READ_USER_COMMENTS,
+            comments: resDara,
          });
       };
    } catch (err) {

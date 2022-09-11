@@ -22,6 +22,8 @@ import ProductCharacteristic from "../screens/Product/ProductCharacteristic";
 import ProductFullDescription from "../screens/Product/ProductFullDescription";
 import ProductReviewsList from "../screens/Product/Reviews/ProductReviewsList";
 import ReviewReply from "../screens/Product/Reviews/ReviewReply";
+import EditReply from "../screens/Product/Reviews/EditReply";
+import EditReview from "../screens/Product/Reviews/EditReview";
 import { screenOptions as prDetalsScreenOptions } from "../screens/Product/ProductDetails";
 import { screenOptions as cartScreenOptions } from "../screens/Product/Cart";
 import { screenOptions as categoriesScreenOptions } from "../screens/Product/Category/Categories";
@@ -120,6 +122,16 @@ export const ReviewNavigator = (props) => {
          <ReviewStackNavigator.Screen
             name="ReviewReply"
             component={ReviewReply}
+            initialParams={{ productId: productId }}
+         />
+         <ReviewStackNavigator.Screen
+            name="EditReply"
+            component={EditReply}
+            initialParams={{ productId: productId }}
+         />
+         <ReviewStackNavigator.Screen
+            name="EditReview"
+            component={EditReview}
             initialParams={{ productId: productId }}
          />
       </ReviewStackNavigator.Navigator>

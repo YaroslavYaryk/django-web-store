@@ -21,6 +21,8 @@ import sortingDict from "../../../constants/productsReviewsSort";
 import * as reviewActions from "../../../redux-folder/actions/productReviewsActions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as likeActions from "../../../redux-folder/actions/likeActions";
+import { useFocusEffect, useIsFocused } from "@react-navigation/native";
+import getCommentId from "../../../static/getCommentIdByReply";
 
 const popupList = [
    { id: 0, name: "За датою", action: "date" },
@@ -45,6 +47,8 @@ const ProductReviewsList = (props) => {
    const auth = useSelector((state) => state.auth);
    const commentLikes = useSelector((state) => state.likes.commentLikes);
 
+   const isFocused = useIsFocused();
+
    const loadReviews = useCallback(async () => {
       setError(null);
       setIsLoading(true);
@@ -57,16 +61,8 @@ const ProductReviewsList = (props) => {
    }, [dispatch, setError, setIsLoading]);
 
    useEffect(() => {
-      const onFocusSub = props.navigation.addListener("focus", loadReviews);
-
-      return () => {
-         onFocusSub;
-      };
-   }, [loadReviews]);
-
-   useEffect(() => {
       loadReviews();
-   }, [dispatch, loadReviews, fetch]);
+   }, [dispatch, loadReviews, fetch, isFocused]);
 
    const loadLikes = useCallback(async () => {
       setError(null);
@@ -79,13 +75,27 @@ const ProductReviewsList = (props) => {
       setIsLoading(false);
    }, [dispatch, setError, setIsLoading]);
 
+   const loadUserComments = useCallback(async () => {
+      setError(null);
+      setIsLoading(true);
+      try {
+         await dispatch(reviewActions.fetchUserReviews());
+      } catch (err) {
+         console.log(err.message);
+         setError(err.message);
+      }
+      setIsLoading(false);
+   }, [dispatch, setError, setIsLoading]);
+
    useEffect(() => {
       if (auth.token) {
          loadLikes();
+         loadUserComments();
       }
-   }, [dispatch, loadLikes, fetch]);
+   }, [dispatch, loadLikes, fetch, isFocused]);
 
    const { commentId, openReplies } = props.route.params;
+
    const dispatch = useDispatch();
 
    const sortReviews = useCallback(async () => {
@@ -104,6 +114,8 @@ const ProductReviewsList = (props) => {
    useEffect(() => {
       sortReviews();
    }, [dispatch, sortReviews, sortMethod]);
+
+   const userReviews = useSelector((state) => state.productReviews.userReviews);
 
    const scrollY = new Animated.Value(0);
    const diffClamp = Animated.diffClamp(scrollY, 0, 40);
@@ -151,10 +163,26 @@ const ProductReviewsList = (props) => {
             screen: "TopTabNavigator",
          });
       } else {
-         props.navigation.navigate("ProductReview", {
+         props.navigation.navigate("ReviewReply", {
             productId: productId,
+            commentId: commentId,
          });
       }
+   };
+
+   const handleEditComment = (productId, commentId) => {
+      props.navigation.navigate("EditReview", {
+         productId: productId,
+         commentId: commentId,
+      });
+   };
+
+   const handleEditReply = (commentId, replyId) => {
+      props.navigation.navigate("EditReply", {
+         replyId: replyId,
+         commentId: commentId,
+         setFetch: setFetch,
+      });
    };
 
    const likeCommentHandle = useCallback(async (commentId) => {
@@ -171,8 +199,10 @@ const ProductReviewsList = (props) => {
             screen: "TopTabNavigator",
          });
       } else {
+         const parentId = getCommentId(productReViews, commentId);
+
          setError(null);
-         setIsLoading(true);
+         // setIsLoading(true);
          try {
             if (
                commentLikes &&
@@ -189,8 +219,13 @@ const ProductReviewsList = (props) => {
             console.log(err.message);
             setError(err.message);
          }
-         setIsLoading(false);
-         setFetch(Math.random());
+         props.navigation.navigate("ProductReviewsList", {
+            productId: productId,
+            commentId: parentId,
+            openReplies: true,
+         });
+         // setIsLoading(false);
+         // setFetch(Math.random());
       }
    });
 
@@ -241,6 +276,9 @@ const ProductReviewsList = (props) => {
                               commentLikes={commentLikes}
                               likeCommentHandle={likeCommentHandle}
                               isAuth={auth.token}
+                              userReviews={userReviews}
+                              editComment={handleEditComment}
+                              editReply={handleEditReply}
                            ></ReviewItem>
                         </View>
                      )}

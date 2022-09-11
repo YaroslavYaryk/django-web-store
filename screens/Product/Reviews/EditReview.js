@@ -8,60 +8,46 @@ import {
    TouchableOpacity,
    ActivityIndicator,
    TextInput,
+   Alert,
 } from "react-native";
 import React, { useState, useEffect, useCallback, useReducer } from "react";
+import { useSelector, useDispatch } from "react-redux";
+
 import RATING_MARKS from "../../../constants/ratingMark";
 import RatingStars from "../../../components/RatingStars";
 import InputRating from "../../../components/InputRating";
 import ImgPicker from "../../../components/ImagePicker";
 import Colors from "../../../constants/Colors";
 import { useWindowDimensions } from "react-native";
-import { useSelector, useDispatch } from "react-redux";
 import * as reviewActions from "../../../redux-folder/actions/productReviewsActions";
 
-const FORM_INPUT_UPDATE = "FORM_INPUT_UPDATE";
+const EditReview = (props) => {
+   const { productId, commentId } = props.route.params;
 
-const ReviewReply = (props) => {
-   const [wordCountComment, setWordComment] = useState(0);
-   const [comment, setComment] = useState("");
-   const { width } = useWindowDimensions();
-   const { commentId, productId } = props.route.params;
-   const dispatch = useDispatch();
+   const review = useSelector((state) =>
+      state.productReviews.productReviews.find(
+         (elem) => elem.id == commentId && elem.productId == productId
+      )
+   );
+   const [ratingStars, setRatingStars] = useState(review.rating);
+   const [ratingMark, setRatingMark] = useState("Оцініть товар");
+   const [pickedImage, setPickedImage] = useState(
+      review.photos && review.photos.length ? review.photos[0].url : null
+   );
+   const [wordCountComment, setWordComment] = useState(review.comment.length);
+   const [wordCountPros, setWordPros] = useState(review.pros.length);
+   const [wordCountCons, setWordCons] = useState(review.cons.length);
+   const [comment, setComment] = useState(review.comment);
+   const [pros, setPros] = useState(review.pros);
+   const [cons, setCons] = useState(review.cons);
    const [isLoading, setIsLoading] = useState(false);
-   const [error, setError] = useState(null);
-   const [pickedImage, setPickedImage] = useState();
 
    const onImageTakeHandler = (imageUri) => {
       setPickedImage(imageUri);
    };
+   const dispatch = useDispatch();
 
-   const [ratingStars, setRatingStars] = useState(0);
-   const [ratingMark, setRatingMark] = useState("Оцініть товар");
-
-   const handleAddReply = useCallback(async () => {
-      setError(null);
-      setIsLoading(true);
-      try {
-         await dispatch(
-            reviewActions.createReviewReply(
-               productId,
-               commentId,
-               comment,
-               pickedImage,
-               ratingStars
-            )
-         );
-      } catch (error) {
-         console.log(error.message);
-         setError(error.message);
-      }
-      setIsLoading(false);
-      props.navigation.navigate("ProductReviewsList", {
-         productId: productId,
-         commentId: commentId,
-         openReplies: true,
-      });
-   });
+   const { width } = useWindowDimensions();
 
    useEffect(() => {
       if (ratingStars == 0) {
@@ -71,6 +57,58 @@ const ReviewReply = (props) => {
       }
    }, [ratingStars]);
 
+   const handleEditReview = useCallback(async () => {
+      setIsLoading(true);
+
+      try {
+         await dispatch(
+            reviewActions.editProductReview(
+               productId,
+               commentId,
+               ratingStars,
+               comment,
+               pros,
+               cons,
+               pickedImage
+            )
+         );
+      } catch (err) {
+         console.log(err);
+      }
+      setIsLoading(false);
+      props.navigation.navigate("ProductReviewsList", {
+         productId: productId,
+      });
+   });
+
+   const triggerDelete = async () => {};
+
+   const handleDeleteReview = useCallback(() => {
+      try {
+         Alert.alert(
+            "Are you sure?",
+            "Do you really want to delete this comment?",
+            [
+               { text: "No", style: "negative" },
+               {
+                  text: "Yes",
+                  style: "positive",
+                  onPress: async (e) => {
+                     await dispatch(
+                        reviewActions.deleteProductReview(productId, commentId)
+                     );
+                  },
+               },
+            ]
+         );
+         props.navigation.navigate("ProductReviewsList", {
+            productId: productId,
+         });
+      } catch (err) {
+         console.log(err);
+      }
+   });
+
    if (isLoading) {
       return (
          <View style={styles.centered}>
@@ -79,24 +117,14 @@ const ReviewReply = (props) => {
       );
    }
 
-   if (error) {
-      return (
-         <View style={styles.centered}>
-            <Text>An error occured</Text>
-            <Button
-               title="Try Again"
-               onPress={handleAddReply}
-               color={Colors.primaryColor}
-            />
-         </View>
-      );
-   }
-
    return (
       <View style={styles.container}>
          <ScrollView>
             <View style={styles.ratingBlock}>
-               <RatingStars setRatingStars={setRatingStars} />
+               <RatingStars
+                  setRatingStars={setRatingStars}
+                  defaultStar={review.rating}
+               />
                <View style={styles.ratingTitle}>
                   <Text style={styles.ratingTitleText}>{ratingMark}</Text>
                </View>
@@ -109,19 +137,59 @@ const ReviewReply = (props) => {
                   comment
                   alignTop
                   minLength={8}
-                  autoCapitalize="none"
+                  // autoCapitalize="none"
                   errorText="Please enter a valid comment."
-                  //   onChangeText={(value) => setComment(value)}
-                  initialValue=""
-                  login={true}
+                  initialValue={review.comment}
                   height={80}
                   placeholder="Коментар"
                   setWordsCount={setWordComment}
-                  setText={setComment}
                   maxLength={2000}
+                  setText={setComment}
                />
                <View style={styles.wordCount}>
                   <Text>{wordCountComment}/2000</Text>
+               </View>
+            </View>
+            <View style={[styles.TextFieldCommentLittle, { marginTop: 50 }]}>
+               <InputRating
+                  id="pros"
+                  label="pros"
+                  keyboardType="default"
+                  minLength={8}
+                  alignTop
+                  // required
+                  autoCapitalize="none"
+                  initialValue={review.pros}
+                  login={true}
+                  height={50}
+                  placeholder="Переваги"
+                  setWordsCount={setWordPros}
+                  maxLength={200}
+                  setText={setPros}
+               />
+               <View style={styles.wordCountLittle}>
+                  <Text>{wordCountPros}/200</Text>
+               </View>
+            </View>
+            <View style={[styles.TextFieldCommentLittle, { marginTop: 20 }]}>
+               <InputRating
+                  id="cons"
+                  label="cons"
+                  keyboardType="default"
+                  minLength={8}
+                  alignTop
+                  // required
+                  autoCapitalize="none"
+                  initialValue={review.cons}
+                  login={true}
+                  height={50}
+                  placeholder="Недоліки"
+                  setWordsCount={setWordCons}
+                  maxLength={200}
+                  setText={setCons}
+               />
+               <View style={styles.wordCountLittle}>
+                  <Text>{wordCountCons}/200</Text>
                </View>
             </View>
             <View style={[styles.imagePicker, { marginBottom: 15 }]}>
@@ -130,7 +198,6 @@ const ReviewReply = (props) => {
                   imageUri={pickedImage}
                />
             </View>
-
             <View
                style={[
                   styles.saveCommentBlock,
@@ -146,7 +213,7 @@ const ReviewReply = (props) => {
                   <TouchableOpacity
                      onPress={() => {
                         props.navigation.navigate("ProductReviewsList", {
-                           productId: productId,
+                           productId: id,
                         });
                      }}
                   >
@@ -156,10 +223,24 @@ const ReviewReply = (props) => {
                <View style={styles.buttonStyle}>
                   <TouchableOpacity
                      onPress={() => {
-                        handleAddReply();
+                        handleEditReview();
                      }}
                   >
                      <Text style={styles.saveCommentText}>Відправити</Text>
+                  </TouchableOpacity>
+               </View>
+               <View
+                  style={[
+                     styles.buttonStyle,
+                     { backgroundColor: Colors.danger },
+                  ]}
+               >
+                  <TouchableOpacity
+                     onPress={() => {
+                        handleDeleteReview();
+                     }}
+                  >
+                     <Text style={styles.saveCommentText}>Видалити</Text>
                   </TouchableOpacity>
                </View>
             </View>
@@ -189,8 +270,6 @@ const styles = StyleSheet.create({
    },
    TextFieldComment: {
       position: "relative",
-      marginTop: 10,
-      marginBottom: 50,
    },
    TextFieldCommentLittle: {
       position: "relative",
@@ -236,10 +315,10 @@ const styles = StyleSheet.create({
    buttonStyle: {
       alignItems: "center",
       backgroundColor: Colors.primaryColor,
-      width: "49%",
+      width: "32%",
       paddingVertical: 10,
       borderRadius: 15,
    },
 });
 
-export default ReviewReply;
+export default EditReview;

@@ -197,10 +197,12 @@ export const deleteCommentLike = (commentId, likeId) => {
          if (!response.ok) {
             throw new Error("Something went wrong!");
          }
+         const resData = await response.json();
 
          dispatch({
             type: DELETE_COMMENT_LIKE,
             likeId: likeId,
+            like: resData,
          });
       };
    } catch (err) {

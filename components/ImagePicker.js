@@ -65,13 +65,33 @@ const ImgPicker = (props) => {
                )}
             </View>
          </View>
+         {props.imageUri && (
+            <View
+               style={{
+                  padding: 5,
+                  marginBottom: 5,
+                  alignItems: "flex-end",
+                  marginRight: 20,
+                  marginTop: -5,
+               }}
+            >
+               <TouchableOpacity
+                  onPress={() => {
+                     props.onImageTaken(null);
+                  }}
+                  style={{ borderWidth: 0.5, padding: 5, borderRadius: 10 }}
+               >
+                  <Text style={{ fontSize: 15 }}>reset</Text>
+               </TouchableOpacity>
+            </View>
+         )}
       </View>
    );
 };
 
 const styles = StyleSheet.create({
    imagePicker: {
-      alignItems: "center",
+      // alignItems: "center",
       marginTop: 10,
       marginBottom: 15,
       borderWidth: 1,

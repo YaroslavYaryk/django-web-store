@@ -62,7 +62,6 @@ const ReviewItem = (props) => {
    const [visible, setVisible] = React.useState(false);
    const [imagePreview, setImagePreview] = useState(null);
    const properComment = props.item.id == props.commentId;
-
    const [repliesVisible, setRepliesVisible] = useState(
       properComment && props.openReplies ? true : false
    );
@@ -232,6 +231,30 @@ const ReviewItem = (props) => {
                         />
                      </View>
                   </TouchableOpacity>
+                  {props.userReviews &&
+                     props.userReviews.find(
+                        (elem) => elem.id == props.item.id
+                     ) && (
+                        <View style={{}}>
+                           <TouchableOpacity
+                              onPress={() => {
+                                 props.editComment(
+                                    props.item.productId,
+                                    props.item.id
+                                 );
+                              }}
+                              style={{
+                                 borderWidth: 0.5,
+                                 paddingHorizontal: 15,
+                                 paddingVertical: 3,
+                                 borderRadius: 10,
+                              }}
+                           >
+                              <Text style={{ fontWeight: "500" }}>edit</Text>
+                           </TouchableOpacity>
+                        </View>
+                     )}
+
                   <TouchableOpacity
                      onPress={() => {
                         props.likeCommentHandle(props.item.id);
@@ -302,6 +325,8 @@ const ReviewItem = (props) => {
                                     isAuth={props.isAuth}
                                     commentLikes={props.commentLikes}
                                     likeCommentHandle={props.likeCommentHandle}
+                                    userReviews={props.userReviews}
+                                    editReply={props.editReply}
                                  />
                               </View>
                            )}
