@@ -47,15 +47,11 @@ const CharacteristicProducts = (props) => {
    const { width } = useWindowDimensions();
 
    const { type, slug, name, id, selected } = props.route.params;
-   console.log(type, slug);
-   const products = useSelector(
-      (state) => state.products.characteristicProducts
-   );
+   const products = useSelector((state) => state.products.sortedProducts);
 
    const [selectedOptions, setSelectedOptions] = useState([]);
    const minValue = 2700;
    const maxValue = 99999;
-   console.log(selectedOptions);
    const [price, setPrice] = useState([minValue, maxValue]);
 
    const setDefaultPrice = () => {
@@ -366,7 +362,7 @@ const CharacteristicProducts = (props) => {
                            ref={ref}
                            onScroll={scrollHandler}
                            data={products}
-                           keyExtractor={(item) => item.id}
+                           keyExtractor={(item) => item.id + Math.random()}
                            spacing={20}
                            renderItem={(itemData) => (
                               <ProductItem
@@ -387,7 +383,7 @@ const CharacteristicProducts = (props) => {
                            ref={ref}
                            onScroll={scrollHandler}
                            data={products}
-                           keyExtractor={(item) => item.id}
+                           keyExtractor={(item) => item.id + Math.random()}
                            spacing={20}
                            renderItem={(itemData) => (
                               <ProductItem

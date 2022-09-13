@@ -26,7 +26,7 @@ const cartReducer = (state = initialState, action) => {
          const cart_products = state.cartProducts.products.filter(
             (product) => product.productId !== action.productId
          );
-         const cart = state.cartProducts;
+         const cart = { ...state.cartProducts };
          cart.products = cart_products;
          cart.totalProducts -= 1;
          cart.totalPrice -= action.productPrice;
@@ -36,21 +36,24 @@ const cartReducer = (state = initialState, action) => {
          };
 
       case DELETE_ONE_PRODUCT_FROM_CART:
-         const cart1 = state.cartProducts;
+         const cart1 = { ...state.cartProducts };
+         console.log(cart1.products);
          const productIndex = cart1.products.findIndex(
             (prod) => prod.productId === action.productId
          );
          const ProductItem = cart1.products[productIndex];
+
          ProductItem.count -= 1;
          cart1.products[productIndex] = ProductItem;
          cart1.totalPrice -= action.productPrice;
+
          return {
             ...state,
             cartProducts: cart1,
          };
 
       case DELETE_ALL_FROM_CART:
-         const newCart = state.cartProducts;
+         const newCart = { ...state.cartProducts };
          newCart.products = [];
          newCart.totalProducts = 0;
          newCart.totalPrice = 0;
@@ -67,8 +70,12 @@ const cartReducer = (state = initialState, action) => {
             action.productObject.image,
             action.productObject.price
          );
-         if (state.cartProducts) {
-            cartObj1 = state.cartProducts;
+         if (
+            state.cartProducts &&
+            state.cartProducts.products &&
+            state.cartProducts.products.length
+         ) {
+            cartObj1 = { ...state.cartProducts };
 
             const prodInCart = cartObj1.products.find(
                (el) => el.productId == action.productObject.productId
@@ -89,7 +96,7 @@ const cartReducer = (state = initialState, action) => {
          } else {
             cartObj1 = new Cart(
                Math.random() * (100000000000000 - 3) + 3,
-               action.productObject.owner,
+               action.productObject.user,
                1,
                action.productObject.price,
                newProduct
@@ -99,15 +106,18 @@ const cartReducer = (state = initialState, action) => {
             cartProducts: cartObj1,
          };
       case ADD_ONE_PRODUCT_TO_CART:
-         var cartObj2 = state.cartProducts;
+         const cartObj2 = { ...state.cartProducts };
 
          const productIndex1 = cartObj2.products.findIndex(
             (prod) => prod.productId === action.productId
          );
-         const ProductItem1 = cartObj2.products[productIndex1];
+         var ProductItem1 = cartObj2.products[productIndex1];
+
          ProductItem1.count += 1;
+
          cartObj2.products[productIndex1] = ProductItem1;
          cartObj2.totalPrice += action.productPrice;
+         console.log(cartObj2);
          return {
             cartProducts: cartObj2,
          };

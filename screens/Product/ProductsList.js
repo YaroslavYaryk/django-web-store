@@ -97,13 +97,40 @@ const ProductsList = (props) => {
    };
    const orders = useSelector((state) => state.orders.orders);
 
-   const addProductToCart = (productId, fullName, image, price) => {
-      try {
-         dispatch(
-            cartActions.addProductToCart(productId, fullName, image, price)
-         );
-      } catch (err) {}
-   };
+   const addProductToCart = useCallback(
+      async (productId, fullName, image, price) => {
+         if (!auth.token) {
+            AsyncStorage.setItem(
+               "redirect",
+               JSON.stringify({
+                  redirectUrl: "BaseFullNavigator",
+                  productId: "",
+               })
+            );
+
+            props.navigation.navigate("AuthNavigator", {
+               screen: "TopTabNavigator",
+            });
+         } else {
+            setError(false);
+            setIsLoading(true);
+            try {
+               await dispatch(
+                  cartActions.addProductToCart(
+                     productId,
+                     fullName,
+                     image,
+                     price
+                  )
+               );
+            } catch (err) {
+               setError(err.message);
+               console.log(err.message);
+            }
+            setIsLoading(false);
+         }
+      }
+   );
 
    const scrollToTop = () => {
       ref.current.scrollToOffset({ offset: 0, animated: true });

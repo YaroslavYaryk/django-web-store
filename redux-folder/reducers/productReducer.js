@@ -15,6 +15,7 @@ const initialState = {
    searchProducts: [],
    characteristicProducts: [],
    searchQuery: [],
+   sortedProducts: [],
 };
 // import Product from "../../models/Product";
 
@@ -24,11 +25,13 @@ const productReducer = (state = initialState, action) => {
          return {
             ...state,
             products: action.products,
+            sortedProducts: action.products,
          };
       case READ_CHARACTERISTIC_PRODUCT:
          return {
             ...state,
             characteristicProducts: action.characteristicProducts,
+            sortedProducts: action.characteristicProducts,
          };
       case SEARCH_PRODUCTS:
          var new_prods;
@@ -60,6 +63,9 @@ const productReducer = (state = initialState, action) => {
                state.searchProducts
             ),
             products: productSorting[action.orderMethod](state.products),
+            sortedProducts: productSorting[action.orderMethod](
+               state.sortedProducts
+            ),
          };
    }
    return state;

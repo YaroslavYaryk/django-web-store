@@ -20,6 +20,7 @@ const CartProductItem = (props) => {
       if (operation == "plus") {
          props.addOneProductFromCart(props.item.productId, props.item.price);
       } else {
+         console.log(props.item.count, "count");
          if (props.item.count > 1) {
             props.removeOneProductFromCart(
                props.item.productId,

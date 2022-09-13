@@ -28,12 +28,30 @@ const Cart = (props) => {
    const userId = useSelector((state) => state.auth.userId);
    const user = useSelector((state) => state.auth.user);
    const [isLoading, setIsLoading] = useState(false);
+   const [error, setError] = useState(false);
    const [productDelete, setProductDelete] = useState(null);
    const [fetch, setfetch] = useState(0);
    const dispatch = useDispatch();
 
+   console.log(cart);
+
+   const auth = useSelector((state) => state.auth);
+
+   const fetchUser = useCallback(async () => {
+      setError(null);
+      setIsLoading(true);
+      try {
+         await dispatch(authActions.fetchUserInfo(userId));
+      } catch (err) {
+         setError(err.message);
+      }
+      setIsLoading(false);
+   }, [dispatch, setError, setIsLoading]);
+
    useEffect(() => {
-      dispatch(authActions.fetchUserInfo(userId));
+      if (auth.userId) {
+         fetchUser();
+      }
    }, [userId]);
 
    useEffect(() => {
@@ -43,49 +61,69 @@ const Cart = (props) => {
       }
    }, []);
 
-   const fetchCart = () => {
+   const fetchCart = useCallback(async () => {
+      setError(null);
       setIsLoading(true);
       try {
-         dispatch(cartActions.fetchCart());
-      } catch {}
+         await dispatch(cartActions.fetchCart());
+      } catch (err) {
+         setError(err.message);
+         console.log(err.message);
+      }
       setIsLoading(false);
-   };
+   }, [dispatch, setError, setIsLoading]);
 
    const isFocused = useIsFocused();
-
-   const removeProductFromCart = (productId, productPrice) => {
-      setIsLoading(true);
-      try {
-         dispatch(cartActions.deleteProductFromCart(productId, productPrice));
-      } catch (err) {}
-      setIsLoading(false);
-   };
-
-   const removeOneProductFromCart = (productId, productPrice) => {
-      setIsLoading(true);
-      try {
-         dispatch(
-            cartActions.deleteOneProductFromCart(productId, productPrice)
-         );
-      } catch (err) {
-         console.log(err);
-      }
-      setIsLoading(false);
-   };
-
-   const addOneProductFromCart = (productId, productPrice) => {
-      setIsLoading(true);
-      try {
-         dispatch(cartActions.addOneProductToCart(productId, productPrice));
-      } catch (err) {
-         console.log(err);
-      }
-      setIsLoading(false);
-   };
-
    useEffect(() => {
-      fetchCart();
-   }, [dispatch, fetchCart, cart, productDelete, fetch, isFocused]);
+      console.log(auth.token, "heheeheheh");
+      if (auth.token) {
+         fetchCart();
+      }
+   }, [dispatch, fetchCart, productDelete, isFocused]);
+
+   const removeProductFromCart = useCallback(
+      async (productId, productPrice) => {
+         setIsLoading(true);
+         try {
+            await dispatch(
+               cartActions.deleteProductFromCart(productId, productPrice)
+            );
+         } catch (err) {}
+         setIsLoading(false);
+         setfetch(Math.random + Math.random() + Math.random());
+      }
+   );
+
+   const removeOneProductFromCart = useCallback(
+      async (productId, productPrice) => {
+         setIsLoading(true);
+         try {
+            await dispatch(
+               cartActions.deleteOneProductFromCart(productId, productPrice)
+            );
+         } catch (err) {
+            console.log(err);
+         }
+         setIsLoading(false);
+         setfetch(Math.random + Math.random() + Math.random());
+      }
+   );
+
+   const addOneProductFromCart = useCallback(
+      async (productId, productPrice) => {
+         setIsLoading(true);
+         try {
+            await dispatch(
+               cartActions.addOneProductToCart(productId, productPrice)
+            );
+         } catch (err) {
+            console.log(err);
+         }
+         setIsLoading(false);
+         setfetch(Math.random() + Math.random() + Math.random());
+      },
+      [dispatch, setError, setIsLoading]
+   );
 
    useEffect(() => {
       props.navigation.setParams({
@@ -94,6 +132,19 @@ const Cart = (props) => {
          deleteAll: fetch,
       });
    }, [dispatch]);
+
+   if (error) {
+      return (
+         <View style={styles.center}>
+            <Text>An error occured</Text>
+            <Button
+               title="Try Again"
+               onPress={fetchCart}
+               color={Colors.primaryColor}
+            />
+         </View>
+      );
+   }
 
    if (isLoading) {
       return (
@@ -105,7 +156,11 @@ const Cart = (props) => {
    if (!cart.totalProducts) {
       return (
          <View style={styles.center}>
-            <Text>Cart is empty!</Text>
+            {!auth.token ? (
+               <Text>Please Log in / Sign up !</Text>
+            ) : (
+               <Text>Cart is empty!</Text>
+            )}
          </View>
       );
    }
@@ -225,12 +280,12 @@ export const screenOptions = (navData) => {
       setdeleteAll = props.routes[0].params.setdeleteAll;
       deleteAll = props.routes[0].params.deleteAll;
    }
-   const deleteAllFromCart = () => {
+   const deleteAllFromCart = useCallback(async () => {
       try {
-         dispatch(cartActions.deleteAllFromCart());
+         await dispatch(cartActions.deleteAllFromCart());
       } catch (err) {}
       setdeleteAll(deleteAll + 0.000000000001);
-   };
+   });
 
    if (menuVisible) {
       return {

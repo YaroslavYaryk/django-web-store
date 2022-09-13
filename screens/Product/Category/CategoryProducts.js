@@ -79,7 +79,9 @@ const CategoryProducts = (props) => {
    // var categoryProducts = [];
    // if (useSelector((state) => state.products.products)) {
    const categoryProducts = useSelector((state) =>
-      state.products.products.filter((el) => el.productType === productType)
+      state.products.sortedProducts.filter(
+         (el) => el.productType === productType
+      )
    );
    // }
    const [selectedOptions, setSelectedOptions] = useState([]);

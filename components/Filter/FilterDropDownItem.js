@@ -114,7 +114,12 @@ const FilterDropDownItem = (props) => {
                   {props.query &&
                      props.query.map((el) => (
                         <FilterItem
-                           key={el.id + Math.random()}
+                           key={
+                              el.id +
+                              Math.random() +
+                              Math.random() +
+                              Math.random()
+                           }
                            el={el}
                            selectProductOption={selectProductOption}
                         />
