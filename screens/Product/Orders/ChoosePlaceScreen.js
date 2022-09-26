@@ -14,7 +14,7 @@ import {
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import Colors from "../../../constants/Colors";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Autocomplete from "react-native-autocomplete-input";
 import { useSelector, useDispatch } from "react-redux";
 import * as novaPoshtaAction from "../../../redux-folder/actions/novaPoshtaActions";
@@ -27,6 +27,9 @@ const ChoosePlaceScreen = (props) => {
    const data = ["Київ", "Львів", "Харків", "Рівне", "Одеса", "Луцьк"];
    const [defaultDataQuery, setDefaultDataQuery] = useState(true);
    const [query, setQuery] = useState();
+   const [error, setError] = useState(false);
+   const [isLoading, setIsLoading] = useState(false);
+
    const cities = useSelector((elem) => elem.cities.cities);
    const cartId = props.route.params.cartId
       ? props.route.params.cartId
@@ -47,6 +50,30 @@ const ChoosePlaceScreen = (props) => {
          setDefaultDataQuery(true);
       }
    };
+
+   const handleAddPlaceToOrder = useCallback(async (cartId, placeId, place) => {
+      setError(null);
+      setIsLoading(true);
+      try {
+         await dispatch(orderActions.addPlaceToOrder(cartId, placeId, place));
+      } catch (err) {
+         console.log(err.message);
+         setError(err.message);
+      }
+      setIsLoading(false);
+   });
+
+   const handleChangeUserLivingPlace = useCallback(async (place) => {
+      setError(null);
+      setIsLoading(true);
+      try {
+         await dispatch(authActions.changeUserLivingPlace(place));
+      } catch (err) {
+         console.log(err.message);
+         setError(err.message);
+      }
+      setIsLoading(false);
+   });
 
    return (
       <View style={styles.container}>
@@ -80,33 +107,17 @@ const ChoosePlaceScreen = (props) => {
                      key={itemData.item.Area + itemData.item.Ref}
                      onPress={() => {
                         if (cities.length && !defaultDataQuery) {
-                           dispatch(
-                              orderActions.addPlaceToOrder(
-                                 cartId,
-                                 itemData.item.CityID,
-                                 itemData.item.Description.split(" ")[0]
-                              )
+                           handleAddPlaceToOrder(
+                              cartId,
+                              itemData.item.CityID,
+                              itemData.item.Description.split(" ")[0]
                            );
-                           dispatch(
-                              authActions.changeUserLivingPlace(
-                                 1,
-                                 itemData.item.Description.split(" ")[0]
-                              )
+                           handleChangeUserLivingPlace(
+                              itemData.item.Description.split(" ")[0]
                            );
                         } else {
-                           dispatch(
-                              orderActions.addPlaceToOrder(
-                                 cartId,
-                                 -1,
-                                 itemData.item
-                              )
-                           );
-                           dispatch(
-                              authActions.changeUserLivingPlace(
-                                 1,
-                                 itemData.item
-                              )
-                           );
+                           handleAddPlaceToOrder(cartId, -1, itemData.item);
+                           handleChangeUserLivingPlace(itemData.item);
                         }
 
                         if (redirectToDelivery) {

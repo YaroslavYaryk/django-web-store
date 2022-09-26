@@ -14,7 +14,7 @@ import {
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import Colors from "../../../constants/Colors";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Autocomplete from "react-native-autocomplete-input";
 import { useSelector, useDispatch } from "react-redux";
 import * as novaPoshtaAction from "../../../redux-folder/actions/novaPoshtaActions";
@@ -30,16 +30,57 @@ const ChooseWareHouse = (props) => {
    const cartId = props.route.params.cartId
       ? props.route.params.cartId
       : props.route.params.params.cartId;
+   const [error, setError] = useState(false);
+   const [isLoading, setIsLoading] = useState(false);
 
-   const user = useSelector((state) => state.auth.user);
+   const user = useSelector((state) => state.user.user);
 
    const dispatch = useDispatch();
 
    const isFocused = useIsFocused();
 
    useEffect(() => {
-      dispatch(novaPoshtaAction.fetchCityPost(user.livingPlace));
+      if (user.livingPlace) {
+         dispatch(novaPoshtaAction.fetchCityPost(user.livingPlace));
+      }
    }, [isFocused]);
+
+   const changeUserVareHouse = useCallback(async (name) => {
+      setError(null);
+      setIsLoading(true);
+      try {
+         await dispatch(authActions.changeUserWareHouse(name));
+      } catch (err) {
+         console.log(err.message);
+         setError(err.message);
+      }
+      setIsLoading(false);
+   });
+
+   const addOrderVareHouse = useCallback(async (cartId, description, id) => {
+      setError(null);
+      setIsLoading(true);
+      try {
+         console.log(cartId, description, id);
+         await dispatch(orderActions.addWareHouse(cartId, description, id));
+      } catch (err) {
+         console.log(err.message);
+         setError(err.message);
+      }
+      setIsLoading(false);
+   });
+
+   const handleChangeUserDeliveryType = useCallback(async (type) => {
+      setError(null);
+      setIsLoading(true);
+      try {
+         await dispatch(authActions.changeUserDeliveryType(type));
+      } catch (err) {
+         console.log(err.message);
+         setError(err.message);
+      }
+      setIsLoading(false);
+   });
 
    return (
       <View style={styles.container}>
@@ -59,22 +100,16 @@ const ChooseWareHouse = (props) => {
                   <TouchableOpacity
                      key={itemData.item.Description + Math.random()}
                      onPress={() => {
-                        dispatch(
-                           orderActions.addWareHouse(
-                              cartId,
-                              itemData.item.Description,
-                              itemData.item.Ref
-                           )
+                        addOrderVareHouse(
+                           cartId,
+                           itemData.item.Description,
+                           itemData.item.Ref
                         );
-                        dispatch(
-                           authActions.changeUserWareHouse(
-                              1,
-                              itemData.item.Description
-                           )
-                        );
+
+                        changeUserVareHouse(itemData.item.Description);
                         const a = "Доставка до пункту видачі";
                         if (user.deliveryType != a) {
-                           dispatch(authActions.changeUserDeliveryType(1, a));
+                           handleChangeUserDeliveryType(a);
                         }
 
                         props.navigation.navigate("DeliveryScreen", {

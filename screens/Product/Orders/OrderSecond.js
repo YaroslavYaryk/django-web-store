@@ -34,6 +34,15 @@ import { DataTable } from "react-native-paper";
 import CartPopup from "../../../components/wrappers/CartPopup";
 import { FontAwesome5 } from "@expo/vector-icons";
 
+const data = [
+   {
+      label: "Кур'єрська Доставка",
+   },
+   {
+      label: "Доставка до пункту видачі",
+   },
+];
+
 const OrderSecond = (props) => {
    const { height, width } = useWindowDimensions();
    const cart = useSelector((state) => state.cart.cartProducts);
@@ -60,7 +69,7 @@ const OrderSecond = (props) => {
    //    dispatch(authActions.fetchUserInfo(userId));
    // }, [userId]);
 
-   const user = useSelector((state) => state.auth.user);
+   const user = useSelector((state) => state.user.user);
    const dispatch = useDispatch();
 
    const cartId = props.route.params.cartId
@@ -111,7 +120,7 @@ const OrderSecond = (props) => {
                user.lastName,
                user.firstName,
                user.middleName,
-               user.livingPlace
+               user.livingPlace ? user.livingPlace : ""
             )
          );
       }
@@ -260,7 +269,9 @@ const OrderSecond = (props) => {
                      </View>
                      <View style={styles.headerBottomLabel}>
                         <Text style={styles.headerBottomText}>
-                           Самовивіз із відділень поштових операторів
+                           {user.deliveryType
+                              ? user.deliveryType
+                              : data[1].label}
                         </Text>
                      </View>
                   </View>
@@ -276,7 +287,8 @@ const OrderSecond = (props) => {
                         </View>
                         <View style={styles.postAddressTextBlock}>
                            <Text style={styles.postAddressTextBlockText}>
-                              {user.livingPlace}, {user.wareHouse}
+                              {user.livingPlace ? user.livingPlace : ""},{" "}
+                              {user.wareHouse ? user.wareHouse : ""}
                            </Text>
                         </View>
                      </View>
@@ -316,7 +328,9 @@ const OrderSecond = (props) => {
                      <View style={{ marginTop: -5 }}>
                         <View style={{}}>
                            <Text style={styles.postAddressTextBlockText}>
-                              {priceMethods[order.priceMethod]}
+                              {order && order.priceMethod
+                                 ? priceMethods[order.priceMethod]
+                                 : ""}
                            </Text>
                         </View>
                      </View>

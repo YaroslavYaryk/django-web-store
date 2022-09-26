@@ -40,14 +40,17 @@ const orderReducer = (state = initialState, action) => {
             [],
             null
          );
+         var curOrders = [...state.orders];
+         console.log("added order", curOrders.concat(orderInstance).length);
          return {
-            orders: state.orders.concat(orderInstance),
+            orders: curOrders.concat(orderInstance),
          };
       case ADD_PLACE_TO_ORDER:
          var orderInstance2 = state.orders;
          const orderIndex = orderInstance2.findIndex(
             (el) => el.cartId === action.cartId
          );
+         console.log(orderInstance2, orderIndex);
          const OrderItem = orderInstance2[orderIndex];
          OrderItem.placeId = action.placeId;
          OrderItem.place = action.place;

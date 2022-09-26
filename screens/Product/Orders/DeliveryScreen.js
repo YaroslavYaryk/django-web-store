@@ -31,7 +31,7 @@ const DeliveryScreen = (props) => {
       ? props.route.params.cartId
       : props.route.params.params.cartId;
    const userId = useSelector((state) => state.auth.userId);
-   const user = useSelector((state) => state.auth.user);
+   const user = useSelector((state) => state.user.user);
    const order = useSelector((state) =>
       state.orders.orders.find((elem) => elem.cartId === cartId)
    );
@@ -120,8 +120,9 @@ const DeliveryScreen = (props) => {
                circleSize={10}
                data={data}
                selectedBtn={(e) => {
+                  console.log(e);
                   dispatch(orderActions.addDeliveryType(cartId, e.label));
-                  dispatch(authActions.changeUserDeliveryType(1, e.label));
+                  dispatch(authActions.changeUserDeliveryType(e.label));
                }}
             />
          </View>
@@ -149,9 +150,15 @@ const DeliveryScreen = (props) => {
                         color="black"
                      />
                      <Text style={{ fontSize: 16, marginLeft: 10 }}>
+                        {console.log(
+                           user,
+                           re.exec(user.wareHouse).slice(0, -1)
+                        )}
                         Ваш пункт
-                        {user.wareHouse
-                           ? `:  ${re.exec(user.wareHouse)[0].slice(0, -1)}`
+                        {user.wareHouse && user.wareHouse.length > 2
+                           ? `:  ${user.wareHouse}`
+                           : user.wareHouse
+                           ? user.wareHouse
                            : ""}
                      </Text>
                   </View>

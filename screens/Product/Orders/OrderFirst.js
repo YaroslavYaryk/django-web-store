@@ -29,8 +29,7 @@ const OrderFirst = (props) => {
       dispatch(authActions.fetchUserInfo(userId));
    }, []);
 
-   const user = useSelector((state) => state.auth.user);
-
+   const user = useSelector((state) => state.user.user);
    const cartId = props.route.params.cartId
       ? props.route.params.cartId
       : props.route.params.params.cartId;
@@ -38,19 +37,21 @@ const OrderFirst = (props) => {
       state.orders.orders.find((elem) => elem.cartId === cartId)
    );
 
-   const [inpSurName, setInpSurName] = useState(user.lastName);
-   const [inpName, setInpName] = useState(user.firstName);
-   const [inpMiddleName, setInpMiddleName] = useState(user.middleName);
-   const [inpPhone, setinpPhone] = useState(user.phone);
+   const [inpSurName, setInpSurName] = useState(
+      user.lastName ? user.lastName : ""
+   );
+   const [inpName, setInpName] = useState(user.firstName ? user.firstName : "");
+   const [inpMiddleName, setInpMiddleName] = useState(
+      user.middleName ? user.middleName : ""
+   );
+   const [inpPhone, setinpPhone] = useState(user.phone ? user.phone : "");
 
    const validateForm = () => {
       if (
          Boolean(
-            user.livingPlace &&
-               inpSurName &&
-               inpName &&
-               inpMiddleName &&
-               inpPhone
+            user.livingPlace
+               ? user.livingPlace
+               : "" && inpSurName && inpName && inpMiddleName && inpPhone
          )
       ) {
          return true;
@@ -63,7 +64,13 @@ const OrderFirst = (props) => {
       } else {
          setButtonDisabled(true);
       }
-   }, [user.livingPlace, inpMiddleName, inpName, inpPhone, inpSurName]);
+   }, [
+      user.livingPlace ? user.livingPlace : "",
+      inpMiddleName,
+      inpName,
+      inpPhone,
+      inpSurName,
+   ]);
 
    return (
       <View>

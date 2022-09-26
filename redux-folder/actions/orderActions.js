@@ -8,6 +8,7 @@ export const CHANGE_PAYMENT_METHOD = "CHANGE_pAYMENT_METHOD";
 export const ADD_RECIEVER_INFO = "ADD_RECIEVER_INFO";
 export const ADD_ORDER_COUPON = "ADD_ORDER_COUPON";
 export const ADD_ORDER_TOTAL_PRICE = "ADD_ORDER_TOTAL_PRICE";
+import { HOST, PORT } from "../../constants/server";
 
 export const fetchOrders = (ownerId, cartId) => {
    try {
@@ -26,9 +27,22 @@ export const fetchOrders = (ownerId, cartId) => {
 export const createOrder = (ownerId, cartId) => {
    try {
       return async (dispatch, getState) => {
+         const token = getState().auth.token;
+         const response = fetch(`${HOST}:${PORT}/api/orders/add/`, {
+            method: "POST",
+            headers: {
+               "Content-Type": "application/json",
+               "Access-Control-Allow-Origin": "*",
+               Authorization: `Token ${token}`,
+            },
+            body: JSON.stringify({
+               cart: cartId,
+            }),
+         });
+         console.log("create order");
          dispatch({
             type: ADD_BASE_INFO_TO_ORDER,
-            id: 1,
+            id: Math.random(),
             ownerId,
             cartId,
          });
@@ -40,7 +54,22 @@ export const createOrder = (ownerId, cartId) => {
 
 export const addPlaceToOrder = (cartId, placeId, place) => {
    try {
-      return async (dispatch, getState) => {
+      return (dispatch, getState) => {
+         const token = getState().auth.token;
+         const response = fetch(`${HOST}:${PORT}/api/orders/add_place/`, {
+            method: "POST",
+            headers: {
+               "Content-Type": "application/json",
+               "Access-Control-Allow-Origin": "*",
+               Authorization: `Token ${token}`,
+            },
+            body: JSON.stringify({
+               cart: cartId,
+               place_id: placeId,
+               place: place,
+            }),
+         });
+
          dispatch({
             type: ADD_PLACE_TO_ORDER,
             cartId,
@@ -70,6 +99,19 @@ export const addOrderTotalPrice = (cartId, totalPrice) => {
 export const addWareHouse = (cartId, wareHouse, wareHouseId, CityRef = 0) => {
    try {
       return async (dispatch, getState) => {
+         const token = getState().auth.token;
+         const response = fetch(`${HOST}:${PORT}/api/orders/add_warehouse/`, {
+            method: "POST",
+            headers: {
+               "Content-Type": "application/json",
+               "Access-Control-Allow-Origin": "*",
+               Authorization: `Token ${token}`,
+            },
+            body: JSON.stringify({
+               cart: cartId,
+               ware_house: wareHouse,
+            }),
+         });
          dispatch({
             type: ADD_WARE_HOUSE_TO_ORDER,
             cartId,
@@ -86,6 +128,23 @@ export const addWareHouse = (cartId, wareHouse, wareHouseId, CityRef = 0) => {
 export const addDeliveryType = (cartId, deliveryType) => {
    try {
       return async (dispatch, getState) => {
+         const token = getState().auth.token;
+         const response = fetch(
+            `${HOST}:${PORT}/api/orders/add_delivery_type/`,
+            {
+               method: "POST",
+               headers: {
+                  "Content-Type": "application/json",
+                  "Access-Control-Allow-Origin": "*",
+                  Authorization: `Token ${token}`,
+               },
+               body: JSON.stringify({
+                  cart: cartId,
+                  delivery_type: deliveryType,
+               }),
+            }
+         );
+
          dispatch({
             type: ADD_DELIVERY_TYPE_TO_ORDER,
             cartId,
@@ -128,6 +187,19 @@ export const addOrderCoupon = (cartId, coupon) => {
 export const discartOrder = (cartId) => {
    try {
       return async (dispatch, getState) => {
+         const token = getState().auth.token;
+         const response = await fetch(
+            `${HOST}:${PORT}/api/orders/discard/${cartId}/`,
+            {
+               method: "DELETE",
+               headers: {
+                  "Content-Type": "application/json",
+                  "Access-Control-Allow-Origin": "*",
+                  Authorization: `Token ${token}`,
+               },
+            }
+         );
+
          dispatch({
             type: DISCARD_ORDER,
             cartId,

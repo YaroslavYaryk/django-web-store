@@ -117,9 +117,30 @@ export const editUserBaseInfo = (
    }
 };
 
-export const changeUserLivingPlace = (userId, livingPlace) => {
+export const changeUserLivingPlace = (livingPlace) => {
    try {
       return async (dispatch, getState) => {
+         var token = getState().auth.token;
+
+         const response = await fetch(
+            `${HOST}:${PORT}/users/api/edit_living_place/`,
+            {
+               method: "POST",
+               headers: {
+                  "Content-Type": "application/json",
+                  "Access-Control-Allow-Origin": "*",
+                  Authorization: `Token ${token}`,
+               },
+               body: JSON.stringify({
+                  living_place: livingPlace,
+               }),
+            }
+         );
+
+         if (!response.ok) {
+            throw new Error("Something went wrong!");
+         }
+
          dispatch({
             type: CHANGE_USER_LIVING_PLACE,
             livingPlace: livingPlace,
@@ -130,9 +151,30 @@ export const changeUserLivingPlace = (userId, livingPlace) => {
    }
 };
 
-export const changeUserWareHouse = (userId, wareHouse) => {
+export const changeUserWareHouse = (wareHouse) => {
    try {
       return async (dispatch, getState) => {
+         var token = getState().auth.token;
+
+         const response = await fetch(
+            `${HOST}:${PORT}/users/api/edit_warehouse/`,
+            {
+               method: "POST",
+               headers: {
+                  "Content-Type": "application/json",
+                  "Access-Control-Allow-Origin": "*",
+                  Authorization: `Token ${token}`,
+               },
+               body: JSON.stringify({
+                  ware_house: wareHouse,
+               }),
+            }
+         );
+
+         if (!response.ok) {
+            throw new Error("Something went wrong!");
+         }
+
          dispatch({
             type: CHANGE_USER_WARE_HOUSE,
             wareHouse: wareHouse,
@@ -143,9 +185,31 @@ export const changeUserWareHouse = (userId, wareHouse) => {
    }
 };
 
-export const changeUserDeliveryType = (userId, deliveryType) => {
+export const changeUserDeliveryType = (deliveryType) => {
    try {
       return async (dispatch, getState) => {
+         var token = getState().auth.token;
+
+         const response = await fetch(
+            `${HOST}:${PORT}/users/api/edit_delivery_type/`,
+            {
+               method: "POST",
+               headers: {
+                  "Content-Type": "application/json",
+                  "Access-Control-Allow-Origin": "*",
+                  Authorization: `Token ${token}`,
+               },
+               body: JSON.stringify({
+                  delivery_type: deliveryType,
+               }),
+            }
+         );
+         console.log(deliveryType);
+
+         if (!response.ok) {
+            throw new Error("Something went wrong!");
+         }
+
          dispatch({
             type: CHANGE_USER_DELIVERY_TYPE,
             deliveryType: deliveryType,

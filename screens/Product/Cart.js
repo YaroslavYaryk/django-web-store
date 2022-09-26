@@ -26,17 +26,14 @@ const Cart = (props) => {
    const cart = useSelector((state) => state.cart.cartProducts);
    const orders = useSelector((state) => state.orders.orders);
    const userId = useSelector((state) => state.auth.userId);
-   const user = useSelector((state) => state.auth.user);
+   const user = useSelector((state) => state.user.user);
    const [isLoading, setIsLoading] = useState(false);
    const [error, setError] = useState(false);
    const [productDelete, setProductDelete] = useState(null);
    const [fetch, setfetch] = useState(0);
    const dispatch = useDispatch();
 
-   console.log(cart);
-
    const auth = useSelector((state) => state.auth);
-
    const fetchUser = useCallback(async () => {
       setError(null);
       setIsLoading(true);
@@ -52,13 +49,26 @@ const Cart = (props) => {
       if (auth.userId) {
          fetchUser();
       }
+      return () => {};
    }, [userId]);
 
-   useEffect(() => {
+   const fetchOrder = useCallback(async () => {
+      setError(null);
+      setIsLoading(true);
+      try {
+         await dispatch(orderActions.discartOrder(cart.id));
+      } catch (err) {
+         setError(err.message);
+      }
+      setIsLoading(false);
+   }, [dispatch, setError, setIsLoading]);
+
+   useEffect(async () => {
       const currentOrder = orders.find((elem) => elem.cartId === cart.id);
       if (currentOrder) {
-         dispatch(orderActions.discartOrder(cart.id));
+         fetchOrder();
       }
+      return () => {};
    }, []);
 
    const fetchCart = useCallback(async () => {
@@ -75,10 +85,10 @@ const Cart = (props) => {
 
    const isFocused = useIsFocused();
    useEffect(() => {
-      console.log(auth.token, "heheeheheh");
       if (auth.token) {
          fetchCart();
       }
+      return () => {};
    }, [dispatch, fetchCart, productDelete, isFocused]);
 
    const removeProductFromCart = useCallback(
@@ -125,12 +135,37 @@ const Cart = (props) => {
       [dispatch, setError, setIsLoading]
    );
 
+   const handleCreateOrder = useCallback(() => {
+      setError(null);
+      setIsLoading(true);
+      try {
+         dispatch(orderActions.createOrder(user.id, cart.id));
+      } catch (err) {
+         setError(err.message);
+         console.log(err.message);
+      }
+      setIsLoading(false);
+   }, [dispatch, setError, setIsLoading]);
+
+   const handleAddPlaceToOrder = useCallback(() => {
+      setError(null);
+      setIsLoading(true);
+      try {
+         dispatch(orderActions.addPlaceToOrder(cart.id, -1, user.livingPlace));
+      } catch (err) {
+         console.log(err.message);
+         setError(err.message);
+      }
+      setIsLoading(false);
+   }, [dispatch, setError, setIsLoading]);
+
    useEffect(() => {
       props.navigation.setParams({
          dispatch: dispatch,
          setdeleteAll: setfetch,
          deleteAll: fetch,
       });
+      return () => {};
    }, [dispatch]);
 
    if (error) {
@@ -140,6 +175,19 @@ const Cart = (props) => {
             <Button
                title="Try Again"
                onPress={fetchCart}
+               color={Colors.primaryColor}
+            />
+         </View>
+      );
+   }
+
+   if (error) {
+      return (
+         <View style={styles.centered}>
+            <Text>An error occured</Text>
+            <Button
+               title="Try Again"
+               onPress={loadProducts}
                color={Colors.primaryColor}
             />
          </View>
@@ -213,9 +261,9 @@ const Cart = (props) => {
             >
                <TouchableOpacity
                   onPress={() => {
-                     dispatch(orderActions.createOrder(1, cart.id));
-
+                     handleCreateOrder();
                      if (
+                        user &&
                         Boolean(
                            user.firstName &&
                               user.lastName &&
@@ -224,13 +272,7 @@ const Cart = (props) => {
                               user.livingPlace
                         )
                      ) {
-                        dispatch(
-                           orderActions.addPlaceToOrder(
-                              cart.id,
-                              -1,
-                              user.livingPlace
-                           )
-                        );
+                        handleAddPlaceToOrder();
                         props.navigation.navigate("OrderNavigator", {
                            screen: "OrderFull",
                            params: { cartId: cart.id },
